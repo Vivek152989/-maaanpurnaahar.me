@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Activity Dashboard - Maa Anpurna Aahar</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .dashboard {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2196F3, #1976D2);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 30px;
+            background: #f8f9fa;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .total-users { color: #2196F3; }
+        .active-users { color: #4CAF50; }
+        .today-reg { color: #FF9800; }
+        .today-login { color: #9C27B0; }
+        .week-reg { color: #607D8B; }
+        .logged-in { color: #795548; }
+        
+        .stat-label {
+            color: #666;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 30px;
+        }
+        
+        .section {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .section-header {
+            background: #f8f9fa;
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .section-content {
+            padding: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .user-item {
+            padding: 15px;
+            border-bottom: 1px solid #f0f0f0;
+            transition: background 0.3s ease;
+        }
+        
+        .user-item:hover {
+            background: #f8f9fa;
+        }
+        
+        .user-item:last-child {
+            border-bottom: none;
+        }
+        
+        .user-name {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .user-details {
+            font-size: 0.9em;
+            color: #666;
+            line-height: 1.4;
+        }
+        
+        .user-status {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+        
+        .status-active {
+            background: #e8f5e8;
+            color: #2e7d32;
+        }
+        
+        .status-inactive {
+            background: #ffebee;
+            color: #c62828;
+        }
+        
+        .refresh-section {
+            text-align: center;
+            padding: 20px;
+            background: #f8f9fa;
+        }
+        
+        .refresh-btn {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            margin: 0 10px;
+        }
+        
+        .refresh-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 50px;
+            color: #666;
+        }
+        
+        .no-data {
+            text-align: center;
+            padding: 30px;
+            color: #999;
+            font-style: italic;
+        }
+        
+        .activity-item {
+            padding: 10px 15px;
+            border-left: 4px solid;
+            margin-bottom: 10px;
+            border-radius: 0 5px 5px 0;
+        }
+        
+        .activity-registration {
+            background: #e3f2fd;
+            border-left-color: #2196F3;
+        }
+        
+        .activity-login {
+            background: #f3e5f5;
+            border-left-color: #9c27b0;
+        }
+        
+        .time-ago {
+            font-size: 0.8em;
+            color: #666;
+            font-style: italic;
+        }
+        
+        @media (max-width: 768px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <div class="header">
+            <h1>👥 User Activity Dashboard</h1>
+            <p>Track registrations and logins for Maa Anpurna Aahar</p>
+        </div>
+        
+        <div class="stats" id="stats">
+            <div class="loading">Loading statistics...</div>
+        </div>
+        
+        <div class="refresh-section">
+            <button class="refresh-btn" onclick="loadAllData()">🔄 Refresh All Data</button>
+            <button class="refresh-btn" onclick="window.open('/contact-messages.html', '_blank')">📧 Contact Messages</button>
+            <button class="refresh-btn" onclick="window.open('/admin.html', '_blank')">⚙️ Admin Panel</button>
+        </div>
+        
+        <div class="content-grid">
+            <div class="section">
+                <div class="section-header">🆕 Recent Registrations</div>
+                <div class="section-content" id="recentRegistrations">
+                    <div class="loading">Loading recent registrations...</div>
+                </div>
+            </div>
+            
+            <div class="section">
+                <div class="section-header">🔐 Recent Logins</div>
+                <div class="section-content" id="recentLogins">
+                    <div class="loading">Loading recent logins...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Load data on page load
+        loadAllData();
+        
+        // Auto refresh every 30 seconds
+        setInterval(loadAllData, 30000);
+        
+        async function loadAllData() {
+            try {
+                await Promise.all([
+                    loadUserStats(),
+                    loadRecentRegistrations(),
+                    loadRecentLogins()
+                ]);
+            } catch (error) {
+                console.error('Error loading data:', error);
+            }
+        }
+        
+        async function loadUserStats() {
+            try {
+                const response = await fetch('/api/admin/users');
+                const users = await response.json();
+                
+                // Calculate stats
+                const totalUsers = users.length;
+                const activeUsers = users.filter(u => u.is_active).length;
+                const today = new Date().toISOString().split('T')[0];
+                const todayRegistrations = users.filter(u => 
+                    u.registration_date && u.registration_date.split('T')[0] === today
+                ).length;
+                const todayLogins = users.filter(u => 
+                    u.last_login && u.last_login.split('T')[0] === today
+                ).length;
+                
+                const weekAgo = new Date();
+                weekAgo.setDate(weekAgo.getDate() - 7);
+                const weekRegistrations = users.filter(u => 
+                    u.registration_date && new Date(u.registration_date) >= weekAgo
+                ).length;
+                
+                const usersWhoLoggedIn = users.filter(u => u.last_login).length;
+                
+                document.getElementById('stats').innerHTML = `
+                    <div class="stat-card">
+                        <div class="stat-number total-users">${totalUsers}</div>
+                        <div class="stat-label">कुल Users</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number active-users">${activeUsers}</div>
+                        <div class="stat-label">Active Users</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number today-reg">${todayRegistrations}</div>
+                        <div class="stat-label">आज Registration</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number today-login">${todayLogins}</div>
+                        <div class="stat-label">आज Login</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number week-reg">${weekRegistrations}</div>
+                        <div class="stat-label">इस हफ्ते Registration</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number logged-in">${usersWhoLoggedIn}</div>
+                        <div class="stat-label">कभी Login किए</div>
+                    </div>
+                `;
+                
+            } catch (error) {
+                document.getElementById('stats').innerHTML = '<div class="loading">Error loading statistics</div>';
+            }
+        }
+        
+        async function loadRecentRegistrations() {
+            try {
+                const response = await fetch('/api/admin/users');
+                const users = await response.json();
+                
+                // Sort by registration date and take first 10
+                const recentUsers = users
+                    .sort((a, b) => new Date(b.registration_date) - new Date(a.registration_date))
+                    .slice(0, 10);
+                
+                const container = document.getElementById('recentRegistrations');
+                
+                if (recentUsers.length === 0) {
+                    container.innerHTML = '<div class="no-data">कोई user अभी तक register नहीं हुआ है</div>';
+                    return;
+                }
+                
+                container.innerHTML = recentUsers.map(user => `
+                    <div class="user-item">
+                        <div class="user-name">👤 ${user.full_name}</div>
+                        <div class="user-details">
+                            📧 ${user.email}<br>
+                            📞 ${user.phone || 'No phone'}<br>
+                            🆔 ${user.user_id}<br>
+                            📅 ${formatDate(user.registration_date)}
+                        </div>
+                        <div class="user-status ${user.is_active ? 'status-active' : 'status-inactive'}">
+                            ${user.is_active ? '✅ Active' : '❌ Inactive'}
+                        </div>
+                    </div>
+                `).join('');
+                
+            } catch (error) {
+                document.getElementById('recentRegistrations').innerHTML = 
+                    '<div class="loading">Error loading registrations</div>';
+            }
+        }
+        
+        async function loadRecentLogins() {
+            try {
+                const response = await fetch('/api/admin/users');
+                const users = await response.json();
+                
+                // Filter users who have logged in and sort by last login
+                const recentLogins = users
+                    .filter(user => user.last_login)
+                    .sort((a, b) => new Date(b.last_login) - new Date(a.last_login))
+                    .slice(0, 10);
+                
+                const container = document.getElementById('recentLogins');
+                
+                if (recentLogins.length === 0) {
+                    container.innerHTML = '<div class="no-data">कोई user अभी तक login नहीं हुआ है</div>';
+                    return;
+                }
+                
+                container.innerHTML = recentLogins.map(user => `
+                    <div class="user-item">
+                        <div class="user-name">🔐 ${user.full_name}</div>
+                        <div class="user-details">
+                            📧 ${user.email}<br>
+                            🆔 ${user.user_id}<br>
+                            ⏰ Last Login: ${formatDate(user.last_login)}
+                            <div class="time-ago">${getTimeAgo(user.last_login)}</div>
+                        </div>
+                    </div>
+                `).join('');
+                
+            } catch (error) {
+                document.getElementById('recentLogins').innerHTML = 
+                    '<div class="loading">Error loading logins</div>';
+            }
+        }
+        
+        function formatDate(dateString) {
+            if (!dateString) return 'Never';
+            const date = new Date(dateString);
+            return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+        }
+        
+        function getTimeAgo(dateString) {
+            if (!dateString) return '';
+            
+            const now = new Date();
+            const date = new Date(dateString);
+            const diffTime = Math.abs(now - date);
+            const diffMinutes = Math.ceil(diffTime / (1000 * 60));
+            
+            if (diffMinutes < 60) {
+                return `${diffMinutes} minutes ago`;
+            } else if (diffMinutes < 1440) {
+                return `${Math.floor(diffMinutes / 60)} hours ago`;
+            } else {
+                return `${Math.floor(diffMinutes / 1440)} days ago`;
+            }
+        }
+    </script>
+</body>
+</html>

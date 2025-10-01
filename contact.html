@@ -732,7 +732,7 @@
 
   <script>
     // Contact form handling
-    document.getElementById('contactForm').addEventListener('submit', function(e) {
+    document.getElementById('contactForm').addEventListener('submit', async function(e) {
       e.preventDefault();
       
       // Get form data
@@ -751,18 +751,57 @@
         }
       }
       
-      // Simulate form submission
+      // Submit form
       const submitButton = this.querySelector('button[type="submit"]');
       const originalText = submitButton.textContent;
       submitButton.textContent = 'Sending...';
       submitButton.disabled = true;
       
-      setTimeout(() => {
-        alert('Thank you for your message! We\'ll get back to you within 24 hours.');
+      try {
+        // Send to server API (when backend is running)
+        const response = await fetch('/api/contact/submit', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+        
+        if (response.ok) {
+          const result = await response.json();
+          alert('✅ Thank you for your message! We\'ll get back to you within 24 hours.');
+          console.log('Message saved with ID:', result.messageId);
+          this.reset();
+        } else {
+          throw new Error('Server error');
+        }
+      } catch (error) {
+        // Fallback to localStorage when server is not running
+        console.log('Server not available, saving to localStorage');
+        const messageId = 'MSG_' + Date.now();
+        const contactMessage = {
+          messageId: messageId,
+          firstName: data.firstName,
+          lastName: data.lastName,
+          email: data.email,
+          phone: data.phone || '',
+          subject: data.subject,
+          message: data.message,
+          timestamp: new Date().toISOString(),
+          isRead: false
+        };
+        
+        // Save to localStorage
+        const existingMessages = JSON.parse(localStorage.getItem('contactMessages') || '[]');
+        existingMessages.push(contactMessage);
+        localStorage.setItem('contactMessages', JSON.stringify(existingMessages));
+        
+        alert('✅ Thank you for your message! We\'ll get back to you within 24 hours.');
         this.reset();
-        submitButton.textContent = originalText;
-        submitButton.disabled = false;
-      }, 2000);
+      }
+      
+      submitButton.textContent = originalText;
+      submitButton.disabled = false;
     });
 
     // FAQ toggle functionality
