@@ -3,48 +3,366 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Maa Anpurna Aahar jj</title>
+  <title>Maa Anpurna Aahar - Handmade Food Products</title>
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
     body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      background: #f9f9f9;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
       color: #333;
+      background: #f8f9fa;
     }
-    header {
-      background: #ff9800;
-      padding: 20px;
+    
+    /* Navigation */
+    nav {
+      background: #2c3e50;
+      padding: 1rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .logo {
+      color: #ff9800;
+      font-size: 1.5rem;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    
+    .nav-links {
+      display: flex;
+      list-style: none;
+      gap: 30px;
+    }
+    
+    .nav-links a {
       color: white;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s;
     }
+    
+    .nav-links a:hover {
+      color: #ff9800;
+    }
+    
+    /* Hero Section */
+    .hero {
+      background: linear-gradient(135deg, #ff9800, #f57c00);
+      color: white;
+      padding: 100px 0;
+      text-align: center;
+    }
+    
+    .hero h1 {
+      font-size: 3rem;
+      margin-bottom: 20px;
+    }
+    
+    .hero p {
+      font-size: 1.2rem;
+      margin-bottom: 30px;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    .btn {
+      display: inline-block;
+      background: #2c3e50;
+      color: white;
+      padding: 12px 30px;
+      text-decoration: none;
+      border-radius: 5px;
+      font-weight: bold;
+      transition: background 0.3s;
+      margin: 10px;
+    }
+    
+    .btn:hover {
+      background: #34495e;
+    }
+    
+    .btn-secondary {
+      background: transparent;
+      border: 2px solid white;
+    }
+    
+    .btn-secondary:hover {
+      background: white;
+      color: #ff9800;
+    }
+    
+    /* Container */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    
+    /* Sections */
     section {
-      margin: 40px;
+      padding: 80px 0;
     }
+    
+    h2 {
+      text-align: center;
+      margin-bottom: 50px;
+      font-size: 2.5rem;
+      color: #2c3e50;
+    }
+    
+    /* Featured Products */
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+      margin-top: 50px;
+    }
+    
+    .product-card {
+      background: white;
+      border-radius: 10px;
+      padding: 30px;
+      text-align: center;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      transition: transform 0.3s;
+    }
+    
+    .product-card:hover {
+      transform: translateY(-5px);
+    }
+    
+    .product-icon {
+      font-size: 3rem;
+      margin-bottom: 20px;
+    }
+    
+    .product-card h3 {
+      margin-bottom: 15px;
+      color: #2c3e50;
+    }
+    
+    .price {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #ff9800;
+      margin: 15px 0;
+    }
+    
+    /* About Section */
+    .about {
+      background: white;
+    }
+    
+    .about-content {
+      text-align: center;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    .about-content p {
+      font-size: 1.1rem;
+      margin-bottom: 20px;
+    }
+    
+    /* Contact Section */
+    .contact {
+      background: #f8f9fa;
+    }
+    
+    .contact-info {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px;
+      text-align: center;
+    }
+    
+    .contact-item {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    
+    .contact-item h3 {
+      color: #ff9800;
+      margin-bottom: 15px;
+    }
+    
+    /* Footer */
     footer {
-      background: #333;
+      background: #2c3e50;
       color: white;
-      padding: 10px;
+      padding: 40px 0 20px;
+      text-align: center;
+    }
+    
+    .footer-content {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px;
+      margin-bottom: 30px;
+    }
+    
+    .footer-section h3 {
+      margin-bottom: 15px;
+      color: #ff9800;
+    }
+    
+    .footer-section a {
+      color: #bdc3c7;
+      text-decoration: none;
+    }
+    
+    .footer-section a:hover {
+      color: #ff9800;
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+      }
+      
+      .hero h1 {
+        font-size: 2rem;
+      }
+      
+      .hero p {
+        font-size: 1rem;
+      }
+      
+      section {
+        padding: 40px 0;
+      }
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1>🌾 Maa Anpurna Aahar</h1>
-    <p>Ghar ka banaa hua, sehatmand khana aap tak</p>
-  </header>
+  <!-- Navigation -->
+  <nav>
+    <div class="nav-container">
+      <a href="index.html" class="logo">🌾 Maa Anpurna Aahar</a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="products.html">Products</a></li>
+        <li><a href="profile.html">Profile</a></li>
+        <li><a href="cart.html">Cart</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
 
-  <section>
-    <h2>About Us</h2>
-    <p>Hum ek startup hain jo ghar ki rasoi se tazaa aur swadisht bhojan aap tak pahunchate hain.</p>
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <h1>🌾 Maa Anpurna Aahar</h1>
+      <p>Ghar ka banaa hua, sehatmand aur swadisht khana seedha aap tak. Hamari handmade products ka mazaa len!</p>
+      <a href="products.html" class="btn">Shop Now</a>
+      <a href="#about" class="btn btn-secondary">Learn More</a>
+    </div>
   </section>
 
+  <!-- Featured Products -->
   <section>
-    <h2>Contact</h2>
-    <p>Email: info@maaanpurnaahar.me</p>
-    <p>Phone: +918353989251</p>
+    <div class="container">
+      <h2>Featured Products</h2>
+      <div class="products-grid">
+        <div class="product-card">
+          <div class="product-icon">🍯</div>
+          <h3>Pure Honey</h3>
+          <p>Fresh, organic honey directly from our beehives</p>
+          <div class="price">₹450/kg</div>
+          <a href="products.html" class="btn">Add to Cart</a>
+        </div>
+        <div class="product-card">
+          <div class="product-icon">🌾</div>
+          <h3>Handmade Atta</h3>
+          <p>Stone-ground wheat flour, preservative-free</p>
+          <div class="price">₹80/kg</div>
+          <a href="products.html" class="btn">Add to Cart</a>
+        </div>
+        <div class="product-card">
+          <div class="product-icon">🥨</div>
+          <h3>Fresh Pickles</h3>
+          <p>Traditional homemade pickles with authentic taste</p>
+          <div class="price">₹120/jar</div>
+          <a href="products.html" class="btn">Add to Cart</a>
+        </div>
+      </div>
+    </div>
   </section>
 
+  <!-- About Section -->
+  <section id="about" class="about">
+    <div class="container">
+      <h2>About Us</h2>
+      <div class="about-content">
+        <p>Hum ek passionate startup hain jo ghar ki rasoi se tazaa aur swadisht bhojan aap tak pahunchate hain. Hamara mission hai ki har ghar mein authentic, healthy aur handmade products pohonche.</p>
+        <p>Saari products traditional methods se banai jaati hain, bina kisi artificial preservatives ke. Quality aur taste hamari priority hai.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Preview -->
+  <section class="contact">
+    <div class="container">
+      <h2>Get in Touch</h2>
+      <div class="contact-info">
+        <div class="contact-item">
+          <h3>📧 Email</h3>
+          <p>info@maaanpurnaahar.me</p>
+        </div>
+        <div class="contact-item">
+          <h3>📞 Phone</h3>
+          <p>+918353989251</p>
+        </div>
+        <div class="contact-item">
+          <h3>📍 Location</h3>
+          <p>Serving across India</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
   <footer>
-    <p>© 2025 Maa Anpurna Aahar</p>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h3>Maa Anpurna Aahar</h3>
+          <p>Handmade food products with love and care</p>
+        </div>
+        <div class="footer-section">
+          <h3>Quick Links</h3>
+          <p><a href="products.html">Products</a></p>
+          <p><a href="profile.html">My Account</a></p>
+          <p><a href="cart.html">Cart</a></p>
+        </div>
+        <div class="footer-section">
+          <h3>Support</h3>
+          <p><a href="contact.html">Contact Us</a></p>
+          <p><a href="#">FAQ</a></p>
+          <p><a href="#">Shipping Info</a></p>
+        </div>
+      </div>
+      <p>© 2025 Maa Anpurna Aahar. All rights reserved.</p>
+    </div>
   </footer>
 </body>
 </html>

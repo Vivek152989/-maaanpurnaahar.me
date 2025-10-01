@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Products - Maa Anpurna Aahar</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: #f8f9fa;
+    }
+    
+    /* Navigation */
+    nav {
+      background: #2c3e50;
+      padding: 1rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .logo {
+      color: #ff9800;
+      font-size: 1.5rem;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    
+    .nav-links {
+      display: flex;
+      list-style: none;
+      gap: 30px;
+    }
+    
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+    
+    .nav-links a:hover, .nav-links a.active {
+      color: #ff9800;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    
+    .page-header {
+      background: linear-gradient(135deg, #ff9800, #f57c00);
+      color: white;
+      padding: 60px 0;
+      text-align: center;
+    }
+    
+    .page-header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+    }
+    
+    /* Filter Section */
+    .filter-section {
+      background: white;
+      padding: 30px 0;
+      border-bottom: 1px solid #e9ecef;
+    }
+    
+    .filter-container {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    
+    .filter-btn {
+      padding: 10px 20px;
+      border: 2px solid #ff9800;
+      background: transparent;
+      color: #ff9800;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-weight: 500;
+    }
+    
+    .filter-btn:hover, .filter-btn.active {
+      background: #ff9800;
+      color: white;
+    }
+    
+    /* Products Grid */
+    .products-section {
+      padding: 60px 0;
+    }
+    
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 30px;
+    }
+    
+    .product-card {
+      background: white;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+      transition: transform 0.3s;
+    }
+    
+    .product-card:hover {
+      transform: translateY(-5px);
+    }
+    
+    .product-image {
+      height: 200px;
+      background: linear-gradient(45deg, #ff9800, #f57c00);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 4rem;
+    }
+    
+    .product-info {
+      padding: 20px;
+    }
+    
+    .product-info h3 {
+      margin-bottom: 10px;
+      color: #2c3e50;
+    }
+    
+    .product-info p {
+      color: #666;
+      margin-bottom: 15px;
+      font-size: 0.9rem;
+    }
+    
+    .product-price {
+      font-size: 1.3rem;
+      font-weight: bold;
+      color: #ff9800;
+      margin-bottom: 15px;
+    }
+    
+    .product-actions {
+      display: flex;
+      gap: 10px;
+    }
+    
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: 500;
+      text-decoration: none;
+      display: inline-block;
+      text-align: center;
+      transition: all 0.3s;
+      flex: 1;
+    }
+    
+    .btn-primary {
+      background: #ff9800;
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background: #f57c00;
+    }
+    
+    .btn-secondary {
+      background: transparent;
+      color: #ff9800;
+      border: 1px solid #ff9800;
+    }
+    
+    .btn-secondary:hover {
+      background: #ff9800;
+      color: white;
+    }
+    
+    /* Footer */
+    footer {
+      background: #2c3e50;
+      color: white;
+      padding: 40px 0 20px;
+      text-align: center;
+      margin-top: 60px;
+    }
+    
+    .footer-content {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px;
+      margin-bottom: 30px;
+    }
+    
+    .footer-section h3 {
+      margin-bottom: 15px;
+      color: #ff9800;
+    }
+    
+    .footer-section a {
+      color: #bdc3c7;
+      text-decoration: none;
+    }
+    
+    .footer-section a:hover {
+      color: #ff9800;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+      }
+      
+      .page-header h1 {
+        font-size: 2rem;
+      }
+      
+      .filter-container {
+        gap: 10px;
+      }
+      
+      .filter-btn {
+        padding: 8px 15px;
+        font-size: 0.9rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav>
+    <div class="nav-container">
+      <a href="index.html" class="logo">🌾 Maa Anpurna Aahar</a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="products.html" class="active">Products</a></li>
+        <li><a href="profile.html">Profile</a></li>
+        <li><a href="cart.html">Cart</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Page Header -->
+  <section class="page-header">
+    <div class="container">
+      <h1>Our Handmade Products</h1>
+      <p>Fresh, authentic, and made with love</p>
+    </div>
+  </section>
+
+  <!-- Filter Section -->
+  <section class="filter-section">
+    <div class="container">
+      <div class="filter-container">
+        <button class="filter-btn active" onclick="filterProducts('all')">All Products</button>
+        <button class="filter-btn" onclick="filterProducts('grains')">Grains & Flour</button>
+        <button class="filter-btn" onclick="filterProducts('honey')">Honey & Sweeteners</button>
+        <button class="filter-btn" onclick="filterProducts('pickles')">Pickles & Preserves</button>
+        <button class="filter-btn" onclick="filterProducts('spices')">Spices & Masalas</button>
+        <button class="filter-btn" onclick="filterProducts('oils')">Oils & Ghee</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Products Section -->
+  <section class="products-section">
+    <div class="container">
+      <div class="products-grid" id="productsGrid">
+        <!-- Grains & Flour Products -->
+        <div class="product-card" data-category="grains">
+          <div class="product-image">🌾</div>
+          <div class="product-info">
+            <h3>Handmade Wheat Atta</h3>
+            <p>Stone-ground wheat flour, preservative-free and nutritious</p>
+            <div class="product-price">₹80/kg</div>
+            <div class="product-actions">
+              <button class="btn btn-primary" onclick="addToCart('wheat-atta', 80)">Add to Cart</button>
+              <a href="#" class="btn btn-secondary">Details</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="product-card" data-category="grains">
+          <div class="product-image">🌾</div>
+          <div class="product-info">
+            <h3>Organic Rice</h3>
+            <p>Premium basmati rice, organically grown</p>
+            <div class="product-price">₹150/kg</div>
+            <div class="product-actions">
+              <button class="btn btn-primary" onclick="addToCart('organic-rice', 150)">Add to Cart</button>
+              <a href="#" class="btn btn-secondary">Details</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="product-card" data-category="grains">
+          <div class="product-image">🌽</div>
+          <div class="product-info">
+            <h3>Millet Flour</h3>
+            <p>Nutritious millet flour for healthy cooking</p>
+            <div class="product-price">₹120/kg</div>
+            <div class="product-actions">
+              <button class="btn btn-primary" onclick="addToCart('millet-flour', 120)">Add to Cart</button>
+              <a href="#" class="btn btn-secondary">Details</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Honey & Sweeteners -->
+        <div class="product-card" data-category="honey">
+          <div class="product-image">🍯</div>
+          <div class="product-info">
+            <h3>Pure Honey</h3>
+            <p>Fresh, organic honey directly from our beehives</p>
+            <div class="product-price">₹450/kg</div>
+            <div class="product-actions">
+              <button class="btn btn-primary" onclick="addToCart('pure-honey', 450)">Add to Cart</button>
+              <a href="#" class="btn btn-secondary">Details</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="product-card" data-category="honey">
+          <div class="product-image">🍯</div>
+          <div class="product-info">
+            <h3>Wild Honey</h3>
+            <p>Raw wild honey with natural enzymes</p>
+            <div class="product-price">₹650/kg</div>
+            <div class="product-actions">
+              <button class="btn btn-primary" onclick="addToCart('wild-honey', 650)">Add to Cart</button>
+              <a href="#" class="btn btn-secondary">Details</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pickles & Preserves -->
+        <div class="product-card" data-category="pickles">
+          <div class="product-image">🥒</div>
+          <div class="product-info">
+            <h3>Mixed Vegetable Pickle</h3>
+            <p>Traditional homemade pickle with authentic taste</p>
+            <div class="product-price">₹120/jar</div>
+            <div class="product-actions">
+              <button class="btn btn-primary" onclick="addToCart('mixed-pickle', 120)">Add to Cart</button>
+              <a href="#" class="btn btn-secondary">Details</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="product-card" data-category="pickles">
+          <div class="product-image">🥭</div>
+          <div class="product-info">
+            <h3>Mango Pickle</h3>
+            <p>Spicy and tangy mango pickle, grandma's recipe</p>
+            <div class="product-price">₹150/jar</div>
+            <div class="product-actions">
+              <button class="btn btn-primary" onclick="addToCart('mango-pickle', 150)">Add to Cart</button>
+              <a href="#" class="btn btn-secondary">Details</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="product-card" data-category="pickles">
+          <div class="product-image">🌶️</div>
+          <div class="product-info">
+            <h3>Red Chili Pickle</h3>
+            <p>Fiery red chili pickle for spice lovers</p>
+            <div class="product-price">₹100/jar</div>
+            <div class="product-actions">
+              <button class="btn btn-primary" onclick="addToCart('chili-pickle', 100)">Add to Cart</button>
+              <a href="#" class="btn btn-secondary">Details</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Spices & Masalas -->
+        <div class="product-card" data-category="spices">
+          <div class="product-image">🌶️</div>
+          <div class="product-info">
+            <h3>Garam Masala</h3>
+            <p>Freshly ground traditional garam masala blend</p>
+            <div class="product-price">₹200/250g</div>
+            <div class="product-actions">
+              <button class="btn btn-primary" onclick="addToCart('garam-masala', 200)">Add to Cart</button>
+              <a href="#" class="btn btn-secondary">Details</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="product-card" data-category="spices">
+          <div class="product-image">🧄</div>
+          <div class="product-info">
+            <h3>Turmeric Powder</h3>
+            <p>Pure turmeric powder with natural color</p>
+            <div class="product-price">₹120/250g</div>
+            <div class="product-actions">
+              <button class="btn btn-primary" onclick="addToCart('turmeric-powder', 120)">Add to Cart</button>
+              <a href="#" class="btn btn-secondary">Details</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Oils & Ghee -->
+        <div class="product-card" data-category="oils">
+          <div class="product-image">🥥</div>
+          <div class="product-info">
+            <h3>Pure Coconut Oil</h3>
+            <p>Cold-pressed coconut oil for cooking and health</p>
+            <div class="product-price">₹320/500ml</div>
+            <div class="product-actions">
+              <button class="btn btn-primary" onclick="addToCart('coconut-oil', 320)">Add to Cart</button>
+              <a href="#" class="btn btn-secondary">Details</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="product-card" data-category="oils">
+          <div class="product-image">🧈</div>
+          <div class="product-info">
+            <h3>Desi Ghee</h3>
+            <p>Pure cow ghee made with traditional methods</p>
+            <div class="product-price">₹800/500g</div>
+            <div class="product-actions">
+              <button class="btn btn-primary" onclick="addToCart('desi-ghee', 800)">Add to Cart</button>
+              <a href="#" class="btn btn-secondary">Details</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h3>Maa Anpurna Aahar</h3>
+          <p>Handmade food products with love and care</p>
+        </div>
+        <div class="footer-section">
+          <h3>Quick Links</h3>
+          <p><a href="products.html">Products</a></p>
+          <p><a href="profile.html">My Account</a></p>
+          <p><a href="cart.html">Cart</a></p>
+        </div>
+        <div class="footer-section">
+          <h3>Support</h3>
+          <p><a href="contact.html">Contact Us</a></p>
+          <p><a href="#">FAQ</a></p>
+          <p><a href="#">Shipping Info</a></p>
+        </div>
+      </div>
+      <p>© 2025 Maa Anpurna Aahar. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    // Filter functionality
+    function filterProducts(category) {
+      const products = document.querySelectorAll('.product-card');
+      const buttons = document.querySelectorAll('.filter-btn');
+      
+      // Update active button
+      buttons.forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+      
+      // Filter products
+      products.forEach(product => {
+        if (category === 'all' || product.dataset.category === category) {
+          product.style.display = 'block';
+        } else {
+          product.style.display = 'none';
+        }
+      });
+    }
+
+    // Add to cart functionality
+    function addToCart(productId, price) {
+      let cart = JSON.parse(localStorage.getItem('cart')) || [];
+      
+      // Check if product already exists in cart
+      const existingItem = cart.find(item => item.id === productId);
+      
+      if (existingItem) {
+        existingItem.quantity += 1;
+      } else {
+        cart.push({
+          id: productId,
+          name: event.target.closest('.product-card').querySelector('h3').textContent,
+          price: price,
+          quantity: 1,
+          image: event.target.closest('.product-card').querySelector('.product-image').textContent
+        });
+      }
+      
+      localStorage.setItem('cart', JSON.stringify(cart));
+      
+      // Show confirmation
+      alert('Product added to cart!');
+      
+      // Update cart count if there's a cart indicator
+      updateCartCount();
+    }
+
+    function updateCartCount() {
+      const cart = JSON.parse(localStorage.getItem('cart')) || [];
+      const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+      
+      // Update cart count in navigation if element exists
+      const cartCount = document.querySelector('.cart-count');
+      if (cartCount) {
+        cartCount.textContent = totalItems;
+      }
+    }
+
+    // Initialize cart count on page load
+    document.addEventListener('DOMContentLoaded', updateCartCount);
+  </script>
+</body>
+</html>
