@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Maa Anpurna Aahar</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: linear-gradient(135deg, #ff9800, #f57c00);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .auth-container {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+      overflow: hidden;
+      width: 100%;
+      max-width: 900px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      margin: 20px;
+    }
+    
+    .auth-form {
+      padding: 60px 40px;
+    }
+    
+    .auth-welcome {
+      background: linear-gradient(135deg, #2c3e50, #34495e);
+      color: white;
+      padding: 60px 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+    
+    .logo {
+      font-size: 2rem;
+      margin-bottom: 20px;
+      color: #ff9800;
+    }
+    
+    .welcome-title {
+      font-size: 1.8rem;
+      margin-bottom: 15px;
+    }
+    
+    .welcome-subtitle {
+      opacity: 0.9;
+      margin-bottom: 30px;
+    }
+    
+    .auth-switch {
+      color: #ff9800;
+      text-decoration: none;
+      font-weight: 500;
+      padding: 12px 30px;
+      border: 2px solid #ff9800;
+      border-radius: 25px;
+      transition: all 0.3s;
+    }
+    
+    .auth-switch:hover {
+      background: #ff9800;
+      color: white;
+    }
+    
+    .form-title {
+      font-size: 2rem;
+      color: #2c3e50;
+      margin-bottom: 10px;
+    }
+    
+    .form-subtitle {
+      color: #666;
+      margin-bottom: 40px;
+    }
+    
+    .form-group {
+      margin-bottom: 25px;
+      position: relative;
+    }
+    
+    .form-input {
+      width: 100%;
+      padding: 15px 20px;
+      border: 2px solid #e9ecef;
+      border-radius: 10px;
+      font-size: 1rem;
+      transition: all 0.3s;
+      background: #f8f9fa;
+    }
+    
+    .form-input:focus {
+      outline: none;
+      border-color: #ff9800;
+      background: white;
+      box-shadow: 0 0 0 3px rgba(255, 152, 0, 0.1);
+    }
+    
+    .form-input::placeholder {
+      color: #999;
+    }
+    
+    .password-toggle {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: #666;
+      cursor: pointer;
+      font-size: 1.2rem;
+    }
+    
+    .form-options {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+    
+    .remember-me {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #666;
+      font-size: 0.9rem;
+    }
+    
+    .forgot-password {
+      color: #ff9800;
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+    
+    .forgot-password:hover {
+      text-decoration: underline;
+    }
+    
+    .btn {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(135deg, #ff9800, #f57c00);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-bottom: 20px;
+    }
+    
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(255, 152, 0, 0.3);
+    }
+    
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+    
+    .divider {
+      text-align: center;
+      margin: 30px 0;
+      position: relative;
+      color: #999;
+    }
+    
+    .divider::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: #e9ecef;
+    }
+    
+    .divider span {
+      background: white;
+      padding: 0 20px;
+    }
+    
+    .social-login {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+    
+    .social-btn {
+      padding: 12px;
+      border: 2px solid #e9ecef;
+      border-radius: 8px;
+      background: white;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-weight: 500;
+    }
+    
+    .social-btn:hover {
+      border-color: #ff9800;
+      transform: translateY(-2px);
+    }
+    
+    .error-message {
+      background: #f8d7da;
+      color: #721c24;
+      padding: 12px 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      border: 1px solid #f5c6cb;
+      display: none;
+    }
+    
+    .success-message {
+      background: #d4edda;
+      color: #155724;
+      padding: 12px 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      border: 1px solid #c3e6cb;
+      display: none;
+    }
+    
+    .back-home {
+      position: absolute;
+      top: 30px;
+      left: 30px;
+      color: white;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 500;
+      z-index: 10;
+    }
+    
+    .back-home:hover {
+      opacity: 0.8;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .auth-container {
+        grid-template-columns: 1fr;
+        margin: 10px;
+      }
+      
+      .auth-welcome {
+        order: 2;
+        padding: 40px 30px;
+      }
+      
+      .auth-form {
+        padding: 40px 30px;
+      }
+      
+      .social-login {
+        grid-template-columns: 1fr;
+      }
+      
+      .back-home {
+        position: relative;
+        top: auto;
+        left: auto;
+        color: #333;
+        margin-bottom: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a href="index.html" class="back-home">← Back to Home</a>
+  
+  <div class="auth-container">
+    <div class="auth-form">
+      <h2 class="form-title">Welcome Back!</h2>
+      <p class="form-subtitle">Please sign in to your account</p>
+      
+      <div id="errorMessage" class="error-message"></div>
+      <div id="successMessage" class="success-message"></div>
+      
+      <form id="loginForm">
+        <div class="form-group">
+          <input type="email" id="email" class="form-input" placeholder="Email Address" required>
+        </div>
+        
+        <div class="form-group">
+          <input type="password" id="password" class="form-input" placeholder="Password" required>
+          <button type="button" class="password-toggle" onclick="togglePassword()">👁️</button>
+        </div>
+        
+        <div class="form-options">
+          <label class="remember-me">
+            <input type="checkbox" id="rememberMe">
+            Remember me
+          </label>
+          <a href="#" class="forgot-password" onclick="forgotPassword()">Forgot Password?</a>
+        </div>
+        
+        <button type="submit" class="btn" id="loginBtn">Sign In</button>
+      </form>
+      
+      <div class="divider">
+        <span>or continue with</span>
+      </div>
+      
+      <div class="social-login">
+        <button class="social-btn" onclick="socialLogin('google')">
+          📧 Google
+        </button>
+        <button class="social-btn" onclick="socialLogin('facebook')">
+          📘 Facebook
+        </button>
+      </div>
+    </div>
+    
+    <div class="auth-welcome">
+      <div class="logo">🌾 Maa Anpurna Aahar</div>
+      <h3 class="welcome-title">New Here?</h3>
+      <p class="welcome-subtitle">Create an account and discover our handmade food products</p>
+      <a href="register.html" class="auth-switch">Create Account</a>
+    </div>
+  </div>
+
+  <script>
+    // Check if user is already logged in
+    document.addEventListener('DOMContentLoaded', function() {
+      const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+      if (currentUser && currentUser.isLoggedIn) {
+        window.location.href = 'profile.html';
+      }
+    });
+
+    // Login form handling
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const rememberMe = document.getElementById('rememberMe').checked;
+      
+      // Clear previous messages
+      hideMessages();
+      
+      // Validate inputs
+      if (!email || !password) {
+        showError('Please fill in all fields');
+        return;
+      }
+      
+      if (!isValidEmail(email)) {
+        showError('Please enter a valid email address');
+        return;
+      }
+      
+      // Show loading state
+      const loginBtn = document.getElementById('loginBtn');
+      const originalText = loginBtn.textContent;
+      loginBtn.textContent = 'Signing In...';
+      loginBtn.disabled = true;
+      
+      // Simulate API call
+      setTimeout(() => {
+        const users = JSON.parse(localStorage.getItem('registeredUsers')) || [];
+        const user = users.find(u => u.email === email && u.password === password);
+        
+        if (user) {
+          // Successful login
+          const currentUser = {
+            id: user.id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+            phone: user.phone,
+            isLoggedIn: true,
+            loginTime: new Date().toISOString(),
+            rememberMe: rememberMe
+          };
+          
+          localStorage.setItem('currentUser', JSON.stringify(currentUser));
+          
+          showSuccess('Login successful! Redirecting...');
+          
+          setTimeout(() => {
+            window.location.href = 'profile.html';
+          }, 1500);
+        } else {
+          // Failed login
+          showError('Invalid email or password. Please try again.');
+          loginBtn.textContent = originalText;
+          loginBtn.disabled = false;
+        }
+      }, 1500);
+    });
+
+    function togglePassword() {
+      const passwordInput = document.getElementById('password');
+      const toggleBtn = document.querySelector('.password-toggle');
+      
+      if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        toggleBtn.textContent = '🙈';
+      } else {
+        passwordInput.type = 'password';
+        toggleBtn.textContent = '👁️';
+      }
+    }
+
+    function forgotPassword() {
+      const email = document.getElementById('email').value;
+      
+      if (!email) {
+        showError('Please enter your email address first');
+        return;
+      }
+      
+      if (!isValidEmail(email)) {
+        showError('Please enter a valid email address');
+        return;
+      }
+      
+      const users = JSON.parse(localStorage.getItem('registeredUsers')) || [];
+      const user = users.find(u => u.email === email);
+      
+      if (user) {
+        showSuccess(`Password reset instructions have been sent to ${email}`);
+      } else {
+        showError('No account found with this email address');
+      }
+    }
+
+    function socialLogin(provider) {
+      showError(`${provider} login is not implemented yet. Please use email login.`);
+    }
+
+    function showError(message) {
+      const errorDiv = document.getElementById('errorMessage');
+      errorDiv.textContent = message;
+      errorDiv.style.display = 'block';
+      
+      // Hide after 5 seconds
+      setTimeout(() => {
+        errorDiv.style.display = 'none';
+      }, 5000);
+    }
+
+    function showSuccess(message) {
+      const successDiv = document.getElementById('successMessage');
+      successDiv.textContent = message;
+      successDiv.style.display = 'block';
+      
+      // Hide after 5 seconds
+      setTimeout(() => {
+        successDiv.style.display = 'none';
+      }, 5000);
+    }
+
+    function hideMessages() {
+      document.getElementById('errorMessage').style.display = 'none';
+      document.getElementById('successMessage').style.display = 'none';
+    }
+
+    function isValidEmail(email) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailRegex.test(email);
+    }
+
+    // Demo accounts for testing
+    function createDemoAccount() {
+      const users = JSON.parse(localStorage.getItem('registeredUsers')) || [];
+      
+      // Check if demo account already exists
+      if (!users.find(u => u.email === 'demo@maaanpurnaahar.me')) {
+        users.push({
+          id: 'demo-' + Date.now(),
+          firstName: 'Demo',
+          lastName: 'User',
+          email: 'demo@maaanpurnaahar.me',
+          password: 'demo123',
+          phone: '+91 98765 43210',
+          registrationDate: new Date().toISOString()
+        });
+        
+        localStorage.setItem('registeredUsers', JSON.stringify(users));
+        console.log('Demo account created: demo@maaanpurnaahar.me / demo123');
+      }
+    }
+
+    // Create demo account on page load
+    createDemoAccount();
+  </script>
+</body>
+</html>

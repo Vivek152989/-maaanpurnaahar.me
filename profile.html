@@ -47,6 +47,7 @@
       display: flex;
       list-style: none;
       gap: 30px;
+      align-items: center;
     }
     
     .nav-links a {
@@ -58,6 +59,59 @@
     
     .nav-links a:hover, .nav-links a.active {
       color: #ff9800;
+    }
+    
+    .user-menu {
+      position: relative;
+    }
+    
+    .user-avatar {
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      background: #ff9800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    
+    .dropdown-menu {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+      padding: 10px 0;
+      margin-top: 10px;
+      min-width: 180px;
+      display: none;
+    }
+    
+    .dropdown-menu.show {
+      display: block;
+    }
+    
+    .dropdown-item {
+      display: block;
+      padding: 10px 20px;
+      color: #333;
+      text-decoration: none;
+      transition: background 0.3s;
+    }
+    
+    .dropdown-item:hover {
+      background: #f8f9fa;
+    }
+    
+    .logout-btn {
+      color: #dc3545 !important;
+      border-top: 1px solid #e9ecef;
+      margin-top: 5px;
+      padding-top: 15px;
     }
     
     .container {
@@ -393,6 +447,15 @@
         <li><a href="profile.html" class="active">Profile</a></li>
         <li><a href="cart.html">Cart</a></li>
         <li><a href="contact.html">Contact</a></li>
+        <li class="user-menu">
+          <div class="user-avatar" id="userAvatar" onclick="toggleDropdown()">U</div>
+          <div class="dropdown-menu" id="dropdownMenu">
+            <a href="profile.html" class="dropdown-item">My Profile</a>
+            <a href="cart.html" class="dropdown-item">My Cart</a>
+            <a href="#" class="dropdown-item">Order History</a>
+            <a href="#" class="dropdown-item logout-btn" onclick="logout()">Logout</a>
+          </div>
+        </li>
       </ul>
     </div>
   </nav>
@@ -657,8 +720,29 @@
   </section>
 
   <script>
+    // Authentication check - Run immediately
+    (function() {
+      const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+      if (!currentUser || !currentUser.isLoggedIn) {
+        // User not logged in, redirect to login page
+        alert('Please login to access your profile');
+        window.location.href = 'login.html';
+        return;
+      }
+    })();
+
     // Tab functionality
     document.addEventListener('DOMContentLoaded', function() {
+      // Check authentication again on DOM load
+      const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+      if (!currentUser || !currentUser.isLoggedIn) {
+        window.location.href = 'login.html';
+        return;
+      }
+
+      // Initialize user interface
+      initializeUserInterface();
+
       const menuLinks = document.querySelectorAll('.menu-link');
       const tabContents = document.querySelectorAll('.tab-content');
 
@@ -682,6 +766,28 @@
       // Load saved user data
       loadUserData();
     });
+
+    // Initialize user interface with current user data
+    function initializeUserInterface() {
+      const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+      if (currentUser) {
+        // Update user avatar
+        const userAvatar = document.getElementById('userAvatar');
+        if (userAvatar) {
+          userAvatar.textContent = currentUser.firstName ? currentUser.firstName.charAt(0).toUpperCase() : 'U';
+        }
+
+        // Update profile display
+        document.getElementById('displayName').textContent = `${currentUser.firstName || ''} ${currentUser.lastName || ''}`.trim() || 'User';
+        document.getElementById('displayEmail').textContent = currentUser.email || 'user@example.com';
+
+        // Pre-populate forms with user data
+        if (currentUser.firstName) document.getElementById('firstName').value = currentUser.firstName;
+        if (currentUser.lastName) document.getElementById('lastName').value = currentUser.lastName;
+        if (currentUser.email) document.getElementById('email').value = currentUser.email;
+        if (currentUser.phone) document.getElementById('phone').value = currentUser.phone;
+      }
+    }
 
     // Load user data from localStorage
     function loadUserData() {
@@ -771,6 +877,55 @@
       // In a real application, this would open a modal or redirect to an address form
       alert('Add New Address functionality would be implemented here');
     }
+
+    // Dropdown menu functionality
+    function toggleDropdown() {
+      const dropdown = document.getElementById('dropdownMenu');
+      dropdown.classList.toggle('show');
+    }
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(event) {
+      const userMenu = document.querySelector('.user-menu');
+      const dropdown = document.getElementById('dropdownMenu');
+      
+      if (!userMenu.contains(event.target)) {
+        dropdown.classList.remove('show');
+      }
+    });
+
+    // Logout functionality
+    function logout() {
+      if (confirm('Are you sure you want to logout?')) {
+        // Clear user session
+        localStorage.removeItem('currentUser');
+        
+        // Show logout message
+        alert('You have been logged out successfully');
+        
+        // Redirect to home page
+        window.location.href = 'index.html';
+      }
+    }
+
+    // Session timeout check (optional)
+    function checkSessionTimeout() {
+      const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+      if (currentUser && currentUser.loginTime) {
+        const loginTime = new Date(currentUser.loginTime);
+        const now = new Date();
+        const hoursDifference = (now - loginTime) / (1000 * 60 * 60);
+        
+        // Auto logout after 24 hours if "remember me" is not checked
+        if (!currentUser.rememberMe && hoursDifference > 24) {
+          alert('Your session has expired. Please login again.');
+          logout();
+        }
+      }
+    }
+
+    // Check session timeout every 5 minutes
+    setInterval(checkSessionTimeout, 5 * 60 * 1000);
   </script>
 </body>
 </html>

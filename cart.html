@@ -60,6 +60,103 @@
       color: #ff9800;
     }
     
+    /* Authentication Menu Styles */
+    .auth-menu {
+      position: relative;
+    }
+    
+    .auth-link {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      padding: 8px 16px;
+      border-radius: 20px;
+      transition: all 0.3s;
+      margin-left: 10px;
+    }
+    
+    .auth-link:hover {
+      background: rgba(255, 152, 0, 0.1);
+      color: #ff9800;
+    }
+    
+    .register-link {
+      background: #ff9800;
+      color: white;
+    }
+    
+    .register-link:hover {
+      background: #f57c00;
+      color: white;
+    }
+    
+    .user-menu {
+      position: relative;
+    }
+    
+    .user-avatar {
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      background: #ff9800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.3s;
+    }
+    
+    .user-avatar:hover {
+      background: #f57c00;
+      transform: scale(1.05);
+    }
+    
+    .dropdown-menu {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+      padding: 10px 0;
+      margin-top: 10px;
+      min-width: 180px;
+      display: none;
+      z-index: 1000;
+    }
+    
+    .dropdown-menu.show {
+      display: block;
+    }
+    
+    .dropdown-item {
+      display: block;
+      padding: 12px 20px;
+      color: #333;
+      text-decoration: none;
+      transition: background 0.3s;
+      font-size: 0.9rem;
+    }
+    
+    .dropdown-item:hover {
+      background: #f8f9fa;
+      color: #ff9800;
+    }
+    
+    .logout-btn {
+      color: #dc3545 !important;
+      border-top: 1px solid #e9ecef;
+      margin-top: 5px;
+      padding-top: 15px;
+    }
+    
+    .logout-btn:hover {
+      background: #f8f9fa;
+      color: #c82333 !important;
+    }
+    
     .container {
       max-width: 1200px;
       margin: 0 auto;
@@ -418,9 +515,11 @@
       <ul class="nav-links">
         <li><a href="index.html">Home</a></li>
         <li><a href="products.html">Products</a></li>
-        <li><a href="profile.html">Profile</a></li>
         <li><a href="cart.html" class="active">Cart</a></li>
         <li><a href="contact.html">Contact</a></li>
+        <li class="auth-menu" id="authMenu">
+          <!-- Will be populated by JavaScript -->
+        </li>
       </ul>
     </div>
   </nav>
@@ -697,5 +796,6 @@
       }, 2000);
     }
   </script>
+  <script src="auth.js"></script>
 </body>
 </html>
