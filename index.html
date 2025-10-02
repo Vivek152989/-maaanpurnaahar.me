@@ -330,6 +330,138 @@
       color: #ff9800;
     }
     
+    /* Welcome Popup Styles */
+    .popup-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      z-index: 9999;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      backdrop-filter: blur(5px);
+    }
+    
+    .popup-container {
+      background: white;
+      border-radius: 15px;
+      padding: 40px;
+      max-width: 500px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+      animation: popupSlideIn 0.5s ease-out;
+      position: relative;
+    }
+    
+    @keyframes popupSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-50px) scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+    
+    @keyframes popupSlideOut {
+      from {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+      to {
+        opacity: 0;
+        transform: translateY(-50px) scale(0.9);
+      }
+    }
+    
+    .popup-close {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: none;
+      border: none;
+      font-size: 24px;
+      color: #999;
+      cursor: pointer;
+      padding: 5px;
+      border-radius: 50%;
+      transition: all 0.3s;
+    }
+    
+    .popup-close:hover {
+      background: #f1f1f1;
+      color: #333;
+    }
+    
+    .popup-icon {
+      font-size: 4rem;
+      margin-bottom: 20px;
+      color: #ff9800;
+    }
+    
+    .popup-title {
+      color: #2c3e50;
+      font-size: 2rem;
+      margin-bottom: 15px;
+      font-weight: bold;
+    }
+    
+    .popup-message {
+      color: #666;
+      font-size: 1.1rem;
+      line-height: 1.6;
+      margin-bottom: 25px;
+    }
+    
+    .popup-buttons {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    
+    .popup-btn {
+      padding: 12px 25px;
+      border: none;
+      border-radius: 25px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-decoration: none;
+      display: inline-block;
+    }
+    
+    .popup-btn-primary {
+      background: #ff9800;
+      color: white;
+    }
+    
+    .popup-btn-primary:hover {
+      background: #f57c00;
+      transform: translateY(-2px);
+    }
+    
+    .popup-btn-secondary {
+      background: transparent;
+      color: #2c3e50;
+      border: 2px solid #e9ecef;
+    }
+    
+    .popup-btn-secondary:hover {
+      background: #f8f9fa;
+      border-color: #ff9800;
+      color: #ff9800;
+    }
+    
+    .hidden {
+      display: none;
+    }
+
     /* Responsive Design */
     @media (max-width: 768px) {
       .nav-links {
@@ -347,10 +479,50 @@
       section {
         padding: 40px 0;
       }
+      
+      /* Responsive popup */
+      .popup-container {
+        padding: 25px;
+        margin: 20px;
+      }
+      
+      .popup-title {
+        font-size: 1.5rem;
+      }
+      
+      .popup-message {
+        font-size: 1rem;
+      }
+      
+      .popup-buttons {
+        flex-direction: column;
+      }
+      
+      .popup-btn {
+        width: 100%;
+      }
     }
   </style>
 </head>
 <body>
+  <!-- Welcome Popup -->
+  <div id="welcomePopup" class="popup-overlay">
+    <div class="popup-container">
+      <button class="popup-close" onclick="closeWelcomePopup()">&times;</button>
+      <div class="popup-icon">🌾</div>
+      <h2 class="popup-title">Welcome to Maa Anpurna Aahar!</h2>
+      <p class="popup-message">
+        Namaste! Aap hamari website par aaye, iske liye dhanyawad! 
+        Hum ghar ka bana hua fresh aur healthy food aap tak pahunchate hain. 
+        Hamari handmade products ka mazaa len aur healthy life jeeyein!
+      </p>
+      <div class="popup-buttons">
+        <a href="products.html" class="popup-btn popup-btn-primary">Explore Products</a>
+        <button class="popup-btn popup-btn-secondary" onclick="closeWelcomePopup()">Continue Browsing</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Navigation -->
   <nav>
     <div class="nav-container">
@@ -464,5 +636,52 @@
     </div>
   </footer>
   <script src="auth.js"></script>
+  <script>
+    // Welcome Popup Functions
+    function closeWelcomePopup() {
+      const popup = document.getElementById('welcomePopup');
+      popup.style.animation = 'popupSlideOut 0.3s ease-in forwards';
+      setTimeout(() => {
+        popup.classList.add('hidden');
+        // Set localStorage to remember user has seen the popup
+        localStorage.setItem('welcomePopupSeen', 'true');
+      }, 300);
+    }
+
+    // Check if user has already seen the popup today
+    window.addEventListener('load', function() {
+      const hasSeenPopup = localStorage.getItem('welcomePopupSeen');
+      const lastVisit = localStorage.getItem('lastVisitDate');
+      const today = new Date().toDateString();
+      
+      // Show popup if user hasn't seen it today or is a first-time visitor
+      if (!hasSeenPopup || lastVisit !== today) {
+        setTimeout(() => {
+          const popup = document.getElementById('welcomePopup');
+          popup.classList.remove('hidden');
+        }, 1000); // Show popup after 1 second
+        
+        // Update last visit date
+        localStorage.setItem('lastVisitDate', today);
+      } else {
+        // Hide popup if already seen today
+        document.getElementById('welcomePopup').classList.add('hidden');
+      }
+    });
+
+    // Close popup when clicking outside
+    document.getElementById('welcomePopup').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeWelcomePopup();
+      }
+    });
+
+    // Close popup with Escape key
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        closeWelcomePopup();
+      }
+    });
+  </script>
 </body>
 </html>
