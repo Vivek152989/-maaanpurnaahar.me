@@ -329,13 +329,34 @@
       </div>
       
       <div class="social-login">
-        <button class="social-btn" onclick="socialLogin('google')">
+        <button class="social-btn" id="googleSignInBtn" onclick="signInWithGoogle()">
           📧 Google
         </button>
-        <button class="social-btn" onclick="socialLogin('facebook')">
-          📘 Facebook
+        <button class="social-btn" id="phoneSignInBtn" onclick="showPhoneAuth()">
+          📱 Phone/OTP
         </button>
       </div>
+      
+      <!-- Phone Authentication Modal -->
+      <div id="phoneAuthModal" style="display: none;">
+        <h3>Phone Authentication</h3>
+        <div class="form-group">
+          <input type="tel" id="phoneNumber" class="form-input" placeholder="+1234567890" required>
+          <small style="color: #666; font-size: 0.8rem;">Include country code (e.g., +1 for US)</small>
+        </div>
+        <button type="button" class="btn" onclick="sendOTP()">Send OTP</button>
+        
+        <div id="otpSection" style="display: none;">
+          <div class="form-group">
+            <input type="text" id="otpCode" class="form-input" placeholder="Enter 6-digit OTP" maxlength="6" required>
+          </div>
+          <button type="button" class="btn" onclick="verifyOTP()">Verify OTP</button>
+        </div>
+        <button type="button" class="btn" onclick="hidePhoneAuth()" style="background: #666;">Cancel</button>
+      </div>
+      
+      <!-- reCAPTCHA container (invisible) -->
+      <div id="recaptcha-container"></div>
     </div>
     
     <div class="auth-welcome">
@@ -346,9 +367,47 @@
     </div>
   </div>
 
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  
+  <!-- Firebase Config -->
+  <script src="firebase-config.js"></script>
+
   <script>
-    // Check if user is already logged in
-    document.addEventListener('DOMContentLoaded', function() {
+    // Initialize Firebase Manager
+    let firebaseManager;
+    
+    // Initialize Firebase when page loads
+    document.addEventListener('DOMContentLoaded', async function() {
+      try {
+        firebaseManager = new FirebaseManager();
+        
+        // TODO: Replace with your actual Firebase config
+        const firebaseConfig = {
+          apiKey: "your-api-key",
+          authDomain: "your-project.firebaseapp.com",
+          projectId: "your-project-id",
+          storageBucket: "your-project.appspot.com",
+          messagingSenderId: "123456789",
+          appId: "your-app-id"
+        };
+        
+        await firebaseManager.initialize(firebaseConfig);
+        
+        // Check if user is already logged in
+        firebaseManager.onAuthStateChanged((user) => {
+          if (user) {
+            console.log('User already logged in:', user);
+            window.location.href = 'profile.html';
+          }
+        });
+        
+      } catch (error) {
+        console.error('Firebase initialization error:', error);
+        showError('Firebase initialization failed. Please try again.');
+      }
       const currentUser = JSON.parse(localStorage.getItem('currentUser'));
       if (currentUser && currentUser.isLoggedIn) {
         window.location.href = 'profile.html';
@@ -427,8 +486,156 @@
 
 
 
+    // Google Sign-In
+    async function signInWithGoogle() {
+      try {
+        hideMessages();
+        
+        const btn = document.getElementById('googleSignInBtn');
+        const originalText = btn.textContent;
+        btn.textContent = 'Signing in...';
+        btn.disabled = true;
+        
+        if (!firebaseManager) {
+          throw new Error('Firebase not initialized');
+        }
+        
+        const result = await firebaseManager.signInWithGoogle();
+        
+        if (result.success) {
+          localStorage.setItem('currentUser', JSON.stringify(result.user));
+          
+          showSuccess('Google sign-in successful! Redirecting...');
+          setTimeout(() => {
+            window.location.href = 'profile.html';
+          }, 1500);
+        } else {
+          showError(result.message);
+        }
+      } catch (error) {
+        console.error('Google sign-in error:', error);
+        showError('Google sign-in failed. Please try again.');
+      } finally {
+        const btn = document.getElementById('googleSignInBtn');
+        btn.textContent = '📧 Google';
+        btn.disabled = false;
+      }
+    }
+
+    // Show Phone Authentication Modal
+    function showPhoneAuth() {
+      const modal = document.getElementById('phoneAuthModal');
+      modal.style.display = 'block';
+      modal.style.position = 'fixed';
+      modal.style.top = '50%';
+      modal.style.left = '50%';
+      modal.style.transform = 'translate(-50%, -50%)';
+      modal.style.background = 'white';
+      modal.style.padding = '30px';
+      modal.style.borderRadius = '10px';
+      modal.style.boxShadow = '0 10px 30px rgba(0,0,0,0.3)';
+      modal.style.zIndex = '1000';
+      
+      const backdrop = document.createElement('div');
+      backdrop.id = 'modalBackdrop';
+      backdrop.style.position = 'fixed';
+      backdrop.style.top = '0';
+      backdrop.style.left = '0';
+      backdrop.style.width = '100%';
+      backdrop.style.height = '100%';
+      backdrop.style.background = 'rgba(0,0,0,0.5)';
+      backdrop.style.zIndex = '999';
+      document.body.appendChild(backdrop);
+    }
+
+    // Hide Phone Authentication Modal
+    function hidePhoneAuth() {
+      const modal = document.getElementById('phoneAuthModal');
+      modal.style.display = 'none';
+      
+      const backdrop = document.getElementById('modalBackdrop');
+      if (backdrop) {
+        backdrop.remove();
+      }
+      
+      document.getElementById('phoneNumber').value = '';
+      document.getElementById('otpCode').value = '';
+      document.getElementById('otpSection').style.display = 'none';
+    }
+
+    // Send OTP to phone number
+    async function sendOTP() {
+      try {
+        const phoneNumber = document.getElementById('phoneNumber').value.trim();
+        
+        if (!phoneNumber) {
+          showError('Please enter a phone number');
+          return;
+        }
+        
+        if (!firebaseManager) {
+          throw new Error('Firebase not initialized');
+        }
+        
+        hideMessages();
+        showSuccess('Sending OTP...');
+        
+        const result = await firebaseManager.sendOTP(phoneNumber);
+        
+        if (result.success) {
+          showSuccess('OTP sent successfully! Please check your phone.');
+          document.getElementById('otpSection').style.display = 'block';
+        } else {
+          showError(result.message);
+        }
+      } catch (error) {
+        console.error('Send OTP error:', error);
+        showError('Failed to send OTP. Please try again.');
+      }
+    }
+
+    // Verify OTP
+    async function verifyOTP() {
+      try {
+        const otpCode = document.getElementById('otpCode').value.trim();
+        
+        if (!otpCode || otpCode.length !== 6) {
+          showError('Please enter a valid 6-digit OTP');
+          return;
+        }
+        
+        if (!firebaseManager) {
+          throw new Error('Firebase not initialized');
+        }
+        
+        hideMessages();
+        showSuccess('Verifying OTP...');
+        
+        const result = await firebaseManager.verifyOTP(otpCode);
+        
+        if (result.success) {
+          localStorage.setItem('currentUser', JSON.stringify(result.user));
+          
+          showSuccess('OTP verified successfully! Redirecting...');
+          setTimeout(() => {
+            hidePhoneAuth();
+            window.location.href = 'profile.html';
+          }, 1500);
+        } else {
+          showError(result.message);
+        }
+      } catch (error) {
+        console.error('Verify OTP error:', error);
+        showError('Failed to verify OTP. Please try again.');
+      }
+    }
+
     function socialLogin(provider) {
-      showError(`${provider} login is not implemented yet. Please use email login.`);
+      if (provider === 'google') {
+        signInWithGoogle();
+      } else {
+        showError(`${provider} login is not implemented yet.`);
+      }
     }
 
     function showError(message) {

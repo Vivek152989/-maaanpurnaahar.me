@@ -224,7 +224,35 @@
     <a href="login.html" class="back-link">← Back to Login</a>
   </div>
   
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  
+  <!-- Your Firebase Configuration -->
+  <script src="firebase-config.js"></script>
   <script src="auth.js"></script>
+  <script>
+    // Initialize Firebase when page loads
+    document.addEventListener('DOMContentLoaded', async function() {
+      // Initialize Firebase first
+      const firebaseConfig = {
+        apiKey: "your-api-key",
+        authDomain: "your-project.firebaseapp.com",
+        projectId: "your-project-id",
+        storageBucket: "your-project.appspot.com",
+        messagingSenderId: "123456789",
+        appId: "your-app-id"
+      };
+      
+      await window.firebaseManager.initialize(firebaseConfig);
+      
+      // Then initialize OTP page
+      initializeOTPPage();
+      startTimer();
+      setupEventListeners();
+    });
+
   <script>
     let otpTimer = null;
     let timeLeft = 600; // 10 minutes
@@ -391,14 +419,15 @@
       try {
         let result;
         
+        const identifier = contact; // Use the contact info from URL params
+        
         if (type === 'register') {
           // Get registration data from localStorage
           const regData = JSON.parse(localStorage.getItem('tempRegistrationData') || '{}');
           result = await AuthManager.registerWithOTP(regData, otp);
         } else {
-          // Get login data from localStorage
-          const loginData = JSON.parse(localStorage.getItem('tempLoginData') || '{}');
-          result = await AuthManager.loginWithOTP(loginData.identifier, otp);
+          // Use identifier and otp for login
+          result = await AuthManager.loginWithOTP(identifier, otp);
         }
         
         if (result.success) {

@@ -50,138 +50,229 @@ class AuthManager {
   }
 
   static async sendOTP(email, phone, type = 'login') {
-    const otp = this.generateOTP();
-    const expiryTime = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
-    
-    // Store OTP in localStorage for demo (in production, this should be server-side)
-    const otpData = {
-      otp: otp,
-      email: email,
-      phone: phone,
-      type: type,
-      expiry: expiryTime.getTime(),
-      attempts: 0
-    };
-    
-    localStorage.setItem('otpData', JSON.stringify(otpData));
-    
-    // Simulate sending OTP (in production, integrate with SMS/Email service)
-    console.log(`OTP for ${email || phone}: ${otp}`);
-    
-    // For demo purposes, show OTP in alert (remove in production)
-    alert(`OTP sent! For demo purposes, your OTP is: ${otp}`);
-    
-    return {
-      success: true,
-      message: `OTP sent successfully to ${email ? 'email' : 'phone'}`,
-      expiryTime: expiryTime
-    };
-  }
+    try {
+      if (!window.firebaseManager || !window.firebaseManager.isInitialized()) {
+        throw new Error('Firebase not initialized. Please check your connection.');
+      }
 
-  static verifyOTP(inputOTP) {
-    const otpData = JSON.parse(localStorage.getItem('otpData') || '{}');
-    
-    if (!otpData.otp) {
-      return { success: false, message: 'No OTP found. Please request a new OTP.' };
-    }
-    
-    if (Date.now() > otpData.expiry) {
-      localStorage.removeItem('otpData');
-      return { success: false, message: 'OTP has expired. Please request a new OTP.' };
-    }
-    
-    if (otpData.attempts >= 3) {
-      localStorage.removeItem('otpData');
-      return { success: false, message: 'Too many attempts. Please request a new OTP.' };
-    }
-    
-    if (otpData.otp !== inputOTP) {
-      otpData.attempts++;
+      const otp = this.generateOTP();
+      const expiryTime = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+      
+      // Store OTP in Firebase
+      const otpData = {
+        otp: otp,
+        email: email,
+        phone: phone,
+        type: type,
+        expiry: expiryTime.getTime(),
+        attempts: 0
+      };
+      
+      const result = await window.firebaseManager.storeOTP(otpData);
+      
+      if (!result.success) {
+        throw new Error(result.message);
+      }
+      
+      // Store temporary data in localStorage for the verification process
       localStorage.setItem('otpData', JSON.stringify(otpData));
-      return { 
-        success: false, 
-        message: `Invalid OTP. ${3 - otpData.attempts} attempts remaining.` 
+      
+      // Simulate sending OTP (in production, integrate with SMS/Email service)
+      console.log(`OTP for ${email || phone}: ${otp}`);
+      
+      // For demo purposes, show OTP in alert (remove in production)
+      alert(`OTP sent! For demo purposes, your OTP is: ${otp}`);
+      
+      return {
+        success: true,
+        message: `OTP sent successfully to ${email ? 'email' : 'phone'}`,
+        expiryTime: expiryTime,
+        otpId: result.otpId
+      };
+    } catch (error) {
+      console.error('Send OTP error:', error);
+      return {
+        success: false,
+        message: error.message || 'Failed to send OTP'
       };
     }
-    
-    // OTP verified successfully
-    const userData = {
-      email: otpData.email,
-      phone: otpData.phone,
-      type: otpData.type
-    };
-    
-    localStorage.removeItem('otpData');
-    return { success: true, message: 'OTP verified successfully', userData: userData };
+  }
+
+  static async verifyOTP(identifier, inputOTP, type) {
+    try {
+      if (!window.firebaseManager || !window.firebaseManager.isInitialized()) {
+        // Fallback to localStorage for demo
+        const otpData = JSON.parse(localStorage.getItem('otpData') || '{}');
+        
+        if (!otpData.otp) {
+          return { success: false, message: 'No OTP found. Please request a new OTP.' };
+        }
+        
+        if (Date.now() > otpData.expiry) {
+          localStorage.removeItem('otpData');
+          return { success: false, message: 'OTP has expired. Please request a new OTP.' };
+        }
+        
+        if (otpData.attempts >= 3) {
+          localStorage.removeItem('otpData');
+          return { success: false, message: 'Too many attempts. Please request a new OTP.' };
+        }
+        
+        if (otpData.otp !== inputOTP) {
+          otpData.attempts++;
+          localStorage.setItem('otpData', JSON.stringify(otpData));
+          return { 
+            success: false, 
+            message: `Invalid OTP. ${3 - otpData.attempts} attempts remaining.` 
+          };
+        }
+        
+        localStorage.removeItem('otpData');
+        return { 
+          success: true, 
+          message: 'OTP verified successfully', 
+          userData: { email: otpData.email, phone: otpData.phone, type: otpData.type }
+        };
+      }
+
+      // Use Firebase for OTP verification
+      const result = await window.firebaseManager.verifyOTP(identifier, inputOTP, type);
+      
+      if (result.success) {
+        // Clean up localStorage
+        localStorage.removeItem('otpData');
+      }
+      
+      return result;
+    } catch (error) {
+      console.error('Verify OTP error:', error);
+      return {
+        success: false,
+        message: error.message || 'OTP verification failed'
+      };
+    }
   }
 
   static async registerWithOTP(userData, otp) {
-    const verification = this.verifyOTP(otp);
-    
-    if (!verification.success) {
-      return verification;
+    try {
+      const identifier = userData.email || userData.phone;
+      const verification = await this.verifyOTP(identifier, otp, 'register');
+      
+      if (!verification.success) {
+        return verification;
+      }
+      
+      if (!window.firebaseManager || !window.firebaseManager.isInitialized()) {
+        // Fallback to localStorage
+        const newUser = {
+          id: Date.now().toString(),
+          firstName: userData.firstName,
+          lastName: userData.lastName,
+          email: userData.email,
+          phone: userData.phone,
+          isLoggedIn: true,
+          isVerified: true,
+          registrationDate: new Date().toISOString(),
+          profilePicture: userData.profilePicture || null
+        };
+        
+        const existingUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+        existingUsers.push(newUser);
+        localStorage.setItem('registeredUsers', JSON.stringify(existingUsers));
+        localStorage.setItem('currentUser', JSON.stringify(newUser));
+        
+        return { 
+          success: true, 
+          message: 'Registration successful!', 
+          user: newUser 
+        };
+      }
+
+      // Use Firebase for user registration
+      const result = await window.firebaseManager.registerUser(userData);
+      
+      if (result.success) {
+        // Store current user in localStorage for session management
+        const currentUser = { ...result.user, isLoggedIn: true };
+        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+        
+        // Track registration activity
+        await window.firebaseManager.trackUserActivity(result.user.id, {
+          type: 'registration',
+          details: { method: 'otp', email: userData.email, phone: userData.phone }
+        });
+      }
+      
+      return result;
+    } catch (error) {
+      console.error('Registration error:', error);
+      return {
+        success: false,
+        message: error.message || 'Registration failed'
+      };
     }
-    
-    // Create user account
-    const newUser = {
-      id: Date.now().toString(),
-      name: userData.name,
-      email: userData.email,
-      phone: userData.phone,
-      isLoggedIn: true,
-      isVerified: true,
-      registrationDate: new Date().toISOString(),
-      profilePicture: userData.profilePicture || null
-    };
-    
-    // Save user data
-    const existingUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
-    existingUsers.push(newUser);
-    localStorage.setItem('registeredUsers', JSON.stringify(existingUsers));
-    localStorage.setItem('currentUser', JSON.stringify(newUser));
-    
-    return { 
-      success: true, 
-      message: 'Registration successful!', 
-      user: newUser 
-    };
   }
 
   static async loginWithOTP(identifier, otp) {
-    const verification = this.verifyOTP(otp);
-    
-    if (!verification.success) {
-      return verification;
-    }
-    
-    // Find user by email or phone
-    const registeredUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
-    const user = registeredUsers.find(u => 
-      u.email === identifier || u.phone === identifier
-    );
-    
-    if (!user) {
-      return { 
-        success: false, 
-        message: 'User not found. Please register first.' 
+    try {
+      const verification = await this.verifyOTP(identifier, otp, 'login');
+      
+      if (!verification.success) {
+        return verification;
+      }
+      
+      if (!window.firebaseManager || !window.firebaseManager.isInitialized()) {
+        // Fallback to localStorage
+        const registeredUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+        const user = registeredUsers.find(u => 
+          u.email === identifier || u.phone === identifier
+        );
+        
+        if (!user) {
+          return { 
+            success: false, 
+            message: 'User not found. Please register first.' 
+          };
+        }
+        
+        user.isLoggedIn = true;
+        user.lastLoginDate = new Date().toISOString();
+        
+        const userIndex = registeredUsers.findIndex(u => u.id === user.id);
+        registeredUsers[userIndex] = user;
+        localStorage.setItem('registeredUsers', JSON.stringify(registeredUsers));
+        localStorage.setItem('currentUser', JSON.stringify(user));
+        
+        return { 
+          success: true, 
+          message: 'Login successful!', 
+          user: user 
+        };
+      }
+
+      // Use Firebase for user login
+      const result = await window.firebaseManager.loginUser(identifier);
+      
+      if (result.success) {
+        // Store current user in localStorage for session management
+        const currentUser = { ...result.user, isLoggedIn: true };
+        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+        
+        // Track login activity
+        await window.firebaseManager.trackUserActivity(result.user.id, {
+          type: 'login',
+          details: { method: 'otp', identifier: identifier }
+        });
+      }
+      
+      return result;
+    } catch (error) {
+      console.error('Login error:', error);
+      return {
+        success: false,
+        message: error.message || 'Login failed'
       };
     }
-    
-    // Update login status
-    user.isLoggedIn = true;
-    user.lastLoginDate = new Date().toISOString();
-    
-    // Update user in storage
-    const userIndex = registeredUsers.findIndex(u => u.id === user.id);
-    registeredUsers[userIndex] = user;
-    localStorage.setItem('registeredUsers', JSON.stringify(registeredUsers));
-    localStorage.setItem('currentUser', JSON.stringify(user));
-    
-    return { 
-      success: true, 
-      message: 'Login successful!', 
-      user: user 
-    };
   }
 }
 

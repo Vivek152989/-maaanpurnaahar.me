@@ -635,7 +635,30 @@
       <p>© 2025 Maa Anpurna Aahar. All rights reserved.</p>
     </div>
   </footer>
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  
+  <!-- Your Firebase Configuration -->
+  <script src="firebase-config.js"></script>
   <script src="auth.js"></script>
+  <script>
+    // Initialize Firebase when page loads
+    document.addEventListener('DOMContentLoaded', async function() {
+      // You need to replace this with your actual Firebase config
+      const firebaseConfig = {
+        apiKey: "your-api-key",
+        authDomain: "your-project.firebaseapp.com",
+        projectId: "your-project-id",
+        storageBucket: "your-project.appspot.com",
+        messagingSenderId: "123456789",
+        appId: "your-app-id"
+      };
+      
+      await window.firebaseManager.initialize(firebaseConfig);
+    });
+  
   <script>
     // Welcome Popup Functions
     function closeWelcomePopup() {
