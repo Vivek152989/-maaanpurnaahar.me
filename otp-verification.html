@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OTP Verification - Maa Anpurna Aahar</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: linear-gradient(135deg, #ff9800, #f57c00);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .otp-container {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+      padding: 50px 40px;
+      width: 100%;
+      max-width: 450px;
+      text-align: center;
+      margin: 20px;
+    }
+    
+    .logo {
+      font-size: 2.5rem;
+      color: #ff9800;
+      margin-bottom: 20px;
+    }
+    
+    .otp-title {
+      font-size: 1.8rem;
+      color: #2c3e50;
+      margin-bottom: 10px;
+    }
+    
+    .otp-subtitle {
+      color: #666;
+      margin-bottom: 30px;
+      line-height: 1.5;
+    }
+    
+    .otp-inputs {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin: 30px 0;
+    }
+    
+    .otp-digit {
+      width: 50px;
+      height: 50px;
+      text-align: center;
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      font-size: 20px;
+      font-weight: bold;
+      transition: all 0.3s;
+    }
+    
+    .otp-digit:focus {
+      border-color: #ff9800;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(255, 152, 0, 0.1);
+    }
+    
+    .otp-digit.filled {
+      border-color: #ff9800;
+      background: rgba(255, 152, 0, 0.1);
+    }
+    
+    .otp-timer {
+      color: #ff9800;
+      font-weight: bold;
+      font-size: 1.1rem;
+      margin: 20px 0;
+    }
+    
+    .otp-timer.warning {
+      color: #e74c3c;
+      animation: pulse 1s infinite;
+    }
+    
+    @keyframes pulse {
+      0% { opacity: 1; }
+      50% { opacity: 0.5; }
+      100% { opacity: 1; }
+    }
+    
+    .btn {
+      width: 100%;
+      padding: 15px;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin: 10px 0;
+    }
+    
+    .btn-primary {
+      background: #ff9800;
+      color: white;
+    }
+    
+    .btn-primary:hover:not(:disabled) {
+      background: #f57c00;
+      transform: translateY(-2px);
+    }
+    
+    .btn-primary:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+    
+    .btn-secondary {
+      background: transparent;
+      color: #666;
+      border: 2px solid #ddd;
+    }
+    
+    .btn-secondary:hover:not(:disabled) {
+      background: #f8f9fa;
+      border-color: #ff9800;
+      color: #ff9800;
+    }
+    
+    .btn-secondary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    
+    .message {
+      padding: 10px;
+      border-radius: 8px;
+      margin: 15px 0;
+      display: none;
+    }
+    
+    .message.error {
+      background: #fee;
+      border: 1px solid #fcc;
+      color: #c33;
+    }
+    
+    .message.success {
+      background: #efe;
+      border: 1px solid #cfc;
+      color: #3c3;
+    }
+    
+    .back-link {
+      display: inline-block;
+      color: #666;
+      text-decoration: none;
+      margin-top: 20px;
+      font-size: 0.9rem;
+    }
+    
+    .back-link:hover {
+      color: #ff9800;
+    }
+    
+    @media (max-width: 480px) {
+      .otp-container {
+        padding: 30px 20px;
+        margin: 10px;
+      }
+      
+      .otp-inputs {
+        gap: 8px;
+      }
+      
+      .otp-digit {
+        width: 40px;
+        height: 40px;
+        font-size: 16px;
+      }
+      
+      .otp-title {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="otp-container">
+    <div class="logo">🌾</div>
+    <h2 class="otp-title">Verify Your Account</h2>
+    <p class="otp-subtitle">
+      We've sent a 6-digit verification code to<br>
+      <strong id="contactInfo"></strong>
+    </p>
+    
+    <div class="otp-inputs">
+      <input type="text" class="otp-digit" maxlength="1" data-index="0">
+      <input type="text" class="otp-digit" maxlength="1" data-index="1">
+      <input type="text" class="otp-digit" maxlength="1" data-index="2">
+      <input type="text" class="otp-digit" maxlength="1" data-index="3">
+      <input type="text" class="otp-digit" maxlength="1" data-index="4">
+      <input type="text" class="otp-digit" maxlength="1" data-index="5">
+    </div>
+    
+    <div class="otp-timer" id="otpTimer">10:00</div>
+    
+    <div class="message error" id="errorMessage"></div>
+    <div class="message success" id="successMessage"></div>
+    
+    <button type="button" class="btn btn-primary" id="verifyOTP">Verify OTP</button>
+    <button type="button" class="btn btn-secondary" id="resendOTP">Resend Code</button>
+    
+    <a href="login.html" class="back-link">← Back to Login</a>
+  </div>
+  
+  <script src="auth.js"></script>
+  <script>
+    let otpTimer = null;
+    let timeLeft = 600; // 10 minutes
+    let canResend = false;
+    
+    // Get OTP data from URL parameters or localStorage
+    const urlParams = new URLSearchParams(window.location.search);
+    const type = urlParams.get('type') || 'login';
+    const contact = urlParams.get('contact') || '';
+    
+    // Initialize page
+    document.addEventListener('DOMContentLoaded', function() {
+      initializeOTPPage();
+      startTimer();
+      setupEventListeners();
+    });
+    
+    function initializeOTPPage() {
+      // Display contact information
+      const contactInfo = document.getElementById('contactInfo');
+      if (contact) {
+        contactInfo.textContent = contact;
+      } else {
+        // Try to get from stored OTP data
+        const otpData = JSON.parse(localStorage.getItem('otpData') || '{}');
+        if (otpData.email || otpData.phone) {
+          contactInfo.textContent = otpData.email || otpData.phone;
+        } else {
+          // Redirect back if no contact info
+          window.location.href = 'login.html';
+          return;
+        }
+      }
+      
+      // Focus first input
+      document.querySelector('.otp-digit').focus();
+    }
+    
+    function setupEventListeners() {
+      const otpInputs = document.querySelectorAll('.otp-digit');
+      
+      // OTP input handling
+      otpInputs.forEach((input, index) => {
+        input.addEventListener('input', function(e) {
+          const value = e.target.value;
+          
+          // Only allow numbers
+          if (!/^\d*$/.test(value)) {
+            e.target.value = '';
+            return;
+          }
+          
+          // Add filled class
+          if (value) {
+            e.target.classList.add('filled');
+          } else {
+            e.target.classList.remove('filled');
+          }
+          
+          // Move to next input
+          if (value.length === 1 && index < 5) {
+            otpInputs[index + 1].focus();
+          }
+          
+          // Auto-verify if all digits are filled
+          const otp = Array.from(otpInputs).map(inp => inp.value).join('');
+          if (otp.length === 6) {
+            setTimeout(() => verifyOTP(), 500);
+          }
+        });
+        
+        input.addEventListener('keydown', function(e) {
+          // Move to previous input on backspace
+          if (e.key === 'Backspace' && e.target.value === '' && index > 0) {
+            otpInputs[index - 1].focus();
+          }
+          
+          // Clear all and start over on double backspace
+          if (e.key === 'Backspace' && e.target.value !== '') {
+            e.target.value = '';
+            e.target.classList.remove('filled');
+          }
+        });
+        
+        input.addEventListener('paste', function(e) {
+          e.preventDefault();
+          const paste = (e.clipboardData || window.clipboardData).getData('text');
+          const digits = paste.replace(/\D/g, '').slice(0, 6);
+          
+          // Fill inputs with pasted digits
+          digits.split('').forEach((digit, i) => {
+            if (otpInputs[i]) {
+              otpInputs[i].value = digit;
+              otpInputs[i].classList.add('filled');
+            }
+          });
+          
+          // Focus appropriate input
+          const nextIndex = Math.min(digits.length, 5);
+          otpInputs[nextIndex].focus();
+          
+          // Auto-verify if complete
+          if (digits.length === 6) {
+            setTimeout(() => verifyOTP(), 500);
+          }
+        });
+      });
+      
+      // Button event listeners
+      document.getElementById('verifyOTP').addEventListener('click', verifyOTP);
+      document.getElementById('resendOTP').addEventListener('click', resendOTP);
+    }
+    
+    function startTimer() {
+      const timerElement = document.getElementById('otpTimer');
+      
+      otpTimer = setInterval(() => {
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        timerElement.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        
+        // Add warning class when time is low
+        if (timeLeft <= 60) {
+          timerElement.classList.add('warning');
+        }
+        
+        if (timeLeft <= 0) {
+          clearInterval(otpTimer);
+          showError('OTP has expired. Please request a new code.');
+          enableResend();
+        }
+        
+        // Enable resend after 2 minutes
+        if (timeLeft === 480 && !canResend) {
+          enableResend();
+        }
+        
+        timeLeft--;
+      }, 1000);
+    }
+    
+    function enableResend() {
+      canResend = true;
+      const resendBtn = document.getElementById('resendOTP');
+      resendBtn.disabled = false;
+      resendBtn.textContent = 'Resend Code';
+    }
+    
+    async function verifyOTP() {
+      const otpInputs = document.querySelectorAll('.otp-digit');
+      const otp = Array.from(otpInputs).map(input => input.value).join('');
+      
+      if (otp.length !== 6) {
+        showError('Please enter the complete 6-digit code');
+        return;
+      }
+      
+      // Show loading state
+      const verifyBtn = document.getElementById('verifyOTP');
+      const originalText = verifyBtn.textContent;
+      verifyBtn.textContent = 'Verifying...';
+      verifyBtn.disabled = true;
+      
+      try {
+        let result;
+        
+        if (type === 'register') {
+          // Get registration data from localStorage
+          const regData = JSON.parse(localStorage.getItem('tempRegistrationData') || '{}');
+          result = await AuthManager.registerWithOTP(regData, otp);
+        } else {
+          // Get login data from localStorage
+          const loginData = JSON.parse(localStorage.getItem('tempLoginData') || '{}');
+          result = await AuthManager.loginWithOTP(loginData.identifier, otp);
+        }
+        
+        if (result.success) {
+          showSuccess(result.message);
+          clearInterval(otpTimer);
+          
+          // Clean up temporary data
+          localStorage.removeItem('tempRegistrationData');
+          localStorage.removeItem('tempLoginData');
+          
+          setTimeout(() => {
+            if (type === 'register') {
+              window.location.href = 'profile.html';
+            } else {
+              const urlParams = new URLSearchParams(window.location.search);
+              const redirect = urlParams.get('redirect') || 'profile.html';
+              window.location.href = redirect;
+            }
+          }, 1500);
+        } else {
+          showError(result.message);
+          verifyBtn.textContent = originalText;
+          verifyBtn.disabled = false;
+        }
+      } catch (error) {
+        console.error('OTP verification error:', error);
+        showError('An error occurred. Please try again.');
+        verifyBtn.textContent = originalText;
+        verifyBtn.disabled = false;
+      }
+    }
+    
+    async function resendOTP() {
+      if (!canResend) {
+        showError('Please wait before requesting a new code');
+        return;
+      }
+      
+      const resendBtn = document.getElementById('resendOTP');
+      resendBtn.textContent = 'Sending...';
+      resendBtn.disabled = true;
+      
+      try {
+        // Get stored data
+        const otpData = JSON.parse(localStorage.getItem('otpData') || '{}');
+        
+        const result = await AuthManager.sendOTP(
+          otpData.email, 
+          otpData.phone, 
+          type
+        );
+        
+        if (result.success) {
+          showSuccess('New verification code sent successfully!');
+          
+          // Reset timer
+          clearInterval(otpTimer);
+          timeLeft = 600;
+          canResend = false;
+          document.getElementById('otpTimer').classList.remove('warning');
+          startTimer();
+          
+          // Clear inputs
+          document.querySelectorAll('.otp-digit').forEach(input => {
+            input.value = '';
+            input.classList.remove('filled');
+          });
+          
+          document.querySelector('.otp-digit').focus();
+        } else {
+          showError(result.message || 'Failed to send verification code');
+        }
+      } catch (error) {
+        console.error('Resend OTP error:', error);
+        showError('An error occurred. Please try again.');
+      }
+      
+      resendBtn.textContent = 'Resend Code';
+      resendBtn.disabled = false;
+    }
+    
+    function showError(message) {
+      const errorDiv = document.getElementById('errorMessage');
+      const successDiv = document.getElementById('successMessage');
+      
+      successDiv.style.display = 'none';
+      errorDiv.textContent = message;
+      errorDiv.style.display = 'block';
+      
+      setTimeout(() => {
+        errorDiv.style.display = 'none';
+      }, 5000);
+    }
+    
+    function showSuccess(message) {
+      const errorDiv = document.getElementById('errorMessage');
+      const successDiv = document.getElementById('successMessage');
+      
+      errorDiv.style.display = 'none';
+      successDiv.textContent = message;
+      successDiv.style.display = 'block';
+      
+      setTimeout(() => {
+        successDiv.style.display = 'none';
+      }, 5000);
+    }
+  </script>
+</body>
+</html>

@@ -43,6 +43,146 @@ class AuthManager {
     }
     return null;
   }
+
+  // OTP Authentication Methods
+  static generateOTP() {
+    return Math.floor(100000 + Math.random() * 900000).toString();
+  }
+
+  static async sendOTP(email, phone, type = 'login') {
+    const otp = this.generateOTP();
+    const expiryTime = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+    
+    // Store OTP in localStorage for demo (in production, this should be server-side)
+    const otpData = {
+      otp: otp,
+      email: email,
+      phone: phone,
+      type: type,
+      expiry: expiryTime.getTime(),
+      attempts: 0
+    };
+    
+    localStorage.setItem('otpData', JSON.stringify(otpData));
+    
+    // Simulate sending OTP (in production, integrate with SMS/Email service)
+    console.log(`OTP for ${email || phone}: ${otp}`);
+    
+    // For demo purposes, show OTP in alert (remove in production)
+    alert(`OTP sent! For demo purposes, your OTP is: ${otp}`);
+    
+    return {
+      success: true,
+      message: `OTP sent successfully to ${email ? 'email' : 'phone'}`,
+      expiryTime: expiryTime
+    };
+  }
+
+  static verifyOTP(inputOTP) {
+    const otpData = JSON.parse(localStorage.getItem('otpData') || '{}');
+    
+    if (!otpData.otp) {
+      return { success: false, message: 'No OTP found. Please request a new OTP.' };
+    }
+    
+    if (Date.now() > otpData.expiry) {
+      localStorage.removeItem('otpData');
+      return { success: false, message: 'OTP has expired. Please request a new OTP.' };
+    }
+    
+    if (otpData.attempts >= 3) {
+      localStorage.removeItem('otpData');
+      return { success: false, message: 'Too many attempts. Please request a new OTP.' };
+    }
+    
+    if (otpData.otp !== inputOTP) {
+      otpData.attempts++;
+      localStorage.setItem('otpData', JSON.stringify(otpData));
+      return { 
+        success: false, 
+        message: `Invalid OTP. ${3 - otpData.attempts} attempts remaining.` 
+      };
+    }
+    
+    // OTP verified successfully
+    const userData = {
+      email: otpData.email,
+      phone: otpData.phone,
+      type: otpData.type
+    };
+    
+    localStorage.removeItem('otpData');
+    return { success: true, message: 'OTP verified successfully', userData: userData };
+  }
+
+  static async registerWithOTP(userData, otp) {
+    const verification = this.verifyOTP(otp);
+    
+    if (!verification.success) {
+      return verification;
+    }
+    
+    // Create user account
+    const newUser = {
+      id: Date.now().toString(),
+      name: userData.name,
+      email: userData.email,
+      phone: userData.phone,
+      isLoggedIn: true,
+      isVerified: true,
+      registrationDate: new Date().toISOString(),
+      profilePicture: userData.profilePicture || null
+    };
+    
+    // Save user data
+    const existingUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+    existingUsers.push(newUser);
+    localStorage.setItem('registeredUsers', JSON.stringify(existingUsers));
+    localStorage.setItem('currentUser', JSON.stringify(newUser));
+    
+    return { 
+      success: true, 
+      message: 'Registration successful!', 
+      user: newUser 
+    };
+  }
+
+  static async loginWithOTP(identifier, otp) {
+    const verification = this.verifyOTP(otp);
+    
+    if (!verification.success) {
+      return verification;
+    }
+    
+    // Find user by email or phone
+    const registeredUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+    const user = registeredUsers.find(u => 
+      u.email === identifier || u.phone === identifier
+    );
+    
+    if (!user) {
+      return { 
+        success: false, 
+        message: 'User not found. Please register first.' 
+      };
+    }
+    
+    // Update login status
+    user.isLoggedIn = true;
+    user.lastLoginDate = new Date().toISOString();
+    
+    // Update user in storage
+    const userIndex = registeredUsers.findIndex(u => u.id === user.id);
+    registeredUsers[userIndex] = user;
+    localStorage.setItem('registeredUsers', JSON.stringify(registeredUsers));
+    localStorage.setItem('currentUser', JSON.stringify(user));
+    
+    return { 
+      success: true, 
+      message: 'Login successful!', 
+      user: user 
+    };
+  }
 }
 
 // Navigation menu management

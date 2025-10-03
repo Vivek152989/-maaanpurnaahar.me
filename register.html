@@ -485,27 +485,41 @@
       registerBtn.textContent = 'Creating Account...';
       registerBtn.disabled = true;
       
-      // Simulate API call
-      setTimeout(() => {
-        const newUser = {
-          id: 'user-' + Date.now(),
-          firstName,
-          lastName,
-          email,
-          phone,
-          password,
-          registrationDate: new Date().toISOString()
-        };
-        
-        // Save user to localStorage
-        existingUsers.push(newUser);
-        localStorage.setItem('registeredUsers', JSON.stringify(existingUsers));
-        
-        showSuccess('Account created successfully! Redirecting to login...');
-        
-        setTimeout(() => {
-          window.location.href = 'login.html?email=' + encodeURIComponent(email);
-        }, 2000);
+      // Prepare registration data for OTP verification
+      setTimeout(async () => {
+        try {
+          const registrationData = {
+            firstName,
+            lastName,
+            email,
+            phone,
+            password,
+            registrationDate: new Date().toISOString()
+          };
+          
+          // Store temporary registration data
+          localStorage.setItem('tempRegistrationData', JSON.stringify(registrationData));
+          
+          // Send OTP
+          const result = await AuthManager.sendOTP(email, phone, 'register');
+          
+          if (result.success) {
+            showSuccess('Verification code sent! Redirecting...');
+            
+            setTimeout(() => {
+              window.location.href = `otp-verification.html?type=register&contact=${encodeURIComponent(email)}`;
+            }, 1500);
+          } else {
+            showError(result.message || 'Failed to send verification code');
+            registerBtn.textContent = originalText;
+            registerBtn.disabled = false;
+          }
+        } catch (error) {
+          console.error('Registration error:', error);
+          showError('An error occurred. Please try again.');
+          registerBtn.textContent = originalText;
+          registerBtn.disabled = false;
+        }
       }, 1500);
     });
 
