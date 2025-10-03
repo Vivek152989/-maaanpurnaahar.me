@@ -11,15 +11,16 @@ class FirebaseManager {
   // Initialize Firebase with your config
   async initialize(config) {
     try {
-      // Firebase config should be added here
-      // You'll get this from your Firebase Console
+      // Firebase config from your Firebase Console
+      // Updated with your actual project credentials
       const firebaseConfig = config || {
-        apiKey: "your-api-key",
-        authDomain: "your-project.firebaseapp.com",
-        projectId: "your-project-id",
-        storageBucket: "your-project.appspot.com",
-        messagingSenderId: "123456789",
-        appId: "your-app-id"
+        apiKey: "AIzaSyB79RNz2_bcjalb2vnPtGx5TKyxvclLM_0",
+        authDomain: "maa-anpurna-aahar.firebaseapp.com",
+        projectId: "maa-anpurna-aahar",
+        storageBucket: "maa-anpurna-aahar.firebasestorage.app",
+        messagingSenderId: "539880099771",
+        appId: "1:539880099771:web:0753dfd9cc8f050a5d7e9e",
+        measurementId: "G-GH7YLSBMPT"
       };
 
       // Initialize Firebase
