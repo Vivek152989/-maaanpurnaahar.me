@@ -12,15 +12,15 @@ class FirebaseManager {
   async initialize(config) {
     try {
       // Firebase config from your Firebase Console
-      // Updated with your new project credentials
+      // Updated with your latest project credentials
       const firebaseConfig = config || {
-        apiKey: "AIzaSyBBpMQP0WH8q0d6hQjlxIuaxA4i81JtAxs",
-        authDomain: "maa-anpurna-ahar.firebaseapp.com",
-        projectId: "maa-anpurna-ahar",
-        storageBucket: "maa-anpurna-ahar.firebasestorage.app",
-        messagingSenderId: "744571563357",
-        appId: "1:744571563357:web:cb393b22da218e5ed68cb4",
-        measurementId: "G-F1NYD4DZS3"
+        apiKey: "AIzaSyB79RNz2_bcjalb2vnPtGx5TKyxvclLM_0",
+        authDomain: "maa-anpurna-aahar.firebaseapp.com",
+        projectId: "maa-anpurna-aahar",
+        storageBucket: "maa-anpurna-aahar.firebasestorage.app",
+        messagingSenderId: "539880099771",
+        appId: "1:539880099771:web:0753dfd9cc8f050a5d7e9e",
+        measurementId: "G-GH7YLSBMPT"
       };
 
       // Initialize Firebase
