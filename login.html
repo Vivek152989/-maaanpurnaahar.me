@@ -515,7 +515,25 @@
         }
       } catch (error) {
         console.error('Google sign-in error:', error);
-        showError('Google sign-in failed. Please try again.');
+        
+        // Check for domain authorization error
+        if (error.message && error.message.includes('unauthorized-domain')) {
+          showError(`
+            <strong>Domain Authorization Required</strong><br>
+            Please add your domain to Firebase Console:<br>
+            1. Go to Firebase Console → Authentication → Settings<br>
+            2. Add your domain to "Authorized domains"<br>
+            3. Current domain needs to be authorized for OAuth operations
+          `);
+        } else if (error.message && error.message.includes('auth/unauthorized-domain')) {
+          showError(`
+            <strong>Domain Not Authorized</strong><br>
+            This domain is not authorized for Firebase OAuth.<br>
+            Please contact the administrator to add this domain to Firebase Console.
+          `);
+        } else {
+          showError('Google sign-in failed. Please try the phone/OTP method instead.');
+        }
       } finally {
         const btn = document.getElementById('googleSignInBtn');
         btn.textContent = '📧 Google';
@@ -641,13 +659,21 @@
 
     function showError(message) {
       const errorDiv = document.getElementById('errorMessage');
-      errorDiv.textContent = message;
+      
+      // Check if message contains HTML
+      if (message.includes('<')) {
+        errorDiv.innerHTML = message;
+      } else {
+        errorDiv.textContent = message;
+      }
+      
       errorDiv.style.display = 'block';
       
-      // Hide after 5 seconds
+      // Hide after 10 seconds for HTML messages (they're longer)
+      const hideTimeout = message.includes('<') ? 10000 : 5000;
       setTimeout(() => {
         errorDiv.style.display = 'none';
-      }, 5000);
+      }, hideTimeout);
     }
 
     function showSuccess(message) {
