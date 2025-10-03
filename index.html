@@ -398,6 +398,29 @@
       color: #333;
     }
     
+    /* Popup Animations */
+    @keyframes popupSlideIn {
+      from {
+        opacity: 0;
+        transform: scale(0.8) translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+    
+    @keyframes popupSlideOut {
+      from {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+      to {
+        opacity: 0;
+        transform: scale(0.8) translateY(-20px);
+      }
+    }
+    
     .popup-icon {
       font-size: 4rem;
       margin-bottom: 20px;
@@ -658,17 +681,30 @@
       
       await window.firebaseManager.initialize(firebaseConfig);
     });
-  
+  </script>
+
   <script>
     // Welcome Popup Functions
     function closeWelcomePopup() {
-      const popup = document.getElementById('welcomePopup');
-      popup.style.animation = 'popupSlideOut 0.3s ease-in forwards';
-      setTimeout(() => {
-        popup.classList.add('hidden');
-        // Set localStorage to remember user has seen the popup
-        localStorage.setItem('welcomePopupSeen', 'true');
-      }, 300);
+      try {
+        const popup = document.getElementById('welcomePopup');
+        if (popup) {
+          popup.style.animation = 'popupSlideOut 0.3s ease-in forwards';
+          setTimeout(() => {
+            popup.classList.add('hidden');
+            popup.style.display = 'none';
+            // Set localStorage to remember user has seen the popup
+            localStorage.setItem('welcomePopupSeen', 'true');
+          }, 300);
+        }
+      } catch (error) {
+        console.error('Error closing popup:', error);
+        // Fallback: just hide the popup
+        const popup = document.getElementById('welcomePopup');
+        if (popup) {
+          popup.style.display = 'none';
+        }
+      }
     }
 
     // Check if user has already seen the popup today
