@@ -810,22 +810,26 @@
     window.addEventListener('load', function() {
       const hasSeenPopup = localStorage.getItem('welcomePopupSeen');
       const lastVisit = localStorage.getItem('lastVisitDate');
+      const sessionPopupShown = sessionStorage.getItem('popupShownThisSession');
       const today = new Date().toDateString();
       
-      // Show popup if user hasn't seen it today or is a first-time visitor
-      if (!hasSeenPopup || lastVisit !== today) {
+      // Show popup if user hasn't seen it today AND hasn't seen it in this session
+      if ((!hasSeenPopup || lastVisit !== today) && !sessionPopupShown) {
         setTimeout(() => {
           const popup = document.getElementById('welcomePopup');
           popup.classList.remove('hidden');
           
-          // Start auto-close timer when popup is shown
+          // Mark that popup has been shown in this session
+          sessionStorage.setItem('popupShownThisSession', 'true');
+          
+          // Start auto-close timer when popup is shown (only for new visitors)
           startAutoCloseTimer();
         }, 1000); // Show popup after 1 second
         
         // Update last visit date
         localStorage.setItem('lastVisitDate', today);
       } else {
-        // Hide popup if already seen today
+        // Hide popup if already seen today or in this session
         document.getElementById('welcomePopup').classList.add('hidden');
       }
     });

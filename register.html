@@ -419,6 +419,50 @@
     </div>
   </div>
 
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  
+  <!-- Firebase Config -->
+  <script src="firebase-config.js"></script>
+
+  <script>
+    // Initialize Firebase Manager
+    let firebaseManager;
+    
+    // Initialize Firebase when page loads
+    document.addEventListener('DOMContentLoaded', async function() {
+      try {
+        firebaseManager = new FirebaseManager();
+        
+        // Your actual Firebase configuration
+        const firebaseConfig = {
+          apiKey: "AIzaSyB79RNz2_bcjalb2vnPtGx5TKyxvclLM_0",
+          authDomain: "maa-anpurna-aahar.firebaseapp.com",
+          projectId: "maa-anpurna-aahar",
+          storageBucket: "maa-anpurna-aahar.firebasestorage.app",
+          messagingSenderId: "539880099771",
+          appId: "1:539880099771:web:0753dfd9cc8f050a5d7e9e",
+          measurementId: "G-GH7YLSBMPT"
+        };
+        
+        await firebaseManager.initialize(firebaseConfig);
+        
+        // Check if user is already logged in
+        firebaseManager.onAuthStateChanged((user) => {
+          if (user) {
+            console.log('User already logged in:', user);
+            window.location.href = 'profile.html';
+          }
+        });
+        
+      } catch (error) {
+        console.error('Firebase initialization error:', error);
+        showError('Firebase initialization failed. Please try again.');
+      }
+    });
+
   <script>
     // Check if user is already logged in
     document.addEventListener('DOMContentLoaded', function() {
@@ -581,19 +625,80 @@
       strengthText.textContent = strengthLevels[Math.min(score, 4)];
     }
 
-    function socialRegister(provider) {
-      showError(`${provider} registration is not implemented yet. Please use email registration.`);
+    // Google Sign-In for Registration
+    async function socialRegister(provider) {
+      if (provider === 'google') {
+        try {
+          hideMessages();
+          
+          const btn = event.target;
+          const originalText = btn.textContent;
+          btn.textContent = 'Signing up...';
+          btn.disabled = true;
+          
+          if (!firebaseManager) {
+            throw new Error('Firebase not initialized');
+          }
+          
+          const result = await firebaseManager.signInWithGoogle();
+          
+          if (result.success) {
+            localStorage.setItem('currentUser', JSON.stringify(result.user));
+            
+            showSuccess('Google registration successful! Redirecting...');
+            setTimeout(() => {
+              window.location.href = 'profile.html';
+            }, 1500);
+          } else {
+            showError(result.message);
+          }
+        } catch (error) {
+          console.error('Google registration error:', error);
+          
+          // Check for domain authorization error
+          if (error.message && (error.message.includes('unauthorized-domain') || error.message.includes('auth/unauthorized-domain'))) {
+            showError(`
+              <strong>Domain Authorization Required</strong><br>
+              Please add your domain to Firebase Console:<br>
+              1. Go to Firebase Console → Authentication → Settings<br>
+              2. Add your domain to "Authorized domains"<br>
+              3. Current domain needs to be authorized for OAuth operations
+            `);
+          } else {
+            showError('Google registration failed. Please try email registration instead.');
+          }
+        } finally {
+          const btn = event.target;
+          btn.textContent = '📧 Google';
+          btn.disabled = false;
+        }
+      } else {
+        showError(`${provider} registration is not implemented yet. Please use email registration.`);
+      }
     }
 
     function showError(message) {
       const errorDiv = document.getElementById('errorMessage');
-      errorDiv.textContent = message;
+      
+      // Check if message contains HTML
+      if (message.includes('<')) {
+        errorDiv.innerHTML = message;
+      } else {
+        errorDiv.textContent = message;
+      }
+      
       errorDiv.style.display = 'block';
       
-      // Hide after 5 seconds
+      // Hide after 10 seconds for HTML messages (they're longer)
+      const hideTimeout = message.includes('<') ? 10000 : 5000;
       setTimeout(() => {
         errorDiv.style.display = 'none';
-      }, 5000);
+      }, hideTimeout);
+    }
+    
+    function hideMessages() {
+      document.getElementById('errorMessage').style.display = 'none';
+      document.getElementById('successMessage').style.display = 'none';
     }
 
     function showSuccess(message) {
