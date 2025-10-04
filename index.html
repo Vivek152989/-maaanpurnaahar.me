@@ -398,23 +398,7 @@
       color: #333;
     }
     
-    .popup-countdown {
-      position: absolute;
-      top: 15px;
-      left: 15px;
-      background: rgba(255, 152, 0, 0.1);
-      color: #ff9800;
-      padding: 5px 10px;
-      border-radius: 15px;
-      font-size: 0.8rem;
-      font-weight: 500;
-      border: 1px solid rgba(255, 152, 0, 0.3);
-    }
-    
-    .popup-countdown span {
-      font-weight: bold;
-      color: #f57c00;
-    }
+
     
     /* Popup Animations */
     @keyframes popupSlideIn {
@@ -550,9 +534,6 @@
   <div id="welcomePopup" class="popup-overlay">
     <div class="popup-container">
       <button class="popup-close" onclick="closeWelcomePopup()">&times;</button>
-      <div class="popup-countdown" id="popupCountdown">
-        Auto-close in <span id="countdownTimer">15</span>s
-      </div>
       <div class="popup-icon">🌾</div>
       <h2 class="popup-title">Welcome to Maa Anpurna Aahar!</h2>
       <p class="popup-message">
@@ -706,172 +687,74 @@
   </script>
 
   <script>
-    // Welcome Popup Functions
+    // Welcome Popup Functions - Manual Close Only
     function closeWelcomePopup() {
-      try {
-        // Stop auto-close timer when manually closing
-        stopAutoCloseTimer();
-        
-        const popup = document.getElementById('welcomePopup');
-        if (popup) {
-          popup.style.animation = 'popupSlideOut 0.3s ease-in forwards';
-          setTimeout(() => {
-            popup.classList.add('hidden');
-            popup.style.display = 'none';
-            // Set localStorage to remember user has seen the popup
-            localStorage.setItem('welcomePopupSeen', 'true');
-          }, 300);
-        }
-      } catch (error) {
-        console.error('Error closing popup:', error);
-        // Fallback: just hide the popup
-        const popup = document.getElementById('welcomePopup');
-        if (popup) {
-          popup.style.display = 'none';
-          localStorage.setItem('welcomePopupSeen', 'true');
-        }
-        // Stop timer even in error case
-        stopAutoCloseTimer();
-      }
-    }
-
-    // Auto-close timer for popup
-    let autoCloseTimer = null;
-    let countdownTimer = null;
-    let timeLeft = 15; // 15 seconds
-    
-    // Function to update countdown display
-    function updateCountdown() {
-      const timerElement = document.getElementById('countdownTimer');
-      if (timerElement) {
-        timerElement.textContent = timeLeft;
-        
-        // Change color as time runs out
-        if (timeLeft <= 5) {
-          timerElement.style.color = '#e74c3c'; // Red
-        } else if (timeLeft <= 10) {
-          timerElement.style.color = '#f39c12'; // Orange
-        }
-      }
-      
-      timeLeft--;
-      
-      if (timeLeft < 0) {
-        stopCountdownTimer();
-        closeWelcomePopup();
-      }
-    }
-    
-    // Function to start countdown timer
-    function startCountdownTimer() {
-      timeLeft = 15; // Reset to 15 seconds
-      
-      // Update countdown immediately
-      updateCountdown();
-      
-      // Update every second
-      countdownTimer = setInterval(updateCountdown, 1000);
-    }
-    
-    // Function to stop countdown timer
-    function stopCountdownTimer() {
-      if (countdownTimer) {
-        clearInterval(countdownTimer);
-        countdownTimer = null;
-      }
-    }
-    
-    // Function to start auto-close timer
-    function startAutoCloseTimer() {
-      // Clear any existing timers
-      stopAutoCloseTimer();
-      stopCountdownTimer();
-      
-      // Start visual countdown
-      startCountdownTimer();
-      
-      // Auto-close popup after 15 seconds (backup timer)
-      autoCloseTimer = setTimeout(() => {
-        console.log('Auto-closing popup after 15 seconds');
-        closeWelcomePopup();
-      }, 15000); // 15 seconds
-    }
-    
-    // Function to stop auto-close timer
-    function stopAutoCloseTimer() {
-      if (autoCloseTimer) {
-        clearTimeout(autoCloseTimer);
-        autoCloseTimer = null;
-      }
-      stopCountdownTimer();
-    }
-
-    // Check if user has already seen the popup today
-    window.addEventListener('load', function() {
-      const hasSeenPopup = localStorage.getItem('welcomePopupSeen');
-      const lastVisit = localStorage.getItem('lastVisitDate');
-      const sessionPopupShown = sessionStorage.getItem('popupShownThisSession');
-      const today = new Date().toDateString();
-      
-      // Show popup if user hasn't seen it today AND hasn't seen it in this session
-      if ((!hasSeenPopup || lastVisit !== today) && !sessionPopupShown) {
+      const popup = document.getElementById('welcomePopup');
+      if (popup) {
+        popup.style.animation = 'popupSlideOut 0.3s ease-in forwards';
         setTimeout(() => {
-          const popup = document.getElementById('welcomePopup');
-          popup.classList.remove('hidden');
+          popup.classList.add('hidden');
+          popup.style.display = 'none';
           
-          // Mark that popup has been shown in this session
-          sessionStorage.setItem('popupShownThisSession', 'true');
-          
-          // Start auto-close timer when popup is shown (only for new visitors)
-          startAutoCloseTimer();
-        }, 1000); // Show popup after 1 second
-        
-        // Update last visit date
-        localStorage.setItem('lastVisitDate', today);
-      } else {
-        // Hide popup if already seen today or in this session
-        document.getElementById('welcomePopup').classList.add('hidden');
+          // Remember user closed it today
+          const today = new Date().toDateString();
+          localStorage.setItem('welcomePopupClosed', today);
+        }, 300);
       }
+    }
+
+    // Show popup function - No auto-close
+    function showWelcomePopup() {
+      const popup = document.getElementById('welcomePopup');
+      
+      // Check if popup was already closed today
+      const today = new Date().toDateString();
+      const lastClosed = localStorage.getItem('welcomePopupClosed');
+      const sessionShown = sessionStorage.getItem('welcomePopupShown');
+      
+      // Only show if not closed today and not shown in current session
+      if (lastClosed !== today && !sessionShown) {
+        popup.classList.remove('hidden');
+        popup.style.display = 'flex';
+        popup.style.opacity = '0';
+        
+        // Animate popup appearance
+        setTimeout(() => {
+          popup.style.opacity = '1';
+        }, 100);
+        
+        // Mark as shown in current session
+        sessionStorage.setItem('welcomePopupShown', 'true');
+        
+        console.log('Welcome popup displayed - stays open until manually closed');
+      }
+    }
+
+    // Initialize popup when page loads
+    window.addEventListener('load', function() {
+      // Show popup after 1 second, but NO auto-close
+      setTimeout(showWelcomePopup, 1000);
     });
 
     // Close popup when clicking outside
-    document.getElementById('welcomePopup').addEventListener('click', function(e) {
-      if (e.target === this) {
-        closeWelcomePopup();
-      }
+    document.addEventListener('DOMContentLoaded', function() {
+      const popup = document.getElementById('welcomePopup');
+      
+      popup.addEventListener('click', function(e) {
+        if (e.target === popup) {
+          closeWelcomePopup();
+        }
+      });
     });
 
     // Close popup with Escape key
     document.addEventListener('keydown', function(e) {
       if (e.key === 'Escape') {
-        closeWelcomePopup();
+        const popup = document.getElementById('welcomePopup');
+        if (popup && popup.style.display === 'flex') {
+          closeWelcomePopup();
+        }
       }
-    });
-
-    // Pause timer on hover, resume on mouse leave
-    document.addEventListener('DOMContentLoaded', function() {
-      const popup = document.getElementById('welcomePopup');
-      const popupContainer = popup.querySelector('.popup-container');
-      
-      // Pause countdown when hovering over popup content
-      popupContainer.addEventListener('mouseenter', function() {
-        stopCountdownTimer();
-        const countdownElement = document.getElementById('popupCountdown');
-        if (countdownElement) {
-          countdownElement.style.opacity = '0.5';
-          countdownElement.title = 'Timer paused while hovering';
-        }
-      });
-      
-      // Resume countdown when mouse leaves popup content
-      popupContainer.addEventListener('mouseleave', function() {
-        const countdownElement = document.getElementById('popupCountdown');
-        if (countdownElement && timeLeft > 0) {
-          countdownElement.style.opacity = '1';
-          countdownElement.title = '';
-          startCountdownTimer();
-        }
-      });
     });
   </script>
 </body>
