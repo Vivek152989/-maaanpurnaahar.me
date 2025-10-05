@@ -1081,7 +1081,7 @@
         
         <!-- Enhanced My Account Section -->
         <div class="my-account-section">
-          <button class="account-btn" id="myAccountBtn">
+          <button class="account-btn" id="myAccountBtn" onclick="toggleMyAccount()">
             <span class="account-icon">👤</span>
             <span data-lang-key="my-account">My Account</span>
             <span class="dropdown-arrow">▼</span>
@@ -1395,6 +1395,26 @@
       btn.classList.remove('active');
     }
     
+    // Simple My Account Toggle Function
+    function toggleMyAccount() {
+      console.log('🔧 My Account clicked!');
+      const dropdown = document.getElementById('accountDropdown');
+      
+      if (dropdown) {
+        if (dropdown.style.display === 'block') {
+          dropdown.style.display = 'none';
+          dropdown.classList.remove('show');
+          console.log('✅ Dropdown closed');
+        } else {
+          dropdown.style.display = 'block';
+          dropdown.classList.add('show');
+          console.log('✅ Dropdown opened');
+        }
+      } else {
+        console.error('❌ Dropdown not found!');
+      }
+    }
+
     // Test function for debugging
     function testDropdown() {
       console.log('🧪 TEST: Manual dropdown test function called');
@@ -1410,26 +1430,9 @@
       }
     }
 
-    // Account Dropdown Management with Enhanced Debugging
+    // Backup toggle function - calls the main function
     function toggleAccountDropdown() {
-      console.log('🔧 DEBUG: toggleAccountDropdown called');
-      const dropdown = document.getElementById('accountDropdown');
-      const btn = document.querySelector('.account-btn');
-      
-      if (!dropdown) {
-        console.error('❌ ERROR: accountDropdown element not found!');
-        return;
-      }
-      if (!btn) {
-        console.error('❌ ERROR: account-btn element not found!');
-        return;
-      }
-      
-      dropdown.classList.toggle('show');
-      btn.classList.toggle('active');
-      
-      console.log('✅ SUCCESS: Dropdown toggled. Show class:', dropdown.classList.contains('show'));
-      console.log('✅ SUCCESS: Button active:', btn.classList.contains('active'));
+      toggleMyAccount();
     }
     
     function closeAccountDropdown() {
@@ -1660,18 +1663,23 @@
       console.log('My Account Section:', myAccountSection ? '✅ Found' : '❌ Missing');
       
       if (accountBtn) {
-        console.log('🔧 DEBUG: Adding click event listener to My Account button');
-        
-        // Add click event listener to handle dropdown toggle
-        accountBtn.addEventListener('click', function(e) {
-          e.preventDefault();
-          e.stopPropagation();
-          console.log('🖱️ DEBUG: My Account button clicked via addEventListener');
-          toggleAccountDropdown();
-        });
+        console.log('🔧 DEBUG: My Account button found and ready');
       } else {
         console.error('❌ ERROR: My Account button not found!');
       }
+      
+      // Add click-outside handler to close dropdown
+      document.addEventListener('click', function(e) {
+        const dropdown = document.getElementById('accountDropdown');
+        const accountSection = document.querySelector('.my-account-section');
+        
+        if (dropdown && accountSection) {
+          if (!accountSection.contains(e.target)) {
+            dropdown.style.display = 'none';
+            dropdown.classList.remove('show');
+          }
+        }
+      });
       
       console.log('✅ SUCCESS: Initialization complete');
     });
