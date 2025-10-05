@@ -187,10 +187,15 @@
       display: none;
       z-index: 1001;
       border: 1px solid #e9ecef;
+      opacity: 0;
+      transform: translateY(-10px);
+      transition: all 0.3s ease;
     }
     
     .account-dropdown.show {
-      display: block;
+      display: block !important;
+      opacity: 1 !important;
+      transform: translateY(0) !important;
       animation: slideDown 0.3s ease;
     }
     
@@ -1420,22 +1425,46 @@
       btn.classList.remove('active');
     }
     
-    // Account Dropdown Management
+    // Account Dropdown Management with Enhanced Debugging
     function toggleAccountDropdown() {
+      console.log('🔧 DEBUG: toggleAccountDropdown called');
       const dropdown = document.getElementById('accountDropdown');
       const btn = document.querySelector('.account-btn');
+      
+      if (!dropdown) {
+        console.error('❌ ERROR: accountDropdown element not found!');
+        return;
+      }
+      if (!btn) {
+        console.error('❌ ERROR: account-btn element not found!');
+        return;
+      }
+      
       dropdown.classList.toggle('show');
       btn.classList.toggle('active');
+      
+      console.log('✅ SUCCESS: Dropdown toggled. Show class:', dropdown.classList.contains('show'));
+      console.log('✅ SUCCESS: Button active:', btn.classList.contains('active'));
     }
     
     function closeAccountDropdown() {
+      console.log('🔧 DEBUG: closeAccountDropdown called');
       const dropdown = document.getElementById('accountDropdown');
       const btn = document.querySelector('.account-btn');
-      dropdown.classList.remove('show');
-      btn.classList.remove('active');
+      
+      if (dropdown) {
+        dropdown.classList.remove('show');
+        console.log('✅ SUCCESS: Dropdown closed');
+      }
+      if (btn) {
+        btn.classList.remove('active');
+        console.log('✅ SUCCESS: Button deactivated');
+      }
     }
     
     function showAuthTab(tabName) {
+      console.log('🔧 DEBUG: showAuthTab called with:', tabName);
+      
       // Update tab buttons
       document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
       event.target.classList.add('active');
@@ -1444,21 +1473,31 @@
       const loginForm = document.getElementById('loginForm');
       const registerForm = document.getElementById('registerForm');
       
+      if (!loginForm || !registerForm) {
+        console.error('❌ ERROR: Auth forms not found!');
+        return;
+      }
+      
       if (tabName === 'login') {
         loginForm.style.display = 'block';
         registerForm.style.display = 'none';
+        console.log('✅ SUCCESS: Login tab shown');
       } else {
         loginForm.style.display = 'none';
         registerForm.style.display = 'block';
+        console.log('✅ SUCCESS: Register tab shown');
       }
     }
     
-    // Close dropdowns when clicking outside
+    // Close dropdowns when clicking outside - Fixed class names
     document.addEventListener('click', function(event) {
+      // Close language dropdown if clicking outside
       if (!event.target.closest('.language-selector')) {
         closeLanguageDropdown();
       }
-      if (!event.target.closest('.my-account-dropdown')) {
+      
+      // Close account dropdown if clicking outside (fixed class name)
+      if (!event.target.closest('.my-account-section')) {
         closeAccountDropdown();
       }
     });
@@ -1591,39 +1630,6 @@
       btn.classList.remove('active');
     }
     
-    // Account Dropdown Management
-    function toggleAccountDropdown() {
-      const dropdown = document.getElementById('accountDropdown');
-      const btn = document.querySelector('.account-btn');
-      dropdown.classList.toggle('show');
-      btn.classList.toggle('active');
-    }
-    
-    function closeAccountDropdown() {
-      const dropdown = document.getElementById('accountDropdown');
-      const btn = document.querySelector('.account-btn');
-      dropdown.classList.remove('show');
-      btn.classList.remove('active');
-    }
-    
-    function showAuthTab(tabName) {
-      // Update tab buttons
-      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-      event.target.classList.add('active');
-      
-      // Show/hide forms
-      const loginForm = document.getElementById('loginForm');
-      const registerForm = document.getElementById('registerForm');
-      
-      if (tabName === 'login') {
-        loginForm.style.display = 'block';
-        registerForm.style.display = 'none';
-      } else {
-        loginForm.style.display = 'none';
-        registerForm.style.display = 'block';
-      }
-    }
-    
     // Close dropdowns when clicking outside
     document.addEventListener('click', function(event) {
       if (!event.target.closest('.language-selector')) {
@@ -1634,10 +1640,35 @@
       }
     });
     
-    // Initialize language on page load
+    // Initialize language and account functionality on page load
     document.addEventListener('DOMContentLoaded', function() {
+      console.log('🔧 DEBUG: Page loaded, initializing...');
+      
+      // Initialize language
       updateLanguageUI();
       translatePage();
+      
+      // Debug My Account section
+      const accountBtn = document.querySelector('.account-btn');
+      const accountDropdown = document.getElementById('accountDropdown');
+      const myAccountSection = document.querySelector('.my-account-section');
+      
+      console.log('🔍 ELEMENTS CHECK:');
+      console.log('Account Button:', accountBtn ? '✅ Found' : '❌ Missing');
+      console.log('Account Dropdown:', accountDropdown ? '✅ Found' : '❌ Missing');
+      console.log('My Account Section:', myAccountSection ? '✅ Found' : '❌ Missing');
+      
+      if (accountBtn) {
+        console.log('Button onclick attribute:', accountBtn.getAttribute('onclick'));
+        
+        // Add additional click event listener for debugging
+        accountBtn.addEventListener('click', function(e) {
+          console.log('🖱️ DEBUG: My Account button clicked directly via addEventListener');
+          console.log('Event details:', e);
+        });
+      }
+      
+      console.log('✅ SUCCESS: Initialization complete');
     });
     
     // Welcome Popup Functions - Enhanced with Translation Support
