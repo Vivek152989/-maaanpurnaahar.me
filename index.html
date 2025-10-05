@@ -19,6 +19,13 @@
           dropdown.classList.remove('show');
           console.log('✅ My Account dropdown closed');
         } else {
+          // Close language dropdown if open
+          const langDropdown = document.getElementById('langDropdown');
+          if (langDropdown) {
+            langDropdown.style.display = 'none';
+            langDropdown.classList.remove('show');
+          }
+          
           dropdown.style.display = 'block';
           dropdown.classList.add('show');
           dropdown.style.position = 'absolute';
@@ -43,6 +50,13 @@
           dropdown.style.display = 'none';
           dropdown.classList.remove('show');
         } else {
+          // Close account dropdown if open
+          const accountDropdown = document.getElementById('accountDropdown');
+          if (accountDropdown) {
+            accountDropdown.style.display = 'none';
+            accountDropdown.classList.remove('show');
+          }
+          
           dropdown.style.display = 'block';
           dropdown.classList.add('show');
           dropdown.style.position = 'absolute';
@@ -56,9 +70,127 @@
       }
     }
     
+    // Add language change function
+    function changeLanguage(lang) {
+      console.log('🌐 Changing language to:', lang);
+      
+      // Store the language preference
+      localStorage.setItem('preferred-language', lang);
+      
+      // Update UI elements immediately
+      const currentLang = document.getElementById('currentLang');
+      const currentFlag = document.getElementById('currentFlag');
+      
+      if (lang === 'hi') {
+        if (currentLang) currentLang.textContent = 'हिंदी';
+        if (currentFlag) currentFlag.textContent = '🇮🇳';
+      } else {
+        if (currentLang) currentLang.textContent = 'English';
+        if (currentFlag) currentFlag.textContent = '🇺🇸';
+      }
+      
+      // Close the language dropdown
+      const dropdown = document.getElementById('langDropdown');
+      if (dropdown) {
+        dropdown.style.display = 'none';
+        dropdown.classList.remove('show');
+      }
+      
+      // Trigger page translation when the page is ready
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function() {
+          translatePage(lang);
+        });
+      } else {
+        translatePage(lang);
+      }
+      
+      console.log('✅ Language changed to:', lang);
+    }
+    
+    // Simple translation function
+    function translatePage(lang) {
+      console.log('🔄 Translating page to:', lang);
+      
+      // Define translations
+      const translations = {
+        hi: {
+          'site-title': 'मां अन्नपूर्णा आहार',
+          'nav-home': 'होम',
+          'nav-products': 'उत्पाद',
+          'nav-cart': 'कार्ट',
+          'nav-contact': 'संपर्क',
+          'my-account': 'मेरा खाता',
+          'account-options': 'खाता विकल्प',
+          'nav-login': 'लॉग इन',
+          'nav-register': 'रजिस्टर करें',
+          'nav-profile': 'मेरी प्रोफाइल'
+        },
+        en: {
+          'site-title': 'Maa Anpurna Aahar',
+          'nav-home': 'Home',
+          'nav-products': 'Products',
+          'nav-cart': 'Cart',
+          'nav-contact': 'Contact',
+          'my-account': 'My Account',
+          'account-options': 'Account Options',
+          'nav-login': 'Login',
+          'nav-register': 'Register',
+          'nav-profile': 'My Profile'
+        }
+      };
+      
+      // Apply translations
+      const elements = document.querySelectorAll('[data-lang-key]');
+      elements.forEach(element => {
+        const key = element.getAttribute('data-lang-key');
+        if (translations[lang] && translations[lang][key]) {
+          if (element.tagName === 'INPUT') {
+            element.placeholder = translations[lang][key];
+          } else {
+            element.textContent = translations[lang][key];
+          }
+        }
+      });
+      
+      console.log('✅ Translation completed for', elements.length, 'elements');
+    }
+    
+    // Auto-close dropdowns when clicking outside
+    function setupAutoClose() {
+      document.addEventListener('click', function(event) {
+        const accountSection = document.querySelector('.my-account-section');
+        const languageSection = document.querySelector('.language-selector');
+        const accountDropdown = document.getElementById('accountDropdown');
+        const langDropdown = document.getElementById('langDropdown');
+        
+        // Close account dropdown if clicking outside
+        if (accountDropdown && accountSection && !accountSection.contains(event.target)) {
+          accountDropdown.style.display = 'none';
+          accountDropdown.classList.remove('show');
+        }
+        
+        // Close language dropdown if clicking outside
+        if (langDropdown && languageSection && !languageSection.contains(event.target)) {
+          langDropdown.style.display = 'none';
+          langDropdown.classList.remove('show');
+        }
+      });
+    }
+    
+    // Initialize when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+      setupAutoClose();
+      
+      // Load saved language preference
+      const savedLang = localStorage.getItem('preferred-language') || 'hi';
+      changeLanguage(savedLang);
+    });
+    
     // Make them globally available
     window.toggleMyAccount = toggleMyAccount;
     window.toggleLanguageDropdown = toggleLanguageDropdown;
+    window.changeLanguage = changeLanguage;
   </script>
   
   <style>
@@ -1894,9 +2026,80 @@
     }
     
     // Make other functions globally available
-    window.changeLanguage = changeLanguage;
     window.debugShowPopup = debugShowPopup;
     window.testDropdown = testDropdown;
+    
+    // Override to ensure head section functions work (final override)
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('🔄 Final override: Ensuring head functions are active');
+      
+      // Force override any conflicting functions
+      window.changeLanguage = function(lang) {
+        console.log('🌐 FINAL changeLanguage called:', lang);
+        
+        localStorage.setItem('preferred-language', lang);
+        
+        const currentLang = document.getElementById('currentLang');
+        const currentFlag = document.getElementById('currentFlag');
+        
+        if (lang === 'hi') {
+          if (currentLang) currentLang.textContent = 'हिंदी';
+          if (currentFlag) currentFlag.textContent = '🇮🇳';
+        } else {
+          if (currentLang) currentLang.textContent = 'English';
+          if (currentFlag) currentFlag.textContent = '🇺🇸';
+        }
+        
+        // Close dropdown
+        const dropdown = document.getElementById('langDropdown');
+        if (dropdown) {
+          dropdown.style.display = 'none';
+          dropdown.classList.remove('show');
+        }
+        
+        // Translate page elements
+        const elements = document.querySelectorAll('[data-lang-key]');
+        const translations = {
+          hi: {
+            'site-title': 'मां अन्नपूर्णा आहार',
+            'nav-home': 'होम',
+            'nav-products': 'उत्पाद',
+            'nav-cart': 'कार्ट',
+            'nav-contact': 'संपर्क',
+            'my-account': 'मेरा खाता',
+            'account-options': 'खाता विकल्प',
+            'nav-login': 'लॉग इन',
+            'nav-register': 'रजिस्टर करें',
+            'nav-profile': 'मेरी प्रोफाइल'
+          },
+          en: {
+            'site-title': 'Maa Anpurna Aahar',
+            'nav-home': 'Home',
+            'nav-products': 'Products',
+            'nav-cart': 'Cart',
+            'nav-contact': 'Contact',
+            'my-account': 'My Account',
+            'account-options': 'Account Options',
+            'nav-login': 'Login',
+            'nav-register': 'Register',
+            'nav-profile': 'My Profile'
+          }
+        };
+        
+        elements.forEach(element => {
+          const key = element.getAttribute('data-lang-key');
+          if (translations[lang] && translations[lang][key]) {
+            if (element.tagName === 'INPUT') {
+              element.placeholder = translations[lang][key];
+            } else {
+              element.textContent = translations[lang][key];
+            }
+          }
+        });
+        
+        console.log('✅ Language changed and page translated');
+      };
+    });
     
   </script>
 </body>
