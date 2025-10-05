@@ -18,13 +18,15 @@
       background: #f8f9fa;
     }
     
-    /* Navigation */
+    /* Enhanced Navigation */
     nav {
-      background: #2c3e50;
+      background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
       padding: 1rem 0;
       position: sticky;
       top: 0;
       z-index: 100;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      border-bottom: 2px solid #ff9800;
     }
     
     .nav-container {
@@ -38,9 +40,289 @@
     
     .logo {
       color: #ff9800;
-      font-size: 1.5rem;
+      font-size: 1.8rem;
       font-weight: bold;
       text-decoration: none;
+      background: linear-gradient(45deg, #ff9800, #f57c00);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+      transition: all 0.3s ease;
+    }
+    
+    .logo:hover {
+      transform: scale(1.05);
+    }
+    
+    /* Navigation Controls */
+    .nav-controls {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    
+    /* Language Selector Styles */
+    .language-selector {
+      position: relative;
+    }
+    
+    .lang-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 15px;
+      background: linear-gradient(135deg, #ff9800, #f57c00);
+      color: white;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 8px rgba(255, 152, 0, 0.3);
+    }
+    
+    .lang-btn:hover {
+      background: linear-gradient(135deg, #f57c00, #ff9800);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(255, 152, 0, 0.4);
+    }
+    
+    .flag-icon {
+      font-size: 1.1rem;
+    }
+    
+    .dropdown-arrow {
+      font-size: 0.8rem;
+      transition: transform 0.3s ease;
+    }
+    
+    .lang-btn.active .dropdown-arrow {
+      transform: rotate(180deg);
+    }
+    
+    .lang-dropdown {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+      padding: 8px 0;
+      margin-top: 8px;
+      min-width: 140px;
+      display: none;
+      z-index: 1001;
+      border: 1px solid #e9ecef;
+    }
+    
+    .lang-dropdown.show {
+      display: block;
+      animation: slideDown 0.3s ease;
+    }
+    
+    .lang-option {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 15px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      font-size: 0.9rem;
+      color: #333;
+    }
+    
+    .lang-option:hover {
+      background: #f8f9fa;
+      color: #ff9800;
+    }
+    
+    .lang-option.active {
+      background: #fff3e0;
+      color: #ff9800;
+      font-weight: 500;
+    }
+    
+    /* Enhanced My Account Section */
+    .my-account-section {
+      position: relative;
+    }
+    
+    .account-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      background: linear-gradient(135deg, #34495e, #2c3e50);
+      color: white;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 8px rgba(52, 73, 94, 0.3);
+    }
+    
+    .account-btn:hover {
+      background: linear-gradient(135deg, #2c3e50, #34495e);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(52, 73, 94, 0.4);
+    }
+    
+    .account-icon {
+      font-size: 1.1rem;
+    }
+    
+    .account-dropdown {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      padding: 20px;
+      margin-top: 10px;
+      width: 320px;
+      display: none;
+      z-index: 1001;
+      border: 1px solid #e9ecef;
+    }
+    
+    .account-dropdown.show {
+      display: block;
+      animation: slideDown 0.3s ease;
+    }
+    
+    /* Auth Tabs */
+    .auth-tabs {
+      display: flex;
+      margin-bottom: 20px;
+      border-bottom: 1px solid #e9ecef;
+    }
+    
+    .tab-btn {
+      flex: 1;
+      padding: 12px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-weight: 500;
+      color: #666;
+      border-bottom: 2px solid transparent;
+      transition: all 0.3s ease;
+    }
+    
+    .tab-btn.active {
+      color: #ff9800;
+      border-bottom-color: #ff9800;
+    }
+    
+    .tab-btn:hover {
+      color: #ff9800;
+    }
+    
+    /* Auth Form Styles */
+    .auth-form {
+      display: block;
+    }
+    
+    .form-group {
+      position: relative;
+      margin-bottom: 15px;
+    }
+    
+    .form-group input {
+      width: 100%;
+      padding: 12px 15px 12px 45px;
+      border: 2px solid #e9ecef;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      background: #f8f9fa;
+      box-sizing: border-box;
+    }
+    
+    .form-group input:focus {
+      outline: none;
+      border-color: #ff9800;
+      background: white;
+      box-shadow: 0 0 0 3px rgba(255, 152, 0, 0.1);
+    }
+    
+    .input-icon {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1.1rem;
+    }
+    
+    .auth-submit-btn {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(135deg, #ff9800, #f57c00);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-bottom: 15px;
+    }
+    
+    .auth-submit-btn:hover {
+      background: linear-gradient(135deg, #f57c00, #ff9800);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(255, 152, 0, 0.4);
+    }
+    
+    .auth-divider {
+      text-align: center;
+      margin: 15px 0;
+      position: relative;
+    }
+    
+    .auth-divider:before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: #e9ecef;
+    }
+    
+    .auth-divider span {
+      background: white;
+      padding: 0 15px;
+      color: #666;
+      font-size: 0.9rem;
+    }
+    
+    .google-auth-btn {
+      width: 100%;
+      padding: 12px;
+      background: white;
+      color: #333;
+      border: 2px solid #e9ecef;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      font-weight: 500;
+    }
+    
+    .google-auth-btn:hover {
+      border-color: #4285f4;
+      background: #f8f9ff;
+    }
+    
+    .google-icon {
+      font-size: 1.1rem;
     }
     
     .nav-links {
@@ -157,25 +439,239 @@
       color: #c82333 !important;
     }
     
-    /* Hero Section */
+    /* Enhanced Hero Section */
     .hero {
-      background: linear-gradient(135deg, #ff9800, #f57c00);
+      position: relative;
+      background: linear-gradient(135deg, #ff9800 0%, #f57c00 50%, #ff6f00 100%);
       color: white;
-      padding: 100px 0;
+      padding: 120px 0;
       text-align: center;
+      overflow: hidden;
+      min-height: 80vh;
+      display: flex;
+      align-items: center;
     }
     
-    .hero h1 {
-      font-size: 3rem;
-      margin-bottom: 20px;
+    .hero-background {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      opacity: 0.1;
     }
     
-    .hero p {
-      font-size: 1.2rem;
+    .hero-pattern {
+      width: 100%;
+      height: 100%;
+      background-image: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+      background-size: 30px 30px;
+      animation: patternMove 20s linear infinite;
+    }
+    
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.2);
+      padding: 8px 20px;
+      border-radius: 25px;
+      font-size: 0.9rem;
+      font-weight: 500;
       margin-bottom: 30px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.3);
+      animation: fadeInUp 0.8s ease 0.2s both;
+    }
+    
+    .badge-icon {
+      font-size: 1.1rem;
+      animation: sparkle 2s ease-in-out infinite;
+    }
+    
+    .hero-title {
+      font-size: 3.5rem;
+      margin-bottom: 20px;
+      font-weight: 700;
+      line-height: 1.2;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+      animation: fadeInUp 0.8s ease 0.4s both;
+    }
+    
+    .hero-subtitle {
+      font-size: 1.3rem;
+      margin-bottom: 40px;
       max-width: 600px;
       margin-left: auto;
       margin-right: auto;
+      opacity: 0.95;
+      line-height: 1.6;
+      animation: fadeInUp 0.8s ease 0.6s both;
+    }
+    
+    .hero-stats {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      margin-bottom: 40px;
+      animation: fadeInUp 0.8s ease 0.8s both;
+    }
+    
+    .stat-item {
+      text-align: center;
+    }
+    
+    .stat-number {
+      display: block;
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 5px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+    
+    .stat-label {
+      font-size: 0.95rem;
+      opacity: 0.9;
+      font-weight: 500;
+    }
+    
+    .hero-buttons {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+      animation: fadeInUp 0.8s ease 1s both;
+    }
+    
+    .hero-visual {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      pointer-events: none;
+    }
+    
+    .floating-elements {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+    
+    .float-icon {
+      position: absolute;
+      font-size: 2rem;
+      opacity: 0.3;
+      animation: float 6s ease-in-out infinite;
+    }
+    
+    .float-icon:nth-child(1) {
+      top: 20%;
+      left: 10%;
+      animation-delay: 0s;
+    }
+    
+    .float-icon:nth-child(2) {
+      top: 30%;
+      right: 15%;
+      animation-delay: 1.5s;
+    }
+    
+    .float-icon:nth-child(3) {
+      bottom: 30%;
+      left: 20%;
+      animation-delay: 3s;
+    }
+    
+    .float-icon:nth-child(4) {
+      bottom: 20%;
+      right: 10%;
+      animation-delay: 4.5s;
+    }
+    
+    /* Enhanced Button Styles */
+    .btn-primary {
+      background: linear-gradient(135deg, #2c3e50, #34495e);
+      color: white;
+      padding: 15px 35px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      border-radius: 30px;
+      text-decoration: none;
+      display: inline-block;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(44, 62, 80, 0.4);
+      border: none;
+      cursor: pointer;
+    }
+    
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #34495e, #2c3e50);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(44, 62, 80, 0.6);
+    }
+    
+    .btn-secondary {
+      background: transparent;
+      color: white;
+      padding: 15px 35px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      border: 2px solid white;
+      border-radius: 30px;
+      text-decoration: none;
+      display: inline-block;
+      transition: all 0.3s ease;
+    }
+    
+    .btn-secondary:hover {
+      background: white;
+      color: #ff9800;
+      transform: translateY(-2px);
+    }
+    
+    .pulse {
+      animation: pulse 2s infinite;
+    }
+    
+    /* Animation Keyframes */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @keyframes sparkle {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+    }
+    
+    @keyframes patternMove {
+      0% { transform: translateX(0) translateY(0); }
+      100% { transform: translateX(30px) translateY(30px); }
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(10deg); }
+    }
+    
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
     }
     
     .btn {
@@ -535,42 +1031,155 @@
     <div class="popup-container">
       <button class="popup-close" onclick="closeWelcomePopup()">&times;</button>
       <div class="popup-icon">🌾</div>
-      <h2 class="popup-title">Welcome to Maa Anpurna Aahar!</h2>
-      <p class="popup-message">
+      <h2 class="popup-title" data-lang-key="popup-title">Welcome to Maa Anpurna Aahar!</h2>
+      <p class="popup-message" data-lang-key="popup-message">
         Namaste! Aap hamari website par aaye, iske liye dhanyawad! 
         Hum ghar ka bana hua fresh aur healthy food aap tak pahunchate hain. 
         Hamari handmade products ka mazaa len aur healthy life jeeyein!
       </p>
       <div class="popup-buttons">
-        <a href="products.html" class="popup-btn popup-btn-primary">Explore Products</a>
-        <button class="popup-btn popup-btn-secondary" onclick="closeWelcomePopup()">Continue Browsing</button>
+        <a href="products.html" class="popup-btn popup-btn-primary" data-lang-key="popup-explore">Explore Products</a>
+        <button class="popup-btn popup-btn-secondary" onclick="closeWelcomePopup()" data-lang-key="popup-continue">Continue Browsing</button>
       </div>
     </div>
   </div>
 
-  <!-- Navigation -->
+  <!-- Enhanced Navigation -->
   <nav>
     <div class="nav-container">
-      <a href="index.html" class="logo">🌾 Maa Anpurna Aahar</a>
+      <a href="index.html" class="logo" data-lang-key="site-title">🌾 Maa Anpurna Aahar</a>
       <ul class="nav-links">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="products.html">Products</a></li>
-        <li><a href="cart.html">Cart</a></li>
-        <li><a href="contact.html">Contact</a></li>
-        <li class="auth-menu" id="authMenu">
-          <!-- Will be populated by JavaScript -->
-        </li>
+        <li><a href="index.html" data-lang-key="nav-home">Home</a></li>
+        <li><a href="products.html" data-lang-key="nav-products">Products</a></li>
+        <li><a href="cart.html" data-lang-key="nav-cart">Cart</a></li>
+        <li><a href="contact.html" data-lang-key="nav-contact">Contact</a></li>
       </ul>
+      <div class="nav-controls">
+        <!-- Language Selector -->
+        <div class="language-selector">
+          <button class="lang-btn" onclick="toggleLanguageDropdown()">
+            <span class="flag-icon" id="currentFlag">🇮🇳</span>
+            <span id="currentLang" data-lang-key="lang-hindi">हिंदी</span>
+            <span class="dropdown-arrow">▼</span>
+          </button>
+          <div class="lang-dropdown" id="langDropdown">
+            <div class="lang-option" onclick="changeLanguage('hi')">
+              <span class="flag-icon">🇮🇳</span>
+              <span>हिंदी</span>
+            </div>
+            <div class="lang-option" onclick="changeLanguage('en')">
+              <span class="flag-icon">🇺🇸</span>
+              <span>English</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Enhanced My Account Section -->
+        <div class="my-account-section">
+          <button class="account-btn" onclick="toggleAccountDropdown()">
+            <span class="account-icon">👤</span>
+            <span data-lang-key="my-account">My Account</span>
+            <span class="dropdown-arrow">▼</span>
+          </button>
+          <div class="account-dropdown" id="accountDropdown">
+            <div class="auth-tabs">
+              <button class="tab-btn active" onclick="showAuthTab('login')" data-lang-key="tab-login">Login</button>
+              <button class="tab-btn" onclick="showAuthTab('register')" data-lang-key="tab-register">Register</button>
+            </div>
+            
+            <!-- Login Form -->
+            <div class="auth-form" id="loginForm">
+              <div class="form-group">
+                <input type="email" placeholder="Email" data-lang-key="placeholder-email" required>
+                <span class="input-icon">📧</span>
+              </div>
+              <div class="form-group">
+                <input type="password" placeholder="Password" data-lang-key="placeholder-password" required>
+                <span class="input-icon">🔒</span>
+              </div>
+              <button class="auth-submit-btn" data-lang-key="btn-login">Login</button>
+              <div class="auth-divider">
+                <span data-lang-key="or">or</span>
+              </div>
+              <button class="google-auth-btn" onclick="signInWithGoogle()">
+                <span class="google-icon">🔵</span>
+                <span data-lang-key="google-login">Continue with Google</span>
+              </button>
+            </div>
+            
+            <!-- Register Form -->
+            <div class="auth-form" id="registerForm" style="display: none;">
+              <div class="form-group">
+                <input type="text" placeholder="Full Name" data-lang-key="placeholder-name" required>
+                <span class="input-icon">👤</span>
+              </div>
+              <div class="form-group">
+                <input type="email" placeholder="Email" data-lang-key="placeholder-email" required>
+                <span class="input-icon">📧</span>
+              </div>
+              <div class="form-group">
+                <input type="tel" placeholder="Phone Number" data-lang-key="placeholder-phone" required>
+                <span class="input-icon">📱</span>
+              </div>
+              <div class="form-group">
+                <input type="password" placeholder="Password" data-lang-key="placeholder-password" required>
+                <span class="input-icon">🔒</span>
+              </div>
+              <button class="auth-submit-btn" data-lang-key="btn-register">Register</button>
+              <div class="auth-divider">
+                <span data-lang-key="or">or</span>
+              </div>
+              <button class="google-auth-btn" onclick="signInWithGoogle()">
+                <span class="google-icon">🔵</span>
+                <span data-lang-key="google-register">Register with Google</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </nav>
 
-  <!-- Hero Section -->
+  <!-- Enhanced Hero Section -->
   <section class="hero">
+    <div class="hero-background">
+      <div class="hero-pattern"></div>
+    </div>
     <div class="container">
-      <h1>🌾 Maa Anpurna Aahar</h1>
-      <p>Ghar ka banaa hua, sehatmand aur swadisht khana seedha aap tak. Hamari handmade products ka mazaa len!</p>
-      <a href="products.html" class="btn">Shop Now</a>
-      <a href="#about" class="btn btn-secondary">Learn More</a>
+      <div class="hero-content">
+        <div class="hero-badge">
+          <span class="badge-icon">✨</span>
+          <span data-lang-key="hero-badge">100% Natural & Fresh</span>
+        </div>
+        <h1 class="hero-title" data-lang-key="hero-title">🌾 Maa Anpurna Aahar</h1>
+        <p class="hero-subtitle" data-lang-key="hero-subtitle">Ghar ka banaa hua, sehatmand aur swadisht khana seedha aap tak. Hamari handmade products ka mazaa len!</p>
+        <div class="hero-stats">
+          <div class="stat-item">
+            <span class="stat-number">500+</span>
+            <span class="stat-label" data-lang-key="stat-products">Products</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">10K+</span>
+            <span class="stat-label" data-lang-key="stat-customers">Happy Customers</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">50+</span>
+            <span class="stat-label" data-lang-key="stat-cities">Cities</span>
+          </div>
+        </div>
+        <div class="hero-buttons">
+          <a href="products.html" class="btn btn-primary pulse" data-lang-key="btn-shop-now">Shop Now</a>
+          <a href="#about" class="btn btn-secondary" data-lang-key="btn-learn-more">Learn More</a>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="floating-elements">
+          <span class="float-icon">🌾</span>
+          <span class="float-icon">🍯</span>
+          <span class="float-icon">🥨</span>
+          <span class="float-icon">🌿</span>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -687,6 +1296,348 @@
   </script>
 
   <script>
+    // Language Translation System
+    const translations = {
+      hi: {
+        'site-title': 'मां अन्नपूर्णा आहार',
+        'nav-home': 'होम',
+        'nav-products': 'उत्पाद',
+        'nav-cart': 'कार्ट',
+        'nav-contact': 'संपर्क',
+        'lang-hindi': 'हिंदी',
+        'lang-english': 'English',
+        'my-account': 'मेरा खाता',
+        'menu-profile': 'मेरी प्रोफाइल',
+        'menu-orders': 'मेरे ऑर्डर',
+        'menu-wishlist': 'विशलिस्ट',
+        'menu-logout': 'लॉगआउट',
+        'tab-login': 'लॉगिन',
+        'tab-register': 'रजिस्टर',
+        'placeholder-email': 'ईमेल',
+        'placeholder-password': 'पासवर्ड',
+        'placeholder-name': 'पूरा नाम',
+        'placeholder-phone': 'फोन नंबर',
+        'btn-login': 'लॉगिन करें',
+        'btn-register': 'रजिस्टर करें',
+        'or': 'या',
+        'google-login': 'Google से लॉगिन करें',
+        'google-register': 'Google से रजिस्टर करें',
+        'hero-badge': '100% प्राकृतिक और ताजा',
+        'hero-title': 'मां अन्नपूर्णा आहार में आपका स्वागत है',
+        'hero-subtitle': 'घर का बना हुआ, सेहतमंद और स्वादिष्ट खाना सीधा आप तक। हमारी handmade products का मजा लें!',
+        'stat-products': 'उत्पाद',
+        'stat-customers': 'खुश ग्राहक',
+        'stat-cities': 'शहर',
+        'btn-shop-now': 'अभी खरीदारी करें',
+        'btn-learn-more': 'और जानें'
+      },
+      en: {
+        'site-title': 'Maa Anpurna Aahar',
+        'nav-home': 'Home',
+        'nav-products': 'Products',
+        'nav-cart': 'Cart',
+        'nav-contact': 'Contact',
+        'lang-hindi': 'हिंदी',
+        'lang-english': 'English',
+        'my-account': 'My Account',
+        'menu-profile': 'My Profile',
+        'menu-orders': 'My Orders',
+        'menu-wishlist': 'Wishlist',
+        'menu-logout': 'Logout',
+        'tab-login': 'Login',
+        'tab-register': 'Register',
+        'placeholder-email': 'Email',
+        'placeholder-password': 'Password',
+        'placeholder-name': 'Full Name',
+        'placeholder-phone': 'Phone Number',
+        'btn-login': 'Login',
+        'btn-register': 'Register',
+        'or': 'or',
+        'google-login': 'Continue with Google',
+        'google-register': 'Register with Google',
+        'hero-badge': '100% Natural & Fresh',
+        'hero-title': 'Welcome to Maa Anpurna Aahar',
+        'hero-subtitle': 'Homemade, healthy and delicious food delivered straight to you. Enjoy our handmade products!',
+        'stat-products': 'Products',
+        'stat-customers': 'Happy Customers',
+        'stat-cities': 'Cities',
+        'btn-shop-now': 'Shop Now',
+        'btn-learn-more': 'Learn More'
+      }
+    };
+    
+    // Language Management
+    let currentLanguage = localStorage.getItem('preferred-language') || 'hi';
+    
+    function changeLanguage(lang) {
+      currentLanguage = lang;
+      localStorage.setItem('preferred-language', lang);
+      updateLanguageUI();
+      translatePage();
+      closeLanguageDropdown();
+    }
+    
+    function updateLanguageUI() {
+      const currentLangEl = document.getElementById('currentLang');
+      const currentFlagEl = document.getElementById('currentFlag');
+      
+      if (currentLanguage === 'hi') {
+        currentLangEl.textContent = 'हिंदी';
+        currentFlagEl.textContent = '🇮🇳';
+      } else {
+        currentLangEl.textContent = 'English';
+        currentFlagEl.textContent = '🇺🇸';
+      }
+    }
+    
+    function translatePage() {
+      const elements = document.querySelectorAll('[data-lang-key]');
+      elements.forEach(element => {
+        const key = element.getAttribute('data-lang-key');
+        if (translations[currentLanguage] && translations[currentLanguage][key]) {
+          if (element.tagName === 'INPUT') {
+            element.placeholder = translations[currentLanguage][key];
+          } else {
+            element.textContent = translations[currentLanguage][key];
+          }
+        }
+      });
+    }
+    
+    function toggleLanguageDropdown() {
+      const dropdown = document.getElementById('langDropdown');
+      const btn = document.querySelector('.lang-btn');
+      dropdown.classList.toggle('show');
+      btn.classList.toggle('active');
+    }
+    
+    function closeLanguageDropdown() {
+      const dropdown = document.getElementById('langDropdown');
+      const btn = document.querySelector('.lang-btn');
+      dropdown.classList.remove('show');
+      btn.classList.remove('active');
+    }
+    
+    // Account Dropdown Management
+    function toggleAccountDropdown() {
+      const dropdown = document.getElementById('accountDropdown');
+      const btn = document.querySelector('.account-btn');
+      dropdown.classList.toggle('show');
+      btn.classList.toggle('active');
+    }
+    
+    function closeAccountDropdown() {
+      const dropdown = document.getElementById('accountDropdown');
+      const btn = document.querySelector('.account-btn');
+      dropdown.classList.remove('show');
+      btn.classList.remove('active');
+    }
+    
+    function showAuthTab(tabName) {
+      // Update tab buttons
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+      
+      // Show/hide forms
+      const loginForm = document.getElementById('loginForm');
+      const registerForm = document.getElementById('registerForm');
+      
+      if (tabName === 'login') {
+        loginForm.style.display = 'block';
+        registerForm.style.display = 'none';
+      } else {
+        loginForm.style.display = 'none';
+        registerForm.style.display = 'block';
+      }
+    }
+    
+    // Close dropdowns when clicking outside
+    document.addEventListener('click', function(event) {
+      if (!event.target.closest('.language-selector')) {
+        closeLanguageDropdown();
+      }
+      if (!event.target.closest('.my-account-dropdown')) {
+        closeAccountDropdown();
+      }
+    });
+    
+    // Initialize language on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      updateLanguageUI();
+      translatePage();
+    });
+    
+    // Language Translation System
+    const translations = {
+      hi: {
+        'site-title': 'माँ अन्नपूर्णा आहार',
+        'nav-home': 'होम',
+        'nav-products': 'उत्पाद',
+        'nav-cart': 'कार्ट',
+        'nav-contact': 'संपर्क',
+        'lang-hindi': 'हिंदी',
+        'lang-english': 'English',
+        'my-account': 'मेरा खाता',
+        'tab-login': 'लॉगिन',
+        'tab-register': 'रजिस्टर',
+        'placeholder-email': 'ईमेल',
+        'placeholder-password': 'पासवर्ड',
+        'placeholder-name': 'पूरा नाम',
+        'placeholder-phone': 'फोन नंबर',
+        'btn-login': 'लॉगिन करें',
+        'btn-register': 'रजिस्टर करें',
+        'or': 'या',
+        'google-login': 'Google से लॉगिन करें',
+        'google-register': 'Google से रजिस्टर करें',
+        'hero-badge': '100% प्राकृतिक और ताजा',
+        'hero-title': '🌾 माँ अन्नपूर्णा आहार',
+        'hero-subtitle': 'घर का बनाया हुआ, सेहतमंद और स्वादिष्ट खाना सीधा आप तक। हमारी handmade products का मजा लें!',
+        'stat-products': 'उत्पाद',
+        'stat-customers': 'खुश ग्राहक',
+        'stat-cities': 'शहर',
+        'btn-shop-now': 'अभी खरीदारी करें',
+        'btn-learn-more': 'और जानें',
+        'popup-title': 'माँ अन्नपूर्णा आहार में आपका स्वागत है!',
+        'popup-message': 'नमस्ते! आप हमारी वेबसाइट पर आए, इसके लिए धन्यवाद! हम घर का बना हुआ fresh और healthy food आप तक पहुंचाते हैं। हमारी handmade products का मजा लें और healthy life जिएं!',
+        'popup-explore': 'उत्पाद देखें',
+        'popup-continue': 'ब्राउज़िंग जारी रखें'
+      },
+      en: {
+        'site-title': 'Maa Anpurna Aahar',
+        'nav-home': 'Home',
+        'nav-products': 'Products',
+        'nav-cart': 'Cart',
+        'nav-contact': 'Contact',
+        'lang-hindi': 'हिंदी',
+        'lang-english': 'English',
+        'my-account': 'My Account',
+        'tab-login': 'Login',
+        'tab-register': 'Register',
+        'placeholder-email': 'Email',
+        'placeholder-password': 'Password',
+        'placeholder-name': 'Full Name',
+        'placeholder-phone': 'Phone Number',
+        'btn-login': 'Login',
+        'btn-register': 'Register',
+        'or': 'or',
+        'google-login': 'Continue with Google',
+        'google-register': 'Register with Google',
+        'hero-badge': '100% Natural & Fresh',
+        'hero-title': '🌾 Maa Anpurna Aahar',
+        'hero-subtitle': 'Homemade, healthy and delicious food delivered straight to you. Enjoy our handmade products!',
+        'stat-products': 'Products',
+        'stat-customers': 'Happy Customers',
+        'stat-cities': 'Cities',
+        'btn-shop-now': 'Shop Now',
+        'btn-learn-more': 'Learn More',
+        'popup-title': 'Welcome to Maa Anpurna Aahar!',
+        'popup-message': 'Namaste! Thank you for visiting our website! We deliver fresh and healthy homemade food straight to you. Enjoy our handmade products and live a healthy life!',
+        'popup-explore': 'Explore Products',
+        'popup-continue': 'Continue Browsing'
+      }
+    };
+    
+    // Language Management
+    let currentLanguage = localStorage.getItem('preferred-language') || 'hi';
+    
+    function changeLanguage(lang) {
+      currentLanguage = lang;
+      localStorage.setItem('preferred-language', lang);
+      updateLanguageUI();
+      translatePage();
+      closeLanguageDropdown();
+    }
+    
+    function updateLanguageUI() {
+      const currentLangEl = document.getElementById('currentLang');
+      const currentFlagEl = document.getElementById('currentFlag');
+      
+      if (currentLanguage === 'hi') {
+        currentLangEl.textContent = 'हिंदी';
+        currentFlagEl.textContent = '🇮🇳';
+      } else {
+        currentLangEl.textContent = 'English';
+        currentFlagEl.textContent = '🇺🇸';
+      }
+    }
+    
+    function translatePage() {
+      const elements = document.querySelectorAll('[data-lang-key]');
+      elements.forEach(element => {
+        const key = element.getAttribute('data-lang-key');
+        if (translations[currentLanguage] && translations[currentLanguage][key]) {
+          if (element.tagName === 'INPUT') {
+            element.placeholder = translations[currentLanguage][key];
+          } else {
+            element.textContent = translations[currentLanguage][key];
+          }
+        }
+      });
+    }
+    
+    function toggleLanguageDropdown() {
+      const dropdown = document.getElementById('langDropdown');
+      const btn = document.querySelector('.lang-btn');
+      dropdown.classList.toggle('show');
+      btn.classList.toggle('active');
+    }
+    
+    function closeLanguageDropdown() {
+      const dropdown = document.getElementById('langDropdown');
+      const btn = document.querySelector('.lang-btn');
+      dropdown.classList.remove('show');
+      btn.classList.remove('active');
+    }
+    
+    // Account Dropdown Management
+    function toggleAccountDropdown() {
+      const dropdown = document.getElementById('accountDropdown');
+      const btn = document.querySelector('.account-btn');
+      dropdown.classList.toggle('show');
+      btn.classList.toggle('active');
+    }
+    
+    function closeAccountDropdown() {
+      const dropdown = document.getElementById('accountDropdown');
+      const btn = document.querySelector('.account-btn');
+      dropdown.classList.remove('show');
+      btn.classList.remove('active');
+    }
+    
+    function showAuthTab(tabName) {
+      // Update tab buttons
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+      
+      // Show/hide forms
+      const loginForm = document.getElementById('loginForm');
+      const registerForm = document.getElementById('registerForm');
+      
+      if (tabName === 'login') {
+        loginForm.style.display = 'block';
+        registerForm.style.display = 'none';
+      } else {
+        loginForm.style.display = 'none';
+        registerForm.style.display = 'block';
+      }
+    }
+    
+    // Close dropdowns when clicking outside
+    document.addEventListener('click', function(event) {
+      if (!event.target.closest('.language-selector')) {
+        closeLanguageDropdown();
+      }
+      if (!event.target.closest('.my-account-section')) {
+        closeAccountDropdown();
+      }
+    });
+    
+    // Initialize language on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      updateLanguageUI();
+      translatePage();
+    });
+    
     // Welcome Popup Functions - Manual Close Only
     function closeWelcomePopup() {
       const popup = document.getElementById('welcomePopup');
