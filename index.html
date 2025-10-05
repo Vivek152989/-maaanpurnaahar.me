@@ -1273,6 +1273,56 @@
   </script>
 
   <script>
+    // Define dropdown functions immediately
+    window.toggleMyAccount = function() {
+      console.log('🔧 My Account clicked!');
+      const dropdown = document.getElementById('accountDropdown');
+      
+      if (dropdown) {
+        const isVisible = dropdown.style.display === 'block' || dropdown.classList.contains('show');
+        
+        if (isVisible) {
+          dropdown.style.display = 'none';
+          dropdown.classList.remove('show');
+          console.log('✅ My Account dropdown closed');
+        } else {
+          dropdown.style.display = 'block';
+          dropdown.classList.add('show');
+          dropdown.style.position = 'absolute';
+          dropdown.style.top = '100%';
+          dropdown.style.right = '0';
+          dropdown.style.zIndex = '9999';
+          console.log('✅ My Account dropdown opened');
+        }
+      } else {
+        console.error('❌ My Account dropdown not found!');
+      }
+    };
+    
+    window.toggleLanguageDropdown = function() {
+      console.log('🌐 Language dropdown clicked!');
+      const dropdown = document.getElementById('langDropdown');
+      
+      if (dropdown) {
+        const isVisible = dropdown.style.display === 'block' || dropdown.classList.contains('show');
+        
+        if (isVisible) {
+          dropdown.style.display = 'none';
+          dropdown.classList.remove('show');
+        } else {
+          dropdown.style.display = 'block';
+          dropdown.classList.add('show');
+          dropdown.style.position = 'absolute';
+          dropdown.style.top = '100%';
+          dropdown.style.right = '0';
+          dropdown.style.zIndex = '9999';
+        }
+        console.log('✅ Language dropdown toggled');
+      } else {
+        console.error('❌ Language dropdown not found!');
+      }
+    };
+
     // Language Translation System
     const translations = {
       hi: {
@@ -1835,56 +1885,6 @@
       sessionStorage.removeItem('welcomePopupShown');
       location.reload();
     }
-    
-    // Override with working functions
-    window.toggleMyAccount = function() {
-      console.log('🔧 My Account clicked - NEW FUNCTION!');
-      const dropdown = document.getElementById('accountDropdown');
-      
-      if (dropdown) {
-        const isVisible = dropdown.style.display === 'block' || dropdown.classList.contains('show');
-        
-        if (isVisible) {
-          dropdown.style.display = 'none';
-          dropdown.classList.remove('show');
-          console.log('✅ My Account dropdown closed');
-        } else {
-          dropdown.style.display = 'block';
-          dropdown.classList.add('show');
-          dropdown.style.position = 'absolute';
-          dropdown.style.top = '100%';
-          dropdown.style.right = '0';
-          dropdown.style.zIndex = '9999';
-          console.log('✅ My Account dropdown opened');
-        }
-      } else {
-        console.error('❌ My Account dropdown not found!');
-      }
-    };
-    
-    window.toggleLanguageDropdown = function() {
-      console.log('🌐 Language dropdown clicked - NEW FUNCTION!');
-      const dropdown = document.getElementById('langDropdown');
-      
-      if (dropdown) {
-        const isVisible = dropdown.style.display === 'block' || dropdown.classList.contains('show');
-        
-        if (isVisible) {
-          dropdown.style.display = 'none';
-          dropdown.classList.remove('show');
-        } else {
-          dropdown.style.display = 'block';
-          dropdown.classList.add('show');
-          dropdown.style.position = 'absolute';
-          dropdown.style.top = '100%';
-          dropdown.style.right = '0';
-          dropdown.style.zIndex = '9999';
-        }
-        console.log('✅ Language dropdown toggled');
-      } else {
-        console.error('❌ Language dropdown not found!');
-      }
-    };
     
     // Make other functions globally available
     window.changeLanguage = changeLanguage;
