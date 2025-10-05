@@ -153,21 +153,24 @@
       align-items: center;
       gap: 8px;
       padding: 10px 20px;
-      background: linear-gradient(135deg, #34495e, #2c3e50);
+      background: linear-gradient(135deg, #e74c3c, #c0392b);
       color: white;
-      border: none;
+      border: 2px solid #fff;
       border-radius: 25px;
       cursor: pointer;
       font-size: 0.95rem;
-      font-weight: 500;
+      font-weight: 600;
       transition: all 0.3s ease;
-      box-shadow: 0 2px 8px rgba(52, 73, 94, 0.3);
+      box-shadow: 0 4px 12px rgba(231, 76, 60, 0.4);
+      min-width: 140px;
+      justify-content: center;
     }
     
     .account-btn:hover {
-      background: linear-gradient(135deg, #2c3e50, #34495e);
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(52, 73, 94, 0.4);
+      background: linear-gradient(135deg, #c0392b, #a93226);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(231, 76, 60, 0.5);
+      border-color: #f39c12;
     }
     
     .account-icon {
@@ -1086,9 +1089,6 @@
             <span data-lang-key="my-account">My Account</span>
             <span class="dropdown-arrow">▼</span>
           </button>
-          <!-- Temporary Debug Buttons -->
-          <button onclick="debugShowPopup()" style="margin-left: 10px; padding: 5px 10px; background: #e74c3c; color: white; border: none; border-radius: 5px; font-size: 0.8rem; cursor: pointer;" title="Test Popup">🔧</button>
-          <button onclick="testDropdown()" style="margin-left: 5px; padding: 5px 10px; background: #27ae60; color: white; border: none; border-radius: 5px; font-size: 0.8rem; cursor: pointer;" title="Test Dropdown">📋</button>
           <div class="account-dropdown" id="accountDropdown">
             <div class="dropdown-header">
               <span class="dropdown-title" data-lang-key="account-options">Account Options</span>
@@ -1397,6 +1397,7 @@
     
     // Simple My Account Toggle Function
     function toggleMyAccount() {
+      alert('My Account button clicked! 🎉'); // Temporary alert for testing
       console.log('🔧 My Account clicked!');
       const dropdown = document.getElementById('accountDropdown');
       
@@ -1409,9 +1410,15 @@
           dropdown.style.display = 'block';
           dropdown.classList.add('show');
           console.log('✅ Dropdown opened');
+          // Ensure dropdown is positioned correctly
+          dropdown.style.position = 'absolute';
+          dropdown.style.top = '100%';
+          dropdown.style.right = '0';
+          dropdown.style.zIndex = '9999';
         }
       } else {
         console.error('❌ Dropdown not found!');
+        alert('Error: Dropdown not found!');
       }
     }
 

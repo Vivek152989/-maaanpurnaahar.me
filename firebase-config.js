@@ -7,7 +7,6 @@ class FirebaseManager {
     this.auth = null;
     this.initialized = false;
   }
-
   // Initialize Firebase with your config
   async initialize(config) {
     try {
