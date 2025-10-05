@@ -1086,60 +1086,30 @@
             <span data-lang-key="my-account">My Account</span>
             <span class="dropdown-arrow">▼</span>
           </button>
-          <!-- Temporary Debug Button for Popup Testing -->
+          <!-- Temporary Debug Buttons -->
           <button onclick="debugShowPopup()" style="margin-left: 10px; padding: 5px 10px; background: #e74c3c; color: white; border: none; border-radius: 5px; font-size: 0.8rem; cursor: pointer;" title="Test Popup">🔧</button>
+          <button onclick="testDropdown()" style="margin-left: 5px; padding: 5px 10px; background: #27ae60; color: white; border: none; border-radius: 5px; font-size: 0.8rem; cursor: pointer;" title="Test Dropdown">📋</button>
           <div class="account-dropdown" id="accountDropdown">
-            <div class="auth-tabs">
-              <button class="tab-btn active" onclick="showAuthTab('login')" data-lang-key="tab-login">Login</button>
-              <button class="tab-btn" onclick="showAuthTab('register')" data-lang-key="tab-register">Register</button>
+            <div class="dropdown-header">
+              <span class="dropdown-title" data-lang-key="account-options">Account Options</span>
             </div>
-            
-            <!-- Login Form -->
-            <div class="auth-form" id="loginForm">
-              <div class="form-group">
-                <input type="email" placeholder="Email" data-lang-key="placeholder-email" required>
-                <span class="input-icon">📧</span>
-              </div>
-              <div class="form-group">
-                <input type="password" placeholder="Password" data-lang-key="placeholder-password" required>
-                <span class="input-icon">🔒</span>
-              </div>
-              <button class="auth-submit-btn" data-lang-key="btn-login">Login</button>
-              <div class="auth-divider">
-                <span data-lang-key="or">or</span>
-              </div>
-              <button class="google-auth-btn" onclick="signInWithGoogle()">
-                <span class="google-icon">🔵</span>
-                <span data-lang-key="google-login">Continue with Google</span>
-              </button>
-            </div>
-            
-            <!-- Register Form -->
-            <div class="auth-form" id="registerForm" style="display: none;">
-              <div class="form-group">
-                <input type="text" placeholder="Full Name" data-lang-key="placeholder-name" required>
-                <span class="input-icon">👤</span>
-              </div>
-              <div class="form-group">
-                <input type="email" placeholder="Email" data-lang-key="placeholder-email" required>
-                <span class="input-icon">📧</span>
-              </div>
-              <div class="form-group">
-                <input type="tel" placeholder="Phone Number" data-lang-key="placeholder-phone" required>
-                <span class="input-icon">📱</span>
-              </div>
-              <div class="form-group">
-                <input type="password" placeholder="Password" data-lang-key="placeholder-password" required>
-                <span class="input-icon">🔒</span>
-              </div>
-              <button class="auth-submit-btn" data-lang-key="btn-register">Register</button>
-              <div class="auth-divider">
-                <span data-lang-key="or">or</span>
-              </div>
-              <button class="google-auth-btn" onclick="signInWithGoogle()">
-                <span class="google-icon">🔵</span>
-                <span data-lang-key="google-register">Register with Google</span>
-              </button>
+            <div class="dropdown-links">
+              <a href="login.html" class="dropdown-link" data-lang-key="nav-login">
+                <span class="link-icon">🔐</span>
+                <span>Login</span>
+                <span class="link-arrow">→</span>
+              </a>
+              <a href="register.html" class="dropdown-link" data-lang-key="nav-register">
+                <span class="link-icon">📝</span>
+                <span>Register</span>
+                <span class="link-arrow">→</span>
+              </a>
+              <div class="dropdown-divider"></div>
+              <a href="profile.html" class="dropdown-link" data-lang-key="nav-profile">
+                <span class="link-icon">👤</span>
+                <span>My Profile</span>
+                <span class="link-arrow">→</span>
+              </a>
             </div>
           </div>
         </div>
@@ -1425,6 +1395,21 @@
       btn.classList.remove('active');
     }
     
+    // Test function for debugging
+    function testDropdown() {
+      console.log('🧪 TEST: Manual dropdown test function called');
+      const dropdown = document.getElementById('accountDropdown');
+      if (dropdown) {
+        console.log('🧪 TEST: Found dropdown element');
+        dropdown.classList.add('show');
+        dropdown.style.display = 'block';
+        dropdown.style.opacity = '1';
+        console.log('🧪 TEST: Forced dropdown to show');
+      } else {
+        console.log('❌ TEST: Dropdown element not found');
+      }
+    }
+
     // Account Dropdown Management with Enhanced Debugging
     function toggleAccountDropdown() {
       console.log('🔧 DEBUG: toggleAccountDropdown called');
@@ -1541,7 +1526,15 @@
         'popup-title': 'माँ अन्नपूर्णा आहार में आपका स्वागत है!',
         'popup-message': 'नमस्ते! आप हमारी वेबसाइट पर आए, इसके लिए धन्यवाद! हम घर का बना हुआ fresh और healthy food आप तक पहुंचाते हैं। हमारी handmade products का मजा लें और healthy life जिएं!',
         'popup-explore': 'उत्पाद देखें',
-        'popup-continue': 'ब्राउज़िंग जारी रखें'
+        'popup-continue': 'ब्राउज़िंग जारी रखें',
+        'account-options': 'खाता विकल्प',
+        'nav-login': 'लॉग इन',
+        'nav-register': 'रजिस्टर करें',
+        'nav-profile': 'मेरी प्रोफाइल',
+        'account-options': 'खाता विकल्प',
+        'nav-login': 'लॉग इन',
+        'nav-register': 'रजिस्टर करें',
+        'nav-profile': 'मेरी प्रोफाइल'
       },
       en: {
         'site-title': 'Maa Anpurna Aahar',
@@ -1574,7 +1567,15 @@
         'popup-title': 'Welcome to Maa Anpurna Aahar!',
         'popup-message': 'Namaste! Thank you for visiting our website! We deliver fresh and healthy homemade food straight to you. Enjoy our handmade products and live a healthy life!',
         'popup-explore': 'Explore Products',
-        'popup-continue': 'Continue Browsing'
+        'popup-continue': 'Continue Browsing',
+        'account-options': 'Account Options',
+        'nav-login': 'Login',
+        'nav-register': 'Register',
+        'nav-profile': 'My Profile',
+        'account-options': 'Account Options',
+        'nav-login': 'Login',
+        'nav-register': 'Register',
+        'nav-profile': 'My Profile'
       }
     };
     
