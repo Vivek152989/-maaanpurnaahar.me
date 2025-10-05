@@ -4,6 +4,63 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Maa Anpurna Aahar - Handmade Food Products</title>
+  
+  <!-- Define dropdown functions immediately in head -->
+  <script>
+    function toggleMyAccount() {
+      console.log('🔧 My Account clicked from HEAD!');
+      const dropdown = document.getElementById('accountDropdown');
+      
+      if (dropdown) {
+        const isVisible = dropdown.style.display === 'block' || dropdown.classList.contains('show');
+        
+        if (isVisible) {
+          dropdown.style.display = 'none';
+          dropdown.classList.remove('show');
+          console.log('✅ My Account dropdown closed');
+        } else {
+          dropdown.style.display = 'block';
+          dropdown.classList.add('show');
+          dropdown.style.position = 'absolute';
+          dropdown.style.top = '100%';
+          dropdown.style.right = '0';
+          dropdown.style.zIndex = '9999';
+          console.log('✅ My Account dropdown opened');
+        }
+      } else {
+        console.error('❌ My Account dropdown not found!');
+      }
+    }
+    
+    function toggleLanguageDropdown() {
+      console.log('🌐 Language dropdown clicked from HEAD!');
+      const dropdown = document.getElementById('langDropdown');
+      
+      if (dropdown) {
+        const isVisible = dropdown.style.display === 'block' || dropdown.classList.contains('show');
+        
+        if (isVisible) {
+          dropdown.style.display = 'none';
+          dropdown.classList.remove('show');
+        } else {
+          dropdown.style.display = 'block';
+          dropdown.classList.add('show');
+          dropdown.style.position = 'absolute';
+          dropdown.style.top = '100%';
+          dropdown.style.right = '0';
+          dropdown.style.zIndex = '9999';
+        }
+        console.log('✅ Language dropdown toggled');
+      } else {
+        console.error('❌ Language dropdown not found!');
+      }
+    }
+    
+    // Make them globally available
+    window.toggleMyAccount = toggleMyAccount;
+    window.toggleLanguageDropdown = toggleLanguageDropdown;
+  </script>
+  
   <style>
     * {
       margin: 0;
@@ -1065,7 +1122,7 @@
       <div class="nav-controls">
         <!-- Language Selector -->
         <div class="language-selector">
-          <button class="lang-btn" onclick="window.toggleLanguageDropdown(); console.log('Language button clicked!');">
+          <button class="lang-btn" onclick="toggleLanguageDropdown()">
             <span class="flag-icon" id="currentFlag">🇮🇳</span>
             <span id="currentLang" data-lang-key="lang-hindi">हिंदी</span>
             <span class="dropdown-arrow">▼</span>
@@ -1084,7 +1141,7 @@
         
         <!-- Enhanced My Account Section -->
         <div class="my-account-section">
-          <button class="account-btn" id="myAccountBtn" onclick="window.toggleMyAccount(); console.log('Button clicked directly!');">
+          <button class="account-btn" id="myAccountBtn" onclick="toggleMyAccount()">
             <span class="account-icon">👤</span>
             <span data-lang-key="my-account">My Account</span>
             <span class="dropdown-arrow">▼</span>
@@ -1273,56 +1330,6 @@
   </script>
 
   <script>
-    // Define dropdown functions immediately
-    window.toggleMyAccount = function() {
-      console.log('🔧 My Account clicked!');
-      const dropdown = document.getElementById('accountDropdown');
-      
-      if (dropdown) {
-        const isVisible = dropdown.style.display === 'block' || dropdown.classList.contains('show');
-        
-        if (isVisible) {
-          dropdown.style.display = 'none';
-          dropdown.classList.remove('show');
-          console.log('✅ My Account dropdown closed');
-        } else {
-          dropdown.style.display = 'block';
-          dropdown.classList.add('show');
-          dropdown.style.position = 'absolute';
-          dropdown.style.top = '100%';
-          dropdown.style.right = '0';
-          dropdown.style.zIndex = '9999';
-          console.log('✅ My Account dropdown opened');
-        }
-      } else {
-        console.error('❌ My Account dropdown not found!');
-      }
-    };
-    
-    window.toggleLanguageDropdown = function() {
-      console.log('🌐 Language dropdown clicked!');
-      const dropdown = document.getElementById('langDropdown');
-      
-      if (dropdown) {
-        const isVisible = dropdown.style.display === 'block' || dropdown.classList.contains('show');
-        
-        if (isVisible) {
-          dropdown.style.display = 'none';
-          dropdown.classList.remove('show');
-        } else {
-          dropdown.style.display = 'block';
-          dropdown.classList.add('show');
-          dropdown.style.position = 'absolute';
-          dropdown.style.top = '100%';
-          dropdown.style.right = '0';
-          dropdown.style.zIndex = '9999';
-        }
-        console.log('✅ Language dropdown toggled');
-      } else {
-        console.error('❌ Language dropdown not found!');
-      }
-    };
-
     // Language Translation System
     const translations = {
       hi: {
