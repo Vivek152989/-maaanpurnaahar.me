@@ -1027,7 +1027,7 @@
 </head>
 <body>
   <!-- Welcome Popup -->
-  <div id="welcomePopup" class="popup-overlay">
+  <div id="welcomePopup" class="popup-overlay" style="display: none;">
     <div class="popup-container">
       <button class="popup-close" onclick="closeWelcomePopup()">&times;</button>
       <div class="popup-icon">🌾</div>
@@ -1081,6 +1081,8 @@
             <span data-lang-key="my-account">My Account</span>
             <span class="dropdown-arrow">▼</span>
           </button>
+          <!-- Temporary Debug Button for Popup Testing -->
+          <button onclick="debugShowPopup()" style="margin-left: 10px; padding: 5px 10px; background: #e74c3c; color: white; border: none; border-radius: 5px; font-size: 0.8rem; cursor: pointer;" title="Test Popup">🔧</button>
           <div class="account-dropdown" id="accountDropdown">
             <div class="auth-tabs">
               <button class="tab-btn active" onclick="showAuthTab('login')" data-lang-key="tab-login">Login</button>
@@ -1638,38 +1640,56 @@
       translatePage();
     });
     
-    // Welcome Popup Functions - Manual Close Only
+    // Welcome Popup Functions - Enhanced with Translation Support
     function closeWelcomePopup() {
       const popup = document.getElementById('welcomePopup');
       if (popup) {
+        // Add closing animation
         popup.style.animation = 'popupSlideOut 0.3s ease-in forwards';
+        popup.classList.remove('show');
+        
         setTimeout(() => {
           popup.classList.add('hidden');
           popup.style.display = 'none';
+          popup.style.opacity = '0';
           
           // Remember user closed it today
           const today = new Date().toDateString();
           localStorage.setItem('welcomePopupClosed', today);
+          
+          console.log('Popup closed and saved to localStorage');
         }, 300);
       }
     }
 
-    // Show popup function - No auto-close
+    // Show popup function - Enhanced with better checks
     function showWelcomePopup() {
       const popup = document.getElementById('welcomePopup');
       
-      // Check if popup was already closed today
+      if (!popup) {
+        console.error('Popup element not found!');
+        return;
+      }
+      
+      // Check if popup should be shown
       const today = new Date().toDateString();
       const lastClosed = localStorage.getItem('welcomePopupClosed');
       const sessionShown = sessionStorage.getItem('welcomePopupShown');
       
-      // Only show if not closed today and not shown in current session
+      console.log('Popup check:', { today, lastClosed, sessionShown });
+      
+      // Show popup if conditions are met
       if (lastClosed !== today && !sessionShown) {
+        // Remove any existing classes
         popup.classList.remove('hidden');
+        popup.classList.add('show');
+        
+        // Set display and opacity
         popup.style.display = 'flex';
         popup.style.opacity = '0';
+        popup.style.animation = 'popupSlideIn 0.5s ease-out forwards';
         
-        // Animate popup appearance
+        // Fade in effect
         setTimeout(() => {
           popup.style.opacity = '1';
         }, 100);
@@ -1677,36 +1697,94 @@
         // Mark as shown in current session
         sessionStorage.setItem('welcomePopupShown', 'true');
         
-        console.log('Welcome popup displayed - stays open until manually closed');
+        // Translate popup content
+        translatePage();
+        
+        console.log('✅ Welcome popup displayed successfully!');
+      } else {
+        console.log('❌ Popup not shown - conditions not met');
       }
     }
 
-    // Initialize popup when page loads
+    // Initialize popup when page loads - Multiple event listeners for reliability
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('🚀 DOM Content Loaded - Initializing popup...');
+      // Show popup after 1.5 seconds
+      setTimeout(() => {
+        showWelcomePopup();
+      }, 1500);
+    });
+    
     window.addEventListener('load', function() {
-      // Show popup after 1 second, but NO auto-close
-      setTimeout(showWelcomePopup, 1000);
+      console.log('🌟 Window fully loaded');
+      // Backup popup show in case DOMContentLoaded didn't work
+      setTimeout(() => {
+        const popup = document.getElementById('welcomePopup');
+        if (popup && !popup.classList.contains('show') && popup.style.display !== 'flex') {
+          console.log('🔄 Backup popup initialization');
+          showWelcomePopup();
+        }
+      }, 2000);
     });
 
-    // Close popup when clicking outside
+    // Enhanced popup event listeners
     document.addEventListener('DOMContentLoaded', function() {
       const popup = document.getElementById('welcomePopup');
       
-      popup.addEventListener('click', function(e) {
-        if (e.target === popup) {
-          closeWelcomePopup();
+      if (popup) {
+        // Close popup when clicking outside
+        popup.addEventListener('click', function(e) {
+          if (e.target === popup) {
+            console.log('🖱️ Popup closed by clicking outside');
+            closeWelcomePopup();
+          }
+        });
+        
+        // Prevent popup from closing when clicking inside
+        const popupContainer = popup.querySelector('.popup-container');
+        if (popupContainer) {
+          popupContainer.addEventListener('click', function(e) {
+            e.stopPropagation();
+          });
         }
-      });
+        
+        console.log('✅ Popup event listeners attached');
+      } else {
+        console.error('❌ Popup element not found for event listeners!');
+      }
     });
 
     // Close popup with Escape key
     document.addEventListener('keydown', function(e) {
       if (e.key === 'Escape') {
         const popup = document.getElementById('welcomePopup');
-        if (popup && popup.style.display === 'flex') {
+        if (popup && (popup.classList.contains('show') || popup.style.display === 'flex')) {
+          console.log('⌨️ Popup closed with Escape key');
           closeWelcomePopup();
         }
       }
     });
+    
+    // Debug function to manually show popup (for testing)
+    function debugShowPopup() {
+      console.log('🔧 Debug: Forcing popup to show');
+      const popup = document.getElementById('welcomePopup');
+      if (popup) {
+        popup.classList.remove('hidden');
+        popup.classList.add('show');
+        popup.style.display = 'flex';
+        popup.style.opacity = '1';
+        translatePage();
+      }
+    }
+    
+    // Debug function to reset popup (for testing)
+    function debugResetPopup() {
+      console.log('🔧 Debug: Resetting popup storage');
+      localStorage.removeItem('welcomePopupClosed');
+      sessionStorage.removeItem('welcomePopupShown');
+      location.reload();
+    }
   </script>
 </body>
 </html>
