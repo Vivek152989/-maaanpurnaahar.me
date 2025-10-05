@@ -1081,7 +1081,7 @@
         
         <!-- Enhanced My Account Section -->
         <div class="my-account-section">
-          <button class="account-btn" onclick="toggleAccountDropdown()">
+          <button class="account-btn" id="myAccountBtn">
             <span class="account-icon">👤</span>
             <span data-lang-key="my-account">My Account</span>
             <span class="dropdown-arrow">▼</span>
@@ -1650,7 +1650,7 @@
       translatePage();
       
       // Debug My Account section
-      const accountBtn = document.querySelector('.account-btn');
+      const accountBtn = document.getElementById('myAccountBtn');
       const accountDropdown = document.getElementById('accountDropdown');
       const myAccountSection = document.querySelector('.my-account-section');
       
@@ -1660,13 +1660,17 @@
       console.log('My Account Section:', myAccountSection ? '✅ Found' : '❌ Missing');
       
       if (accountBtn) {
-        console.log('Button onclick attribute:', accountBtn.getAttribute('onclick'));
+        console.log('🔧 DEBUG: Adding click event listener to My Account button');
         
-        // Add additional click event listener for debugging
+        // Add click event listener to handle dropdown toggle
         accountBtn.addEventListener('click', function(e) {
-          console.log('🖱️ DEBUG: My Account button clicked directly via addEventListener');
-          console.log('Event details:', e);
+          e.preventDefault();
+          e.stopPropagation();
+          console.log('🖱️ DEBUG: My Account button clicked via addEventListener');
+          toggleAccountDropdown();
         });
+      } else {
+        console.error('❌ ERROR: My Account button not found!');
       }
       
       console.log('✅ SUCCESS: Initialization complete');
