@@ -117,7 +117,7 @@
     }
     
     .lang-dropdown.show {
-      display: block;
+      display: block !important;
       animation: slideDown 0.3s ease;
     }
     
@@ -1065,7 +1065,7 @@
       <div class="nav-controls">
         <!-- Language Selector -->
         <div class="language-selector">
-          <button class="lang-btn" onclick="toggleLanguageDropdown()">
+          <button class="lang-btn" onclick="window.toggleLanguageDropdown(); console.log('Language button clicked!');">
             <span class="flag-icon" id="currentFlag">🇮🇳</span>
             <span id="currentLang" data-lang-key="lang-hindi">हिंदी</span>
             <span class="dropdown-arrow">▼</span>
@@ -1084,7 +1084,7 @@
         
         <!-- Enhanced My Account Section -->
         <div class="my-account-section">
-          <button class="account-btn" id="myAccountBtn" onclick="toggleMyAccount()">
+          <button class="account-btn" id="myAccountBtn" onclick="window.toggleMyAccount(); console.log('Button clicked directly!');">
             <span class="account-icon">👤</span>
             <span data-lang-key="my-account">My Account</span>
             <span class="dropdown-arrow">▼</span>
@@ -1397,28 +1397,27 @@
     
     // Simple My Account Toggle Function
     function toggleMyAccount() {
-      alert('My Account button clicked! 🎉'); // Temporary alert for testing
       console.log('🔧 My Account clicked!');
       const dropdown = document.getElementById('accountDropdown');
       
       if (dropdown) {
-        if (dropdown.style.display === 'block') {
+        const isVisible = dropdown.style.display === 'block' || dropdown.classList.contains('show');
+        
+        if (isVisible) {
           dropdown.style.display = 'none';
           dropdown.classList.remove('show');
-          console.log('✅ Dropdown closed');
+          console.log('✅ My Account dropdown closed');
         } else {
           dropdown.style.display = 'block';
           dropdown.classList.add('show');
-          console.log('✅ Dropdown opened');
-          // Ensure dropdown is positioned correctly
           dropdown.style.position = 'absolute';
           dropdown.style.top = '100%';
           dropdown.style.right = '0';
           dropdown.style.zIndex = '9999';
+          console.log('✅ My Account dropdown opened');
         }
       } else {
-        console.error('❌ Dropdown not found!');
-        alert('Error: Dropdown not found!');
+        console.error('❌ My Account dropdown not found!');
       }
     }
 
@@ -1836,6 +1835,62 @@
       sessionStorage.removeItem('welcomePopupShown');
       location.reload();
     }
+    
+    // Override with working functions
+    window.toggleMyAccount = function() {
+      console.log('🔧 My Account clicked - NEW FUNCTION!');
+      const dropdown = document.getElementById('accountDropdown');
+      
+      if (dropdown) {
+        const isVisible = dropdown.style.display === 'block' || dropdown.classList.contains('show');
+        
+        if (isVisible) {
+          dropdown.style.display = 'none';
+          dropdown.classList.remove('show');
+          console.log('✅ My Account dropdown closed');
+        } else {
+          dropdown.style.display = 'block';
+          dropdown.classList.add('show');
+          dropdown.style.position = 'absolute';
+          dropdown.style.top = '100%';
+          dropdown.style.right = '0';
+          dropdown.style.zIndex = '9999';
+          console.log('✅ My Account dropdown opened');
+        }
+      } else {
+        console.error('❌ My Account dropdown not found!');
+      }
+    };
+    
+    window.toggleLanguageDropdown = function() {
+      console.log('🌐 Language dropdown clicked - NEW FUNCTION!');
+      const dropdown = document.getElementById('langDropdown');
+      
+      if (dropdown) {
+        const isVisible = dropdown.style.display === 'block' || dropdown.classList.contains('show');
+        
+        if (isVisible) {
+          dropdown.style.display = 'none';
+          dropdown.classList.remove('show');
+        } else {
+          dropdown.style.display = 'block';
+          dropdown.classList.add('show');
+          dropdown.style.position = 'absolute';
+          dropdown.style.top = '100%';
+          dropdown.style.right = '0';
+          dropdown.style.zIndex = '9999';
+        }
+        console.log('✅ Language dropdown toggled');
+      } else {
+        console.error('❌ Language dropdown not found!');
+      }
+    };
+    
+    // Make other functions globally available
+    window.changeLanguage = changeLanguage;
+    window.debugShowPopup = debugShowPopup;
+    window.testDropdown = testDropdown;
+    
   </script>
 </body>
 </html>
