@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website Test - Maa Anpurna Aahar</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; }
+        .success { color: green; }
+        .error { color: red; }
+        .info { color: blue; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Website Optimization Test Results</h1>
+    
+    <div class="test-section">
+        <h2>📁 File Structure Test</h2>
+        <div id="file-test">Testing file structure...</div>
+    </div>
+    
+    <div class="test-section">
+        <h2>🎨 CSS Loading Test</h2>
+        <div id="css-test">Testing CSS loading...</div>
+    </div>
+    
+    <div class="test-section">
+        <h2>📱 JavaScript Modules Test</h2>
+        <div id="js-test">Testing JavaScript modules...</div>
+    </div>
+    
+    <div class="test-section">
+        <h2>🚀 PWA Features Test</h2>
+        <div id="pwa-test">Testing PWA features...</div>
+    </div>
+
+    <script>
+        // File Structure Test
+        function testFileStructure() {
+            const cssLink = document.querySelector('link[href="/assets/css/styles.css"]');
+            const manifestLink = document.querySelector('link[href="/manifest.json"]');
+            
+            if (cssLink && manifestLink) {
+                document.getElementById('file-test').innerHTML = '<span class="success">✅ External files properly linked</span>';
+            } else {
+                document.getElementById('file-test').innerHTML = '<span class="error">❌ Missing file links</span>';
+            }
+        }
+
+        // CSS Test
+        function testCSS() {
+            fetch('/assets/css/styles.css')
+                .then(response => {
+                    if (response.ok) {
+                        document.getElementById('css-test').innerHTML = '<span class="success">✅ CSS file loads successfully</span>';
+                    } else {
+                        document.getElementById('css-test').innerHTML = '<span class="error">❌ CSS file not found</span>';
+                    }
+                })
+                .catch(() => {
+                    document.getElementById('css-test').innerHTML = '<span class="error">❌ CSS loading error</span>';
+                });
+        }
+
+        // JavaScript Test
+        function testJS() {
+            Promise.all([
+                fetch('/assets/js/main.js'),
+                fetch('/assets/js/translations.js')
+            ]).then(responses => {
+                const allOK = responses.every(response => response.ok);
+                if (allOK) {
+                    document.getElementById('js-test').innerHTML = '<span class="success">✅ All JavaScript modules load successfully</span>';
+                } else {
+                    document.getElementById('js-test').innerHTML = '<span class="error">❌ Some JavaScript modules missing</span>';
+                }
+            }).catch(() => {
+                document.getElementById('js-test').innerHTML = '<span class="error">❌ JavaScript loading error</span>';
+            });
+        }
+
+        // PWA Test
+        function testPWA() {
+            Promise.all([
+                fetch('/manifest.json'),
+                fetch('/sw.js')
+            ]).then(responses => {
+                const allOK = responses.every(response => response.ok);
+                const swSupported = 'serviceWorker' in navigator;
+                
+                if (allOK && swSupported) {
+                    document.getElementById('pwa-test').innerHTML = '<span class="success">✅ PWA files available and Service Worker supported</span>';
+                } else {
+                    document.getElementById('pwa-test').innerHTML = '<span class="info">⚠️ PWA partially supported</span>';
+                }
+            }).catch(() => {
+                document.getElementById('pwa-test').innerHTML = '<span class="error">❌ PWA files missing</span>';
+            });
+        }
+
+        // Run tests
+        setTimeout(() => {
+            testFileStructure();
+            testCSS();
+            testJS();
+            testPWA();
+        }, 100);
+    </script>
+</body>
+</html>
