@@ -1,0 +1,165 @@
+{
+  "name": "Maa Anpurna Aahar - Handmade Food Products",
+  "short_name": "Maa Anpurna Aahar",
+  "description": "Fresh handmade food products, organic spices, traditional pickles, pure ghee and healthy snacks delivered to your door. Authentic taste with natural ingredients.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#ffffff",
+  "theme_color": "#ff9800",
+  "categories": ["food", "shopping", "lifestyle", "health"],
+  "lang": "hi",
+  "dir": "ltr",
+  
+  "icons": [
+    {
+      "src": "/assets/images/icon-72x72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/assets/images/icon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/assets/images/icon-128x128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/assets/images/icon-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/assets/images/icon-152x152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/assets/images/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/assets/images/icon-256x256.png",
+      "sizes": "256x256",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/assets/images/icon-384x384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/assets/images/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  
+  "shortcuts": [
+    {
+      "name": "Products",
+      "short_name": "Products",
+      "description": "Browse our handmade food products",
+      "url": "/products.html",
+      "icons": [
+        {
+          "src": "/assets/images/shortcut-products.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Cart",
+      "short_name": "Cart",
+      "description": "View your shopping cart",
+      "url": "/cart.html",
+      "icons": [
+        {
+          "src": "/assets/images/shortcut-cart.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
+    },
+    {
+      "name": "Contact",
+      "short_name": "Contact",
+      "description": "Get in touch with us",
+      "url": "/contact.html",
+      "icons": [
+        {
+          "src": "/assets/images/shortcut-contact.png",
+          "sizes": "96x96",
+          "type": "image/png"
+        }
+      ]
+    }
+  ],
+  
+  "screenshots": [
+    {
+      "src": "/assets/images/screenshot-home.png",
+      "sizes": "540x720",
+      "type": "image/png",
+      "label": "Home page showing featured products"
+    },
+    {
+      "src": "/assets/images/screenshot-products.png",
+      "sizes": "540x720",
+      "type": "image/png",
+      "label": "Products page with categories"
+    },
+    {
+      "src": "/assets/images/screenshot-cart.png",
+      "sizes": "540x720",
+      "type": "image/png",
+      "label": "Shopping cart with items"
+    }
+  ],
+  
+  "related_applications": [
+    {
+      "platform": "play",
+      "url": "https://play.google.com/store/apps/details?id=com.maanpurnaahar.app",
+      "id": "com.maanpurnaahar.app"
+    }
+  ],
+  
+  "prefer_related_applications": false,
+  
+  "share_target": {
+    "action": "/share",
+    "method": "GET",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url"
+    }
+  },
+  
+  "protocol_handlers": [
+    {
+      "protocol": "web+maafood",
+      "url": "/product?id=%s"
+    }
+  ],
+  
+  "launch_handler": {
+    "client_mode": "focus-existing"
+  }
+}
