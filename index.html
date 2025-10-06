@@ -1397,45 +1397,25 @@
     
     // Simple My Account Toggle Function
     function toggleMyAccount() {
-      alert('My Account button clicked! 🎉'); // Temporary alert for testing
-      console.log('🔧 My Account clicked!');
       const dropdown = document.getElementById('accountDropdown');
       
       if (dropdown) {
         if (dropdown.style.display === 'block') {
           dropdown.style.display = 'none';
           dropdown.classList.remove('show');
-          console.log('✅ Dropdown closed');
         } else {
           dropdown.style.display = 'block';
           dropdown.classList.add('show');
-          console.log('✅ Dropdown opened');
           // Ensure dropdown is positioned correctly
           dropdown.style.position = 'absolute';
           dropdown.style.top = '100%';
           dropdown.style.right = '0';
           dropdown.style.zIndex = '9999';
         }
-      } else {
-        console.error('❌ Dropdown not found!');
-        alert('Error: Dropdown not found!');
       }
     }
 
-    // Test function for debugging
-    function testDropdown() {
-      console.log('🧪 TEST: Manual dropdown test function called');
-      const dropdown = document.getElementById('accountDropdown');
-      if (dropdown) {
-        console.log('🧪 TEST: Found dropdown element');
-        dropdown.classList.add('show');
-        dropdown.style.display = 'block';
-        dropdown.style.opacity = '1';
-        console.log('🧪 TEST: Forced dropdown to show');
-      } else {
-        console.log('❌ TEST: Dropdown element not found');
-      }
-    }
+
 
     // Backup toggle function - calls the main function
     function toggleAccountDropdown() {
@@ -1443,23 +1423,18 @@
     }
     
     function closeAccountDropdown() {
-      console.log('🔧 DEBUG: closeAccountDropdown called');
       const dropdown = document.getElementById('accountDropdown');
       const btn = document.querySelector('.account-btn');
       
       if (dropdown) {
         dropdown.classList.remove('show');
-        console.log('✅ SUCCESS: Dropdown closed');
       }
       if (btn) {
         btn.classList.remove('active');
-        console.log('✅ SUCCESS: Button deactivated');
       }
     }
     
     function showAuthTab(tabName) {
-      console.log('🔧 DEBUG: showAuthTab called with:', tabName);
-      
       // Update tab buttons
       document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
       event.target.classList.add('active');
@@ -1469,18 +1444,15 @@
       const registerForm = document.getElementById('registerForm');
       
       if (!loginForm || !registerForm) {
-        console.error('❌ ERROR: Auth forms not found!');
         return;
       }
       
       if (tabName === 'login') {
         loginForm.style.display = 'block';
         registerForm.style.display = 'none';
-        console.log('✅ SUCCESS: Login tab shown');
       } else {
         loginForm.style.display = 'none';
         registerForm.style.display = 'block';
-        console.log('✅ SUCCESS: Register tab shown');
       }
     }
     
@@ -1653,7 +1625,7 @@
     
     // Initialize language and account functionality on page load
     document.addEventListener('DOMContentLoaded', function() {
-      console.log('🔧 DEBUG: Page loaded, initializing...');
+
       
       // Initialize language
       updateLanguageUI();
@@ -1664,16 +1636,7 @@
       const accountDropdown = document.getElementById('accountDropdown');
       const myAccountSection = document.querySelector('.my-account-section');
       
-      console.log('🔍 ELEMENTS CHECK:');
-      console.log('Account Button:', accountBtn ? '✅ Found' : '❌ Missing');
-      console.log('Account Dropdown:', accountDropdown ? '✅ Found' : '❌ Missing');
-      console.log('My Account Section:', myAccountSection ? '✅ Found' : '❌ Missing');
-      
-      if (accountBtn) {
-        console.log('🔧 DEBUG: My Account button found and ready');
-      } else {
-        console.error('❌ ERROR: My Account button not found!');
-      }
+
       
       // Add click-outside handler to close dropdown
       document.addEventListener('click', function(e) {
@@ -1688,7 +1651,7 @@
         }
       });
       
-      console.log('✅ SUCCESS: Initialization complete');
+
     });
     
     // Welcome Popup Functions - Enhanced with Translation Support
@@ -1708,7 +1671,7 @@
           const today = new Date().toDateString();
           localStorage.setItem('welcomePopupClosed', today);
           
-          console.log('Popup closed and saved to localStorage');
+
         }, 300);
       }
     }
@@ -1718,7 +1681,7 @@
       const popup = document.getElementById('welcomePopup');
       
       if (!popup) {
-        console.error('Popup element not found!');
+
         return;
       }
       
@@ -1727,7 +1690,7 @@
       const lastClosed = localStorage.getItem('welcomePopupClosed');
       const sessionShown = sessionStorage.getItem('welcomePopupShown');
       
-      console.log('Popup check:', { today, lastClosed, sessionShown });
+
       
       // Show popup if conditions are met
       if (lastClosed !== today && !sessionShown) {
@@ -1751,15 +1714,15 @@
         // Translate popup content
         translatePage();
         
-        console.log('✅ Welcome popup displayed successfully!');
+
       } else {
-        console.log('❌ Popup not shown - conditions not met');
+
       }
     }
 
     // Initialize popup when page loads - Multiple event listeners for reliability
     document.addEventListener('DOMContentLoaded', function() {
-      console.log('🚀 DOM Content Loaded - Initializing popup...');
+
       // Show popup after 1.5 seconds
       setTimeout(() => {
         showWelcomePopup();
@@ -1767,12 +1730,12 @@
     });
     
     window.addEventListener('load', function() {
-      console.log('🌟 Window fully loaded');
+
       // Backup popup show in case DOMContentLoaded didn't work
       setTimeout(() => {
         const popup = document.getElementById('welcomePopup');
         if (popup && !popup.classList.contains('show') && popup.style.display !== 'flex') {
-          console.log('🔄 Backup popup initialization');
+
           showWelcomePopup();
         }
       }, 2000);
@@ -1786,7 +1749,7 @@
         // Close popup when clicking outside
         popup.addEventListener('click', function(e) {
           if (e.target === popup) {
-            console.log('🖱️ Popup closed by clicking outside');
+
             closeWelcomePopup();
           }
         });
@@ -1799,9 +1762,9 @@
           });
         }
         
-        console.log('✅ Popup event listeners attached');
+
       } else {
-        console.error('❌ Popup element not found for event listeners!');
+
       }
     });
 
@@ -1810,32 +1773,13 @@
       if (e.key === 'Escape') {
         const popup = document.getElementById('welcomePopup');
         if (popup && (popup.classList.contains('show') || popup.style.display === 'flex')) {
-          console.log('⌨️ Popup closed with Escape key');
+
           closeWelcomePopup();
         }
       }
     });
     
-    // Debug function to manually show popup (for testing)
-    function debugShowPopup() {
-      console.log('🔧 Debug: Forcing popup to show');
-      const popup = document.getElementById('welcomePopup');
-      if (popup) {
-        popup.classList.remove('hidden');
-        popup.classList.add('show');
-        popup.style.display = 'flex';
-        popup.style.opacity = '1';
-        translatePage();
-      }
-    }
-    
-    // Debug function to reset popup (for testing)
-    function debugResetPopup() {
-      console.log('🔧 Debug: Resetting popup storage');
-      localStorage.removeItem('welcomePopupClosed');
-      sessionStorage.removeItem('welcomePopupShown');
-      location.reload();
-    }
+
   </script>
 </body>
 </html>
