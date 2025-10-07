@@ -16,8 +16,8 @@ Disallow: /.env
 Disallow: /node_modules/
 Disallow: /.git/
 
-# Sitemap location
-Sitemap: https://maaanpurnaahar.me/sitemap.xml
+# Sitemap location - CORRECTED for GitHub Pages
+Sitemap: https://vivek152989.github.io/-maaanpurnaahar.me/sitemap.xml
 
 # Crawl-delay (optional)
 Crawl-delay: 1
