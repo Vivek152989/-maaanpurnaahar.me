@@ -310,13 +310,23 @@
       padding: 20px;
       margin-top: 10px;
       width: 320px;
-      display: none;
+      display: none !important;
+      opacity: 0;
+      visibility: hidden;
       z-index: 9999;
       border: 1px solid #e9ecef;
+      transition: all 0.3s ease;
     }
     
     .account-dropdown.show {
       display: block !important;
+      opacity: 1 !important;
+      visibility: visible !important;
+    }
+    
+    /* Ensure the my-account-section has proper positioning */
+    .my-account-section {
+      position: relative;
     }
     
     .dropdown-header {
@@ -1568,30 +1578,49 @@
       btn.classList.remove('active');
     }
     
-    // Simple My Account Toggle Function
+    // Enhanced My Account Toggle Function
     function toggleMyAccount() {
+      console.log('toggleMyAccount called');
       const dropdown = document.getElementById('accountDropdown');
       const accountBtn = document.getElementById('myAccountBtn');
       
-      // Debug: Check if elements exist
+      console.log('Dropdown element:', dropdown);
+      console.log('Account button:', accountBtn);
+      
       if (!dropdown) {
-        alert('Dropdown element not found!');
+        console.error('Dropdown element not found!');
         return;
       }
       
+      // Close other dropdowns first
+      closeLanguageDropdown();
+      
       if (dropdown.classList.contains('show')) {
         // Hide dropdown
+        console.log('Hiding dropdown');
         dropdown.classList.remove('show');
+        dropdown.style.display = 'none';
         if (accountBtn) accountBtn.classList.remove('active');
       } else {
         // Show dropdown
+        console.log('Showing dropdown');
         dropdown.classList.add('show');
-        if (accountBtn) accountBtn.classList.add('active');
-        
-        // Force visibility for debugging
         dropdown.style.display = 'block';
         dropdown.style.visibility = 'visible';
+        dropdown.style.opacity = '1';
         dropdown.style.zIndex = '9999';
+        dropdown.style.position = 'absolute';
+        dropdown.style.top = '100%';
+        dropdown.style.right = '0';
+        dropdown.style.background = 'white';
+        dropdown.style.borderRadius = '15px';
+        dropdown.style.boxShadow = '0 10px 30px rgba(0,0,0,0.3)';
+        dropdown.style.padding = '20px';
+        dropdown.style.width = '320px';
+        dropdown.style.border = '1px solid #e9ecef';
+        if (accountBtn) accountBtn.classList.add('active');
+        
+        console.log('Dropdown should now be visible');
       }
     }
     
@@ -1609,9 +1638,6 @@
         alert('Dropdown element not found!');
       }
     }
-    }
-
-
 
     // Backup toggle function - calls the main function
     function toggleAccountDropdown() {
@@ -1671,91 +1697,7 @@
       translatePage();
     });
     
-    // Language Translation System
-    const translations = {
-      hi: {
-        'site-title': 'माँ अन्नपूर्णा आहार',
-        'nav-home': 'होम',
-        'nav-products': 'उत्पाद',
-        'nav-cart': 'कार्ट',
-        'nav-contact': 'संपर्क',
-        'lang-hindi': 'हिंदी',
-        'lang-english': 'English',
-        'my-account': 'मेरा खाता',
-        'tab-login': 'लॉगिन',
-        'tab-register': 'रजिस्टर',
-        'placeholder-email': 'ईमेल',
-        'placeholder-password': 'पासवर्ड',
-        'placeholder-name': 'पूरा नाम',
-        'placeholder-phone': 'फोन नंबर',
-        'btn-login': 'लॉगिन करें',
-        'btn-register': 'रजिस्टर करें',
-        'or': 'या',
-        'google-login': 'Google से लॉगिन करें',
-        'google-register': 'Google से रजिस्टर करें',
-        'hero-badge': '100% प्राकृतिक और ताजा',
-        'hero-title': '🌾 माँ अन्नपूर्णा आहार',
-        'hero-subtitle': 'घर का बनाया हुआ, सेहतमंद और स्वादिष्ट खाना सीधा आप तक। हमारी handmade products का मजा लें!',
-        'stat-products': 'उत्पाद',
-        'stat-customers': 'खुश ग्राहक',
-        'stat-cities': 'शहर',
-        'btn-shop-now': 'अभी खरीदारी करें',
-        'btn-learn-more': 'और जानें',
-        'popup-title': 'माँ अन्नपूर्णा आहार में आपका स्वागत है!',
-        'popup-message': 'नमस्ते! आप हमारी वेबसाइट पर आए, इसके लिए धन्यवाद! हम घर का बना हुआ fresh और healthy food आप तक पहुंचाते हैं। हमारी handmade products का मजा लें और healthy life जिएं!',
-        'popup-explore': 'उत्पाद देखें',
-        'popup-continue': 'ब्राउज़िंग जारी रखें',
-        'account-options': 'खाता विकल्प',
-        'nav-login': 'लॉग इन',
-        'nav-register': 'रजिस्टर करें',
-        'nav-profile': 'मेरी प्रोफाइल',
-        'account-options': 'खाता विकल्प',
-        'nav-login': 'लॉग इन',
-        'nav-register': 'रजिस्टर करें',
-        'nav-profile': 'मेरी प्रोफाइल'
-      },
-      en: {
-        'site-title': 'Maa Anpurna Aahar',
-        'nav-home': 'Home',
-        'nav-products': 'Products',
-        'nav-cart': 'Cart',
-        'nav-contact': 'Contact',
-        'lang-hindi': 'हिंदी',
-        'lang-english': 'English',
-        'my-account': 'My Account',
-        'tab-login': 'Login',
-        'tab-register': 'Register',
-        'placeholder-email': 'Email',
-        'placeholder-password': 'Password',
-        'placeholder-name': 'Full Name',
-        'placeholder-phone': 'Phone Number',
-        'btn-login': 'Login',
-        'btn-register': 'Register',
-        'or': 'or',
-        'google-login': 'Continue with Google',
-        'google-register': 'Register with Google',
-        'hero-badge': '100% Natural & Fresh',
-        'hero-title': '🌾 Maa Anpurna Aahar',
-        'hero-subtitle': 'Homemade, healthy and delicious food delivered straight to you. Enjoy our handmade products!',
-        'stat-products': 'Products',
-        'stat-customers': 'Happy Customers',
-        'stat-cities': 'Cities',
-        'btn-shop-now': 'Shop Now',
-        'btn-learn-more': 'Learn More',
-        'popup-title': 'Welcome to Maa Anpurna Aahar!',
-        'popup-message': 'Namaste! Thank you for visiting our website! We deliver fresh and healthy homemade food straight to you. Enjoy our handmade products and live a healthy life!',
-        'popup-explore': 'Explore Products',
-        'popup-continue': 'Continue Browsing',
-        'account-options': 'Account Options',
-        'nav-login': 'Login',
-        'nav-register': 'Register',
-        'nav-profile': 'My Profile',
-        'account-options': 'Account Options',
-        'nav-login': 'Login',
-        'nav-register': 'Register',
-        'nav-profile': 'My Profile'
-      }
-    };
+
     
     // Language Management
     let currentLanguage = localStorage.getItem('preferred-language') || 'hi';
