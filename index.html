@@ -1919,5 +1919,54 @@
     
 
   </script>
+
+  <!-- Fix for missing functions -->
+  <script>
+    // Ensure functions are globally available
+    window.toggleMyAccount = function() {
+      console.log('toggleMyAccount called');
+      const dropdown = document.getElementById('accountDropdown');
+      if (!dropdown) {
+        console.error('Dropdown not found');
+        return;
+      }
+      
+      if (dropdown.classList.contains('show')) {
+        dropdown.classList.remove('show');
+      } else {
+        dropdown.classList.add('show');
+      }
+    };
+    
+    window.toggleLanguageDropdown = function() {
+      console.log('toggleLanguageDropdown called');
+      const dropdown = document.getElementById('langDropdown');
+      const btn = document.querySelector('.lang-btn');
+      if (dropdown && btn) {
+        dropdown.classList.toggle('show');
+        btn.classList.toggle('active');
+      }
+    };
+    
+    window.changeLanguage = function(lang) {
+      console.log('changeLanguage called with:', lang);
+      // Simple language change without complex translation system
+      const currentLangEl = document.getElementById('currentLang');
+      const currentFlagEl = document.getElementById('currentFlag');
+      
+      if (currentLangEl && currentFlagEl) {
+        if (lang === 'hi') {
+          currentLangEl.textContent = 'हिंदी';
+          currentFlagEl.textContent = '🇮🇳';
+        } else {
+          currentLangEl.textContent = 'English';
+          currentFlagEl.textContent = '🇺🇸';
+        }
+      }
+      
+      localStorage.setItem('preferred-language', lang);
+      if (window.toggleLanguageDropdown) window.toggleLanguageDropdown();
+    };
+  </script>
 </body>
 </html>
