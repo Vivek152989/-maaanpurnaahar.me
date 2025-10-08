@@ -289,6 +289,13 @@
       border-color: #f39c12;
     }
     
+    .account-btn.active {
+      background: linear-gradient(135deg, #a93226, #8b2e1f);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(169, 50, 38, 0.6);
+      border-color: #f39c12;
+    }
+    
     .account-icon {
       font-size: 1.1rem;
     }
@@ -1514,21 +1521,30 @@
     // Simple My Account Toggle Function
     function toggleMyAccount() {
       const dropdown = document.getElementById('accountDropdown');
+      const accountBtn = document.getElementById('myAccountBtn');
       
       if (dropdown) {
-        if (dropdown.style.display === 'block') {
-          dropdown.style.display = 'none';
+        if (dropdown.classList.contains('show')) {
+          // Hide dropdown
           dropdown.classList.remove('show');
+          dropdown.style.display = 'none';
+          dropdown.style.opacity = '0';
+          dropdown.style.transform = 'translateY(-10px)';
+          if (accountBtn) accountBtn.classList.remove('active');
         } else {
+          // Show dropdown
           dropdown.style.display = 'block';
           dropdown.classList.add('show');
-          // Ensure dropdown is positioned correctly
+          dropdown.style.opacity = '1';
+          dropdown.style.transform = 'translateY(0)';
           dropdown.style.position = 'absolute';
           dropdown.style.top = '100%';
           dropdown.style.right = '0';
           dropdown.style.zIndex = '9999';
+          if (accountBtn) accountBtn.classList.add('active');
         }
       }
+    }
     }
 
 
