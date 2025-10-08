@@ -311,18 +311,68 @@
       margin-top: 10px;
       width: 320px;
       display: none;
-      z-index: 1001;
+      z-index: 9999;
       border: 1px solid #e9ecef;
-      opacity: 0;
-      transform: translateY(-10px);
-      transition: all 0.3s ease;
     }
     
     .account-dropdown.show {
       display: block !important;
-      opacity: 1 !important;
-      transform: translateY(0) !important;
-      animation: slideDown 0.3s ease;
+    }
+    
+    .dropdown-header {
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #e9ecef;
+    }
+    
+    .dropdown-title {
+      font-weight: 600;
+      color: #2c3e50;
+      font-size: 0.9rem;
+    }
+    
+    .dropdown-links {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    
+    .dropdown-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 15px;
+      text-decoration: none;
+      color: #495057;
+      border-radius: 8px;
+      transition: all 0.2s ease;
+      font-size: 0.95rem;
+    }
+    
+    .dropdown-link:hover {
+      background: #f8f9fa;
+      color: #ff9800;
+      transform: translateX(5px);
+    }
+    
+    .link-icon {
+      font-size: 1.1rem;
+    }
+    
+    .link-arrow {
+      margin-left: auto;
+      color: #adb5bd;
+      transition: color 0.2s ease;
+    }
+    
+    .dropdown-link:hover .link-arrow {
+      color: #ff9800;
+    }
+    
+    .dropdown-divider {
+      height: 1px;
+      background: #e9ecef;
+      margin: 8px 0;
     }
     
     /* Auth Tabs */
@@ -1523,26 +1573,40 @@
       const dropdown = document.getElementById('accountDropdown');
       const accountBtn = document.getElementById('myAccountBtn');
       
+      // Debug: Check if elements exist
+      if (!dropdown) {
+        alert('Dropdown element not found!');
+        return;
+      }
+      
+      if (dropdown.classList.contains('show')) {
+        // Hide dropdown
+        dropdown.classList.remove('show');
+        if (accountBtn) accountBtn.classList.remove('active');
+      } else {
+        // Show dropdown
+        dropdown.classList.add('show');
+        if (accountBtn) accountBtn.classList.add('active');
+        
+        // Force visibility for debugging
+        dropdown.style.display = 'block';
+        dropdown.style.visibility = 'visible';
+        dropdown.style.zIndex = '9999';
+      }
+    }
+    
+    // Test function - can be called from browser console
+    function testDropdown() {
+      const dropdown = document.getElementById('accountDropdown');
       if (dropdown) {
-        if (dropdown.classList.contains('show')) {
-          // Hide dropdown
-          dropdown.classList.remove('show');
-          dropdown.style.display = 'none';
-          dropdown.style.opacity = '0';
-          dropdown.style.transform = 'translateY(-10px)';
-          if (accountBtn) accountBtn.classList.remove('active');
-        } else {
-          // Show dropdown
-          dropdown.style.display = 'block';
-          dropdown.classList.add('show');
-          dropdown.style.opacity = '1';
-          dropdown.style.transform = 'translateY(0)';
-          dropdown.style.position = 'absolute';
-          dropdown.style.top = '100%';
-          dropdown.style.right = '0';
-          dropdown.style.zIndex = '9999';
-          if (accountBtn) accountBtn.classList.add('active');
-        }
+        dropdown.style.display = 'block';
+        dropdown.style.background = 'red';
+        dropdown.style.width = '300px';
+        dropdown.style.height = '200px';
+        dropdown.innerHTML = '<p style="color: white; padding: 20px;">TEST - Dropdown is working!</p>';
+        alert('Test dropdown shown. Check the page!');
+      } else {
+        alert('Dropdown element not found!');
       }
     }
     }
