@@ -280,6 +280,10 @@
       box-shadow: 0 4px 12px rgba(231, 76, 60, 0.4);
       min-width: 140px;
       justify-content: center;
+      position: relative;
+      z-index: 101;
+      pointer-events: auto;
+      touch-action: auto;
     }
     
     .account-btn:hover {
@@ -316,12 +320,14 @@
       z-index: 9999;
       border: 1px solid #e9ecef;
       transition: all 0.3s ease;
+      pointer-events: none;
     }
     
     .account-dropdown.show {
       display: block !important;
       opacity: 1 !important;
       visibility: visible !important;
+      pointer-events: auto !important;
     }
     
     /* Ensure the my-account-section has proper positioning */
@@ -1584,49 +1590,37 @@
       btn.classList.remove('active');
     }
     
-    // Enhanced My Account Toggle Function
+    // My Account Toggle Function
     function toggleMyAccount() {
-      console.log('toggleMyAccount called');
-      const dropdown = document.getElementById('accountDropdown');
-      const accountBtn = document.getElementById('myAccountBtn');
-      
-      console.log('Dropdown element:', dropdown);
-      console.log('Account button:', accountBtn);
-      
-      if (!dropdown) {
-        console.error('Dropdown element not found!');
-        return;
-      }
-      
-      // Close other dropdowns first
-      closeLanguageDropdown();
-      
-      if (dropdown.classList.contains('show')) {
-        // Hide dropdown
-        console.log('Hiding dropdown');
-        dropdown.classList.remove('show');
-        dropdown.style.display = 'none';
-        if (accountBtn) accountBtn.classList.remove('active');
-      } else {
-        // Show dropdown
-        console.log('Showing dropdown');
-        dropdown.classList.add('show');
-        dropdown.style.display = 'block';
-        dropdown.style.visibility = 'visible';
-        dropdown.style.opacity = '1';
-        dropdown.style.zIndex = '9999';
-        dropdown.style.position = 'absolute';
-        dropdown.style.top = '100%';
-        dropdown.style.right = '0';
-        dropdown.style.background = 'white';
-        dropdown.style.borderRadius = '15px';
-        dropdown.style.boxShadow = '0 10px 30px rgba(0,0,0,0.3)';
-        dropdown.style.padding = '20px';
-        dropdown.style.width = '320px';
-        dropdown.style.border = '1px solid #e9ecef';
-        if (accountBtn) accountBtn.classList.add('active');
+      try {
+        const dropdown = document.getElementById('accountDropdown');
+        const accountBtn = document.getElementById('myAccountBtn');
         
-        console.log('Dropdown should now be visible');
+        if (!dropdown) {
+          console.error('[ERROR] accountDropdown element not found');
+          return false;
+        }
+        
+        // Close language dropdown if open
+        try { 
+          closeLanguageDropdown(); 
+        } catch (e) { 
+          console.warn('Could not close language dropdown', e); 
+        }
+        
+        // Toggle the show class on dropdown
+        const isNowShown = dropdown.classList.toggle('show');
+        
+        // Toggle active class on button
+        if (accountBtn) {
+          accountBtn.classList.toggle('active');
+        }
+        
+        console.log('[toggleMyAccount] Dropdown now shown:', isNowShown);
+        return isNowShown;
+      } catch (err) {
+        console.error('[ERROR in toggleMyAccount]', err);
+        return false;
       }
     }
     
@@ -1645,21 +1639,12 @@
       }
     }
 
-    // Backup toggle function - calls the main function
-    function toggleAccountDropdown() {
-      toggleMyAccount();
-    }
-    
+    // Close account dropdown
     function closeAccountDropdown() {
       const dropdown = document.getElementById('accountDropdown');
-      const btn = document.querySelector('.account-btn');
-      
-      if (dropdown) {
-        dropdown.classList.remove('show');
-      }
-      if (btn) {
-        btn.classList.remove('active');
-      }
+      const btn = document.getElementById('myAccountBtn');
+      if (dropdown) dropdown.classList.remove('show');
+      if (btn) btn.classList.remove('active');
     }
     
     function showAuthTab(tabName) {
@@ -1705,97 +1690,19 @@
     
 
     
-    // Language Management
-    let currentLanguage = localStorage.getItem('preferred-language') || 'hi';
-    
-    function changeLanguage(lang) {
-      currentLanguage = lang;
-      localStorage.setItem('preferred-language', lang);
-      updateLanguageUI();
-      translatePage();
-      closeLanguageDropdown();
-    }
-    
-    function updateLanguageUI() {
-      const currentLangEl = document.getElementById('currentLang');
-      const currentFlagEl = document.getElementById('currentFlag');
-      
-      if (currentLanguage === 'hi') {
-        currentLangEl.textContent = 'हिंदी';
-        currentFlagEl.textContent = '🇮🇳';
-      } else {
-        currentLangEl.textContent = 'English';
-        currentFlagEl.textContent = '🇺🇸';
-      }
-    }
-    
-    function translatePage() {
-      const elements = document.querySelectorAll('[data-lang-key]');
-      elements.forEach(element => {
-        const key = element.getAttribute('data-lang-key');
-        if (translations[currentLanguage] && translations[currentLanguage][key]) {
-          if (element.tagName === 'INPUT') {
-            element.placeholder = translations[currentLanguage][key];
-          } else {
-            element.textContent = translations[currentLanguage][key];
-          }
-        }
-      });
-    }
-    
-    function toggleLanguageDropdown() {
-      const dropdown = document.getElementById('langDropdown');
-      const btn = document.querySelector('.lang-btn');
-      dropdown.classList.toggle('show');
-      btn.classList.toggle('active');
-    }
-    
-    function closeLanguageDropdown() {
-      const dropdown = document.getElementById('langDropdown');
-      const btn = document.querySelector('.lang-btn');
-      dropdown.classList.remove('show');
-      btn.classList.remove('active');
-    }
-    
-    // Close dropdowns when clicking outside
+    // Close dropdowns when clicking outside (shared handler)
     document.addEventListener('click', function(event) {
       if (!event.target.closest('.language-selector')) {
-        closeLanguageDropdown();
+        try { closeLanguageDropdown(); } catch (e) {}
       }
       if (!event.target.closest('.my-account-section')) {
-        closeAccountDropdown();
+        try { closeAccountDropdown(); } catch (e) {}
       }
     });
-    
-    // Initialize language and account functionality on page load
+
+    // Initialize language and translation on DOM load
     document.addEventListener('DOMContentLoaded', function() {
-
-      
-      // Initialize language
-      updateLanguageUI();
-      translatePage();
-      
-      // Debug My Account section
-      const accountBtn = document.getElementById('myAccountBtn');
-      const accountDropdown = document.getElementById('accountDropdown');
-      const myAccountSection = document.querySelector('.my-account-section');
-      
-
-      
-      // Add click-outside handler to close dropdown
-      document.addEventListener('click', function(e) {
-        const dropdown = document.getElementById('accountDropdown');
-        const accountSection = document.querySelector('.my-account-section');
-        
-        if (dropdown && accountSection) {
-          if (!accountSection.contains(e.target)) {
-            dropdown.style.display = 'none';
-            dropdown.classList.remove('show');
-          }
-        }
-      });
-      
-
+      try { updateLanguageUI(); translatePage(); } catch (e) {}
     });
     
     // Welcome Popup Functions - Enhanced with Translation Support
@@ -1923,56 +1830,45 @@
       }
     });
     
-
-  </script>
-
-  <!-- Fix for missing functions -->
-  <script>
-    // Ensure functions are globally available
-    window.toggleMyAccount = function() {
-      console.log('toggleMyAccount called');
+    // INITIALIZATION: Ensure My Account button works on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('[INIT] Initializing My Account dropdown...');
+      
+      // Get the button and dropdown elements
+      const btn = document.getElementById('myAccountBtn');
       const dropdown = document.getElementById('accountDropdown');
-      if (!dropdown) {
-        console.error('Dropdown not found');
-        return;
-      }
       
-      if (dropdown.classList.contains('show')) {
-        dropdown.classList.remove('show');
+      if (!btn) {
+        console.error('[INIT ERROR] myAccountBtn not found in DOM');
       } else {
-        dropdown.classList.add('show');
-      }
-    };
-    
-    window.toggleLanguageDropdown = function() {
-      console.log('toggleLanguageDropdown called');
-      const dropdown = document.getElementById('langDropdown');
-      const btn = document.querySelector('.lang-btn');
-      if (dropdown && btn) {
-        dropdown.classList.toggle('show');
-        btn.classList.toggle('active');
-      }
-    };
-    
-    window.changeLanguage = function(lang) {
-      console.log('changeLanguage called with:', lang);
-      // Simple language change without complex translation system
-      const currentLangEl = document.getElementById('currentLang');
-      const currentFlagEl = document.getElementById('currentFlag');
-      
-      if (currentLangEl && currentFlagEl) {
-        if (lang === 'hi') {
-          currentLangEl.textContent = 'हिंदी';
-          currentFlagEl.textContent = '🇮🇳';
-        } else {
-          currentLangEl.textContent = 'English';
-          currentFlagEl.textContent = '🇺🇸';
+        console.log('[INIT] myAccountBtn found, setting up click handler');
+        
+        // Remove any previous click handlers by cloning and replacing
+        const newBtn = btn.cloneNode(true);
+        btn.parentNode.replaceChild(newBtn, btn);
+        
+        // Add fresh click handler
+        const freshBtn = document.getElementById('myAccountBtn');
+        if (freshBtn) {
+          freshBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('[CLICK] My Account button clicked');
+            toggleMyAccount();
+          });
+          console.log('[INIT] Click handler attached to myAccountBtn');
         }
       }
       
-      localStorage.setItem('preferred-language', lang);
-      if (window.toggleLanguageDropdown) window.toggleLanguageDropdown();
-    };
+      if (!dropdown) {
+        console.error('[INIT ERROR] accountDropdown not found in DOM');
+      } else {
+        console.log('[INIT] accountDropdown found and ready');
+      }
+    });
+
   </script>
+
+  <!-- End of scripts -->
 </body>
 </html>
