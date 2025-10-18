@@ -1186,6 +1186,18 @@
         display: none;
       }
       
+      /* IMPORTANT: Keep account dropdown visible on mobile */
+      .account-dropdown.show {
+        display: block !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        pointer-events: auto !important;
+      }
+      
+      .account-dropdown {
+        width: 280px;
+      }
+      
       .hero h1 {
         font-size: 2rem;
       }
@@ -1590,38 +1602,10 @@
       btn.classList.remove('active');
     }
     
-    // My Account Toggle Function
+    // My Account Toggle Function - Simple and Direct
     function toggleMyAccount() {
-      try {
-        const dropdown = document.getElementById('accountDropdown');
-        const accountBtn = document.getElementById('myAccountBtn');
-        
-        if (!dropdown) {
-          console.error('[ERROR] accountDropdown element not found');
-          return false;
-        }
-        
-        // Close language dropdown if open
-        try { 
-          closeLanguageDropdown(); 
-        } catch (e) { 
-          console.warn('Could not close language dropdown', e); 
-        }
-        
-        // Toggle the show class on dropdown
-        const isNowShown = dropdown.classList.toggle('show');
-        
-        // Toggle active class on button
-        if (accountBtn) {
-          accountBtn.classList.toggle('active');
-        }
-        
-        console.log('[toggleMyAccount] Dropdown now shown:', isNowShown);
-        return isNowShown;
-      } catch (err) {
-        console.error('[ERROR in toggleMyAccount]', err);
-        return false;
-      }
+      console.log('toggleMyAccount called');
+      handleAccountClick({ preventDefault: () => {}, stopPropagation: () => {} });
     }
     
     // Test function - can be called from browser console
@@ -1830,41 +1814,125 @@
       }
     });
     
-    // INITIALIZATION: Ensure My Account button works on page load
-    document.addEventListener('DOMContentLoaded', function() {
-      console.log('[INIT] Initializing My Account dropdown...');
+    // MASTER INITIALIZATION: Ultimate My Account button fix
+    function initializeAccountDropdown() {
+      console.log('=== ACCOUNT DROPDOWN INITIALIZATION ===');
       
-      // Get the button and dropdown elements
       const btn = document.getElementById('myAccountBtn');
       const dropdown = document.getElementById('accountDropdown');
       
+      // STEP 1: Verify elements exist
       if (!btn) {
-        console.error('[INIT ERROR] myAccountBtn not found in DOM');
-      } else {
-        console.log('[INIT] myAccountBtn found, setting up click handler');
-        
-        // Remove any previous click handlers by cloning and replacing
-        const newBtn = btn.cloneNode(true);
-        btn.parentNode.replaceChild(newBtn, btn);
-        
-        // Add fresh click handler
-        const freshBtn = document.getElementById('myAccountBtn');
-        if (freshBtn) {
-          freshBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            console.log('[CLICK] My Account button clicked');
-            toggleMyAccount();
-          });
-          console.log('[INIT] Click handler attached to myAccountBtn');
-        }
+        console.error('❌ ERROR: myAccountBtn not found!');
+        return false;
+      }
+      if (!dropdown) {
+        console.error('❌ ERROR: accountDropdown not found!');
+        return false;
       }
       
-      if (!dropdown) {
-        console.error('[INIT ERROR] accountDropdown not found in DOM');
-      } else {
-        console.log('[INIT] accountDropdown found and ready');
+      console.log('✓ Button found:', btn);
+      console.log('✓ Dropdown found:', dropdown);
+      
+      // STEP 2: Remove old onclick and replace with fresh handler
+      btn.onclick = null;
+      const newBtn = btn.cloneNode(true);
+      btn.parentNode.replaceChild(newBtn, btn);
+      
+      // STEP 3: Get fresh reference and attach event listener
+      const freshBtn = document.getElementById('myAccountBtn');
+      if (!freshBtn) {
+        console.error('❌ ERROR: Could not get fresh button reference!');
+        return false;
       }
+      
+      // STEP 4: Attach multiple event listeners for redundancy
+      freshBtn.addEventListener('click', handleAccountClick);
+      freshBtn.addEventListener('mousedown', function(e) {
+        e.preventDefault();
+      });
+      
+      console.log('✓ Event listeners attached');
+      console.log('✓ Button styles:', {
+        zIndex: window.getComputedStyle(freshBtn).zIndex,
+        pointerEvents: window.getComputedStyle(freshBtn).pointerEvents,
+        cursor: window.getComputedStyle(freshBtn).cursor
+      });
+      console.log('✓ Dropdown styles:', {
+        display: window.getComputedStyle(dropdown).display,
+        opacity: window.getComputedStyle(dropdown).opacity,
+        visibility: window.getComputedStyle(dropdown).visibility,
+        zIndex: window.getComputedStyle(dropdown).zIndex
+      });
+      
+      return true;
+    }
+    
+    // Handle account button click
+    function handleAccountClick(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      console.log('🔵 ACCOUNT BUTTON CLICKED');
+      
+      const dropdown = document.getElementById('accountDropdown');
+      if (!dropdown) {
+        console.error('❌ Dropdown not found on click!');
+        return;
+      }
+      
+      // Log before toggle
+      const wasShown = dropdown.classList.contains('show');
+      console.log('Before toggle - has .show class:', wasShown);
+      
+      // Toggle the dropdown
+      dropdown.classList.toggle('show');
+      
+      const isNowShown = dropdown.classList.contains('show');
+      console.log('After toggle - has .show class:', isNowShown);
+      console.log('Dropdown className:', dropdown.className);
+      console.log('Computed display:', window.getComputedStyle(dropdown).display);
+      console.log('Computed visibility:', window.getComputedStyle(dropdown).visibility);
+      console.log('Computed opacity:', window.getComputedStyle(dropdown).opacity);
+      
+      // Toggle button active state
+      const btn = document.getElementById('myAccountBtn');
+      if (btn) {
+        btn.classList.toggle('active');
+        console.log('Button active:', btn.classList.contains('active'));
+      }
+      
+      // Close language dropdown
+      try {
+        closeLanguageDropdown();
+      } catch (e) {
+        console.warn('Could not close language dropdown:', e);
+      }
+    }
+    
+    // Initialize on DOMContentLoaded
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('🟡 DOMContentLoaded fired');
+      setTimeout(() => {
+        const result = initializeAccountDropdown();
+        if (result) {
+          console.log('✅ INITIALIZATION SUCCESSFUL');
+        } else {
+          console.log('❌ INITIALIZATION FAILED');
+        }
+      }, 100);
+    });
+    
+    // Also try on window load as backup
+    window.addEventListener('load', function() {
+      console.log('🟡 Window load fired');
+      setTimeout(() => {
+        const btn = document.getElementById('myAccountBtn');
+        if (btn && !btn.__accountInitialized) {
+          console.log('Running backup initialization...');
+          initializeAccountDropdown();
+          btn.__accountInitialized = true;
+        }
+      }, 200);
     });
 
   </script>
