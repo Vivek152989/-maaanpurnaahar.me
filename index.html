@@ -262,6 +262,8 @@
     /* Enhanced My Account Section */
     .my-account-section {
       position: relative;
+      z-index: 102;
+      overflow: visible;
     }
     
     .account-btn {
@@ -310,14 +312,14 @@
       right: 0;
       background: white;
       border-radius: 15px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
       padding: 20px;
       margin-top: 10px;
       width: 320px;
       display: none !important;
       opacity: 0;
       visibility: hidden;
-      z-index: 9999;
+      z-index: 99999;
       border: 1px solid #e9ecef;
       transition: all 0.3s ease;
       pointer-events: none;
@@ -328,11 +330,9 @@
       opacity: 1 !important;
       visibility: visible !important;
       pointer-events: auto !important;
-    }
-    
-    /* Ensure the my-account-section has proper positioning */
-    .my-account-section {
-      position: relative;
+      position: absolute;
+      top: 100%;
+      right: 0;
     }
     
     .dropdown-header {
