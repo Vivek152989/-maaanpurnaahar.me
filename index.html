@@ -310,28 +310,28 @@
     }
     
     .account-dropdown {
-      position: fixed;
-      top: 60px;
-      right: 20px;
+      position: absolute;
+      top: 50px;
+      right: 0;
       background: white;
       border-radius: 15px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      box-shadow: 0 10px 40px rgba(0,0,0,0.5);
       padding: 20px;
       width: 320px;
-      display: none !important;
+      display: none;
       opacity: 0;
       visibility: hidden;
-      z-index: 99999;
-      border: 1px solid #e9ecef;
+      z-index: 999999;
+      border: 2px solid #ff9800;
       transition: all 0.3s ease;
       pointer-events: none;
     }
     
     .account-dropdown.show {
-      display: block !important;
-      opacity: 1 !important;
-      visibility: visible !important;
-      pointer-events: auto !important;
+      display: block;
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
     }
     
     .dropdown-header {
@@ -1294,19 +1294,19 @@
               <span class="dropdown-title" data-lang-key="account-options">Account Options</span>
             </div>
             <div class="dropdown-links">
-              <a href="login.html" class="dropdown-link" data-lang-key="nav-login">
+              <a href="login.html" class="dropdown-link" data-lang-key="nav-login" onclick="alert('Going to Login page')">
                 <span class="link-icon">🔐</span>
                 <span>Login</span>
                 <span class="link-arrow">→</span>
               </a>
-              <a href="register.html" class="dropdown-link" data-lang-key="nav-register">
+              <a href="register.html" class="dropdown-link" data-lang-key="nav-register" onclick="alert('Going to Register page')">
                 <span class="link-icon">📝</span>
                 <span>Register</span>
                
                 <span class="link-arrow">→</span>
               </a>
               <div class="dropdown-divider"></div>
-              <a href="profile.html" class="dropdown-link" data-lang-key="nav-profile">
+              <a href="profile.html" class="dropdown-link" data-lang-key="nav-profile" onclick="alert('Going to Profile page')">
                 <span class="link-icon">👤</span>
                 <span>My Profile</span>
                 <span class="link-arrow">→</span>
@@ -1604,6 +1604,29 @@
     // My Account Toggle Function - Simple and Direct
     function toggleMyAccount() {
       console.log('toggleMyAccount called');
+      const dropdown = document.getElementById('accountDropdown');
+      
+      if (!dropdown) {
+        console.error('Dropdown not found!');
+        return;
+      }
+      
+      // Force show the dropdown with inline styles
+      if (dropdown.classList.contains('show')) {
+        dropdown.classList.remove('show');
+        dropdown.style.display = 'none';
+        dropdown.style.visibility = 'hidden';
+        dropdown.style.opacity = '0';
+        console.log('Hiding dropdown');
+      } else {
+        dropdown.classList.add('show');
+        dropdown.style.display = 'block !important';
+        dropdown.style.visibility = 'visible !important';
+        dropdown.style.opacity = '1';
+        dropdown.style.zIndex = '999999';
+        console.log('Showing dropdown');
+      }
+      
       handleAccountClick({ preventDefault: () => {}, stopPropagation: () => {} });
     }
     
@@ -1820,7 +1843,6 @@
       const btn = document.getElementById('myAccountBtn');
       const dropdown = document.getElementById('accountDropdown');
       
-      // STEP 1: Verify elements exist
       if (!btn) {
         console.error('❌ ERROR: myAccountBtn not found!');
         return false;
@@ -1832,45 +1854,19 @@
       
       console.log('✓ Button found:', btn);
       console.log('✓ Dropdown found:', dropdown);
-      
-      // STEP 2: Remove old onclick and replace with fresh handler
-      btn.onclick = null;
-      const newBtn = btn.cloneNode(true);
-      btn.parentNode.replaceChild(newBtn, btn);
-      
-      // STEP 3: Get fresh reference and attach event listener
-      const freshBtn = document.getElementById('myAccountBtn');
-      if (!freshBtn) {
-        console.error('❌ ERROR: Could not get fresh button reference!');
-        return false;
-      }
-      
-      // STEP 4: Attach multiple event listeners for redundancy
-      freshBtn.addEventListener('click', handleAccountClick);
-      freshBtn.addEventListener('mousedown', function(e) {
-        e.preventDefault();
-      });
-      
-      console.log('✓ Event listeners attached');
-      console.log('✓ Button styles:', {
-        zIndex: window.getComputedStyle(freshBtn).zIndex,
-        pointerEvents: window.getComputedStyle(freshBtn).pointerEvents,
-        cursor: window.getComputedStyle(freshBtn).cursor
-      });
-      console.log('✓ Dropdown styles:', {
-        display: window.getComputedStyle(dropdown).display,
-        opacity: window.getComputedStyle(dropdown).opacity,
-        visibility: window.getComputedStyle(dropdown).visibility,
-        zIndex: window.getComputedStyle(dropdown).zIndex
-      });
+      console.log('✓ Setup complete - Click the button to toggle dropdown');
       
       return true;
     }
     
     // Handle account button click
     function handleAccountClick(e) {
-      e.preventDefault();
-      e.stopPropagation();
+      if (e && e.preventDefault) {
+        e.preventDefault();
+      }
+      if (e && e.stopPropagation) {
+        e.stopPropagation();
+      }
       console.log('🔵 ACCOUNT BUTTON CLICKED');
       
       const dropdown = document.getElementById('accountDropdown');
@@ -1879,26 +1875,12 @@
         return;
       }
       
-      // Log before toggle
       const wasShown = dropdown.classList.contains('show');
-      console.log('Before toggle - has .show class:', wasShown);
-      
-      // Toggle the dropdown
       dropdown.classList.toggle('show');
-      
       const isNowShown = dropdown.classList.contains('show');
-      console.log('After toggle - has .show class:', isNowShown);
-      console.log('Dropdown className:', dropdown.className);
-      console.log('Computed display:', window.getComputedStyle(dropdown).display);
-      console.log('Computed visibility:', window.getComputedStyle(dropdown).visibility);
-      console.log('Computed opacity:', window.getComputedStyle(dropdown).opacity);
       
-      // Toggle button active state
-      const btn = document.getElementById('myAccountBtn');
-      if (btn) {
-        btn.classList.toggle('active');
-        console.log('Button active:', btn.classList.contains('active'));
-      }
+      console.log('Toggle state:', { was: wasShown, now: isNowShown });
+      console.log('Dropdown className:', dropdown.className);
       
       // Close language dropdown
       try {
@@ -1912,26 +1894,8 @@
     document.addEventListener('DOMContentLoaded', function() {
       console.log('🟡 DOMContentLoaded fired');
       setTimeout(() => {
-        const result = initializeAccountDropdown();
-        if (result) {
-          console.log('✅ INITIALIZATION SUCCESSFUL');
-        } else {
-          console.log('❌ INITIALIZATION FAILED');
-        }
+        initializeAccountDropdown();
       }, 100);
-    });
-    
-    // Also try on window load as backup
-    window.addEventListener('load', function() {
-      console.log('🟡 Window load fired');
-      setTimeout(() => {
-        const btn = document.getElementById('myAccountBtn');
-        if (btn && !btn.__accountInitialized) {
-          console.log('Running backup initialization...');
-          initializeAccountDropdown();
-          btn.__accountInitialized = true;
-        }
-      }, 200);
     });
 
   </script>
