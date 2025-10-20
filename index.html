@@ -311,18 +311,19 @@
     
     .account-dropdown {
       position: absolute;
-      top: 50px;
+      top: 100%;
       right: 0;
       background: white;
       border-radius: 15px;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
       padding: 20px;
+      margin-top: 10px;
       width: 320px;
       display: none;
       opacity: 0;
       visibility: hidden;
       z-index: 999999;
-      border: 2px solid #ff9800;
+      border: 1px solid #e9ecef;
       transition: all 0.3s ease;
       pointer-events: none;
     }
@@ -1282,31 +1283,30 @@
           </div>
         </div>
         
-        <!-- Enhanced My Account Section -->
+        <!-- Account button & dropdown -->
         <div class="my-account-section">
-          <button class="account-btn" id="myAccountBtn" onclick="toggleMyAccount()">
+          <button class="account-btn" id="accountBtn" aria-expanded="false" aria-controls="accountDropdown" type="button">
             <span class="account-icon">👤</span>
-            <span data-lang-key="my-account">My Account</span>
-            <span class="dropdown-arrow">▼</span>
+            <span class="account-text" data-lang-key="my-account">My Account</span>
+            <span class="dropdown-arrow" aria-hidden="true">▾</span>
           </button>
-          <div class="account-dropdown" id="accountDropdown">
+          <div class="account-dropdown" id="accountDropdown" role="menu" aria-label="Account options">
             <div class="dropdown-header">
               <span class="dropdown-title" data-lang-key="account-options">Account Options</span>
             </div>
             <div class="dropdown-links">
-              <a href="login.html" class="dropdown-link" data-lang-key="nav-login" onclick="alert('Going to Login page')">
+              <a href="login.html" class="dropdown-link" data-lang-key="nav-login" role="menuitem">
                 <span class="link-icon">🔐</span>
                 <span>Login</span>
                 <span class="link-arrow">→</span>
               </a>
-              <a href="register.html" class="dropdown-link" data-lang-key="nav-register" onclick="alert('Going to Register page')">
+              <a href="register.html" class="dropdown-link" data-lang-key="nav-register" role="menuitem">
                 <span class="link-icon">📝</span>
                 <span>Register</span>
-               
                 <span class="link-arrow">→</span>
               </a>
               <div class="dropdown-divider"></div>
-              <a href="profile.html" class="dropdown-link" data-lang-key="nav-profile" onclick="alert('Going to Profile page')">
+              <a href="profile.html" class="dropdown-link" data-lang-key="nav-profile" role="menuitem">
                 <span class="link-icon">👤</span>
                 <span>My Profile</span>
                 <span class="link-arrow">→</span>
@@ -1601,33 +1601,10 @@
       btn.classList.remove('active');
     }
     
-    // My Account Toggle Function - Simple and Direct
+    // My Account Toggle - will be handled by the account menu script below
     function toggleMyAccount() {
-      console.log('toggleMyAccount called');
-      const dropdown = document.getElementById('accountDropdown');
-      
-      if (!dropdown) {
-        console.error('Dropdown not found!');
-        return;
-      }
-      
-      // Force show the dropdown with inline styles
-      if (dropdown.classList.contains('show')) {
-        dropdown.classList.remove('show');
-        dropdown.style.display = 'none';
-        dropdown.style.visibility = 'hidden';
-        dropdown.style.opacity = '0';
-        console.log('Hiding dropdown');
-      } else {
-        dropdown.classList.add('show');
-        dropdown.style.display = 'block !important';
-        dropdown.style.visibility = 'visible !important';
-        dropdown.style.opacity = '1';
-        dropdown.style.zIndex = '999999';
-        console.log('Showing dropdown');
-      }
-      
-      handleAccountClick({ preventDefault: () => {}, stopPropagation: () => {} });
+      const btn = document.getElementById('accountBtn');
+      if (btn) btn.click();
     }
     
     // Test function - can be called from browser console
@@ -1836,67 +1813,44 @@
       }
     });
     
-    // MASTER INITIALIZATION: Ultimate My Account button fix
-    function initializeAccountDropdown() {
-      console.log('=== ACCOUNT DROPDOWN INITIALIZATION ===');
-      
-      const btn = document.getElementById('myAccountBtn');
+    // Account dropdown menu handler - Clean and accessible
+    (function () {
+      const btn = document.getElementById('accountBtn');
       const dropdown = document.getElementById('accountDropdown');
       
-      if (!btn) {
-        console.error('❌ ERROR: myAccountBtn not found!');
-        return false;
-      }
-      if (!dropdown) {
-        console.error('❌ ERROR: accountDropdown not found!');
-        return false;
-      }
-      
-      console.log('✓ Button found:', btn);
-      console.log('✓ Dropdown found:', dropdown);
-      console.log('✓ Setup complete - Click the button to toggle dropdown');
-      
-      return true;
-    }
-    
-    // Handle account button click
-    function handleAccountClick(e) {
-      if (e && e.preventDefault) {
-        e.preventDefault();
-      }
-      if (e && e.stopPropagation) {
-        e.stopPropagation();
-      }
-      console.log('🔵 ACCOUNT BUTTON CLICKED');
-      
-      const dropdown = document.getElementById('accountDropdown');
-      if (!dropdown) {
-        console.error('❌ Dropdown not found on click!');
+      if (!btn || !dropdown) {
+        console.warn('Account button or dropdown not found');
         return;
       }
-      
-      const wasShown = dropdown.classList.contains('show');
-      dropdown.classList.toggle('show');
-      const isNowShown = dropdown.classList.contains('show');
-      
-      console.log('Toggle state:', { was: wasShown, now: isNowShown });
-      console.log('Dropdown className:', dropdown.className);
-      
-      // Close language dropdown
-      try {
-        closeLanguageDropdown();
-      } catch (e) {
-        console.warn('Could not close language dropdown:', e);
-      }
-    }
-    
-    // Initialize on DOMContentLoaded
-    document.addEventListener('DOMContentLoaded', function() {
-      console.log('🟡 DOMContentLoaded fired');
-      setTimeout(() => {
-        initializeAccountDropdown();
-      }, 100);
-    });
+
+      // Toggle dropdown on button click
+      btn.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        const isExpanded = btn.getAttribute('aria-expanded') === 'true';
+        btn.setAttribute('aria-expanded', !isExpanded);
+        dropdown.classList.toggle('show');
+      });
+
+      // Close dropdown when clicking outside
+      document.addEventListener('click', function (e) {
+        if (!btn.contains(e.target) && !dropdown.contains(e.target)) {
+          btn.setAttribute('aria-expanded', 'false');
+          dropdown.classList.remove('show');
+        }
+      });
+
+      // Close dropdown on Escape key
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && dropdown.classList.contains('show')) {
+          btn.setAttribute('aria-expanded', 'false');
+          dropdown.classList.remove('show');
+          btn.focus();
+        }
+      });
+
+      console.log('✓ Account dropdown menu initialized');
+    })();
 
   </script>
 
