@@ -365,7 +365,7 @@
         </div>
         
         <div class="form-group">
-          <input type="tel" id="phone" class="form-input" placeholder="Phone Number (Optional)">
+          <input type="tel" id="phone" class="form-input" placeholder="Phone Number (required for OTP login)" inputmode="tel" required>
         </div>
         
         <div class="form-group">
@@ -426,6 +426,8 @@
   
   <!-- Firebase Config -->
   <script src="firebase-config.js"></script>
+  <!-- Auth utilities -->
+  <script src="auth.js"></script>
   <script>
     // Initialize Firebase when page loads (uses global window.firebaseManager from firebase-config.js)
     document.addEventListener('DOMContentLoaded', async function() {
@@ -484,6 +486,8 @@
       const lastName = document.getElementById('lastName').value.trim();
       const email = document.getElementById('email').value.trim();
       const phone = document.getElementById('phone').value.trim();
+      const phoneDigits = phone.replace(/[^0-9]/g, '');
+      const normalizedPhone = phone.startsWith('+') ? `+${phoneDigits}` : phoneDigits;
       const password = document.getElementById('password').value;
       const confirmPassword = document.getElementById('confirmPassword').value;
       const agreeTerms = document.getElementById('agreeTerms').checked;
@@ -499,6 +503,16 @@
       
       if (!isValidEmail(email)) {
         showError('Please enter a valid email address');
+        return;
+      }
+
+      if (!phoneDigits) {
+        showError('Phone number is required for OTP login');
+        return;
+      }
+
+      if (phoneDigits.length < 10) {
+        showError('Please enter a valid phone number (include country code).');
         return;
       }
       
@@ -523,6 +537,16 @@
         showError('An account with this email already exists');
         return;
       }
+
+      const duplicatePhoneUser = existingUsers.find(user => {
+        const existingDigits = (user.phone || '').replace(/[^0-9]/g, '');
+        return existingDigits && existingDigits === phoneDigits;
+      });
+
+      if (duplicatePhoneUser) {
+        showError('An account with this phone number already exists');
+        return;
+      }
       
       // Show loading state
       const registerBtn = document.getElementById('registerBtn');
@@ -537,7 +561,7 @@
             firstName,
             lastName,
             email,
-            phone,
+            phone: normalizedPhone,
             password,
             registrationDate: new Date().toISOString()
           };
@@ -546,13 +570,13 @@
           localStorage.setItem('tempRegistrationData', JSON.stringify(registrationData));
           
           // Send OTP
-          const result = await AuthManager.sendOTP(email, phone, 'register');
+          const result = await AuthManager.sendOTP(email, normalizedPhone, 'register');
           
           if (result.success) {
-            showSuccess('Verification code sent! Redirecting...');
+            showSuccess('Verification code sent to your phone! Redirecting...');
             
             setTimeout(() => {
-              window.location.href = `otp-verification.html?type=register&contact=${encodeURIComponent(email)}`;
+              window.location.href = `otp-verification.html?type=register&contact=${encodeURIComponent(normalizedPhone)}`;
             }, 1500);
           } else {
             showError(result.message || 'Failed to send verification code');

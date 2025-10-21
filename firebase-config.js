@@ -207,6 +207,22 @@
         return { success: false, message: err.message || String(err) };
       }
     }
+
+    async trackUserActivity(userId, activityData = {}) {
+      if (!this.isInitialized()) throw new Error('Firebase not initialized');
+      try {
+        const payload = {
+          userId,
+          ...activityData,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        };
+        await this.db.collection('userActivity').add(payload);
+        return { success: true };
+      } catch (err) {
+        console.error('trackUserActivity error', err);
+        return { success: false, message: err.message || String(err) };
+      }
+    }
   }
 
   window.firebaseManager = window.firebaseManager || new FirebaseManager();

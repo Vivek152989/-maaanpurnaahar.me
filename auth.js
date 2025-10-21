@@ -44,6 +44,16 @@ class AuthManager {
     return null;
   }
 
+  static normalizePhone(phone) {
+    if (!phone) return '';
+    const trimmed = String(phone).trim();
+    if (!trimmed) return '';
+    const hasPlus = trimmed.startsWith('+');
+    const digits = trimmed.replace(/[^0-9]/g, '');
+    if (!digits) return '';
+    return hasPlus ? `+${digits}` : digits;
+  }
+
   // OTP Authentication Methods
   static generateOTP() {
     return Math.floor(100000 + Math.random() * 900000).toString();
@@ -57,18 +67,26 @@ class AuthManager {
 
       const otp = this.generateOTP();
       const expiryTime = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+      const normalizedPhone = this.normalizePhone(phone);
       
       // Store OTP in Firebase
       const otpData = {
         otp: otp,
         email: email,
-        phone: phone,
+        phone: normalizedPhone,
+        originalPhone: phone,
         type: type,
         expiry: expiryTime.getTime(),
         attempts: 0
       };
       
-      const result = await window.firebaseManager.storeOTP(otpData);
+      const result = await window.firebaseManager.storeOTP({
+        otp: otpData.otp,
+        email: otpData.email,
+        phone: otpData.phone,
+        type: otpData.type,
+        expiry: otpData.expiry
+      });
       
       if (!result.success) {
         throw new Error(result.message);
@@ -78,14 +96,15 @@ class AuthManager {
       localStorage.setItem('otpData', JSON.stringify(otpData));
       
       // Simulate sending OTP (in production, integrate with SMS/Email service)
-      console.log(`OTP for ${email || phone}: ${otp}`);
+      const destination = email || normalizedPhone;
+      console.log(`OTP for ${destination}: ${otp}`);
       
       // For demo purposes, show OTP in alert (remove in production)
       alert(`OTP sent! For demo purposes, your OTP is: ${otp}`);
       
       return {
         success: true,
-        message: `OTP sent successfully to ${email ? 'email' : 'phone'}`,
+        message: `OTP sent successfully to ${email ? 'email address' : 'phone number'}`,
         expiryTime: expiryTime,
         otpId: result.otpId
       };
@@ -136,7 +155,11 @@ class AuthManager {
       }
 
       // Use Firebase for OTP verification
-      const result = await window.firebaseManager.verifyOTP(identifier, inputOTP, type);
+      const normalizedIdentifier = identifier && identifier.includes && !identifier.includes('@')
+        ? this.normalizePhone(identifier)
+        : identifier;
+
+      const result = await window.firebaseManager.verifyOTP(normalizedIdentifier, inputOTP, type);
       
       if (result.success) {
         // Clean up localStorage
@@ -155,7 +178,14 @@ class AuthManager {
 
   static async registerWithOTP(userData, otp) {
     try {
-      const identifier = userData.email || userData.phone;
+      const identifier = userData && userData.phone
+        ? this.normalizePhone(userData.phone)
+        : (userData ? userData.email : null);
+
+      if (!identifier) {
+        return { success: false, message: 'Missing contact information for OTP verification.' };
+      }
+
       const verification = await this.verifyOTP(identifier, otp, 'register');
       
       if (!verification.success) {
@@ -169,7 +199,7 @@ class AuthManager {
           firstName: userData.firstName,
           lastName: userData.lastName,
           email: userData.email,
-          phone: userData.phone,
+          phone: this.normalizePhone(userData.phone),
           isLoggedIn: true,
           isVerified: true,
           registrationDate: new Date().toISOString(),
@@ -199,7 +229,7 @@ class AuthManager {
         // Track registration activity
         await window.firebaseManager.trackUserActivity(result.user.id, {
           type: 'registration',
-          details: { method: 'otp', email: userData.email, phone: userData.phone }
+          details: { method: 'otp', email: userData.email, phone: this.normalizePhone(userData.phone) }
         });
       }
       
@@ -215,7 +245,15 @@ class AuthManager {
 
   static async loginWithOTP(identifier, otp) {
     try {
-      const verification = await this.verifyOTP(identifier, otp, 'login');
+      const normalizedIdentifier = identifier && identifier.includes && identifier.includes('@')
+        ? identifier.trim()
+        : this.normalizePhone(identifier);
+
+      if (!normalizedIdentifier) {
+        return { success: false, message: 'Please provide a valid email address or phone number.' };
+      }
+
+      const verification = await this.verifyOTP(normalizedIdentifier, otp, 'login');
       
       if (!verification.success) {
         return verification;
@@ -225,7 +263,8 @@ class AuthManager {
         // Fallback to localStorage
         const registeredUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
         const user = registeredUsers.find(u => 
-          u.email === identifier || u.phone === identifier
+          (u.email && u.email === normalizedIdentifier) ||
+          (u.phone && this.normalizePhone(u.phone) === normalizedIdentifier)
         );
         
         if (!user) {
@@ -251,7 +290,7 @@ class AuthManager {
       }
 
       // Use Firebase for user login
-      const result = await window.firebaseManager.loginUser(identifier);
+  const result = await window.firebaseManager.loginUser(normalizedIdentifier);
       
       if (result.success) {
         // Store current user in localStorage for session management
@@ -261,7 +300,7 @@ class AuthManager {
         // Track login activity
         await window.firebaseManager.trackUserActivity(result.user.id, {
           type: 'login',
-          details: { method: 'otp', identifier: identifier }
+          details: { method: 'otp', identifier: normalizedIdentifier }
         });
       }
       
