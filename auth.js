@@ -61,15 +61,13 @@ class AuthManager {
 
   static async sendOTP(email, phone, type = 'login') {
     try {
-      if (!window.firebaseManager || !window.firebaseManager.isInitialized()) {
-        throw new Error('Firebase not initialized. Please check your connection.');
-      }
-
       const otp = this.generateOTP();
       const expiryTime = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
       const normalizedPhone = this.normalizePhone(phone);
+      const firebaseReady = window.firebaseManager && window.firebaseManager.isInitialized();
+      let useLocalFallback = !firebaseReady;
+      let otpId = null;
       
-      // Store OTP in Firebase
       const otpData = {
         otp: otp,
         email: email,
@@ -77,20 +75,33 @@ class AuthManager {
         originalPhone: phone,
         type: type,
         expiry: expiryTime.getTime(),
-        attempts: 0
+        attempts: 0,
+        useLocalFallback: false
       };
       
-      const result = await window.firebaseManager.storeOTP({
-        otp: otpData.otp,
-        email: otpData.email,
-        phone: otpData.phone,
-        type: otpData.type,
-        expiry: otpData.expiry
-      });
-      
-      if (!result.success) {
-        throw new Error(result.message);
+      if (!useLocalFallback) {
+        try {
+          const result = await window.firebaseManager.storeOTP({
+            otp: otpData.otp,
+            email: otpData.email,
+            phone: otpData.phone,
+            type: otpData.type,
+            expiry: otpData.expiry
+          });
+
+          if (result.success) {
+            otpId = result.otpId || null;
+          } else {
+            console.warn('Falling back to local OTP storage:', result.message);
+            useLocalFallback = true;
+          }
+        } catch (storeError) {
+          console.warn('Error storing OTP in Firebase, using local fallback.', storeError);
+          useLocalFallback = true;
+        }
       }
+
+      otpData.useLocalFallback = useLocalFallback;
       
       // Store temporary data in localStorage for the verification process
       localStorage.setItem('otpData', JSON.stringify(otpData));
@@ -106,7 +117,8 @@ class AuthManager {
         success: true,
         message: `OTP sent successfully to ${email ? 'email address' : 'phone number'}`,
         expiryTime: expiryTime,
-        otpId: result.otpId
+        otpId: otpId,
+        source: useLocalFallback ? 'local' : 'firebase'
       };
     } catch (error) {
       console.error('Send OTP error:', error);
