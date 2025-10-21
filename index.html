@@ -1242,9 +1242,9 @@
       <div class="popup-icon">🌾</div>
       <h2 class="popup-title" data-lang-key="popup-title">Welcome to Maa Anpurna Aahar!</h2>
       <p class="popup-message" data-lang-key="popup-message">
-        Namaste! Aap hamari website par aaye, iske liye dhanyawad! 
-        Hum ghar ka bana hua fresh aur healthy food aap tak pahunchate hain. 
-        Hamari handmade products ka mazaa len aur healthy life jeeyein!
+        नमस्ते! हमारी वेबसाइट पर आपका स्वागत है। धन्यवाद कि आप यहाँ आए। 
+        हम घर जैसा ताज़ा और पौष्टिक भोजन सीधे आपके द्वार पहुँचाते हैं। 
+        हमारे हाथ से बने उत्पादों का आनंद लें और स्वस्थ जीवन जीएँ!
       </p>
       <div class="popup-buttons">
         <a href="products.html" class="popup-btn popup-btn-primary" data-lang-key="popup-explore">Explore Products</a>
@@ -1419,6 +1419,7 @@
         <div class="contact-item">
           <h3>📞 Phone</h3>
           <p>+918353989251</p>
+          <p>+919554972215</p>
         </div>
         <div class="contact-item">
           <h3>📍 Location</h3>
@@ -1474,7 +1475,15 @@
         measurementId: "G-GH7YLSBMPT"
       };
       
-      await window.firebaseManager.initialize(firebaseConfig);
+      try {
+        if (window.firebaseManager && typeof window.firebaseManager.initialize === 'function') {
+          await window.firebaseManager.initialize(firebaseConfig);
+        } else {
+          console.warn('window.firebaseManager not available on index.html');
+        }
+      } catch (e) {
+        console.error('Failed to initialize firebase on index:', e);
+      }
     });
   </script>
 

@@ -426,16 +426,10 @@
   
   <!-- Firebase Config -->
   <script src="firebase-config.js"></script>
-
   <script>
-    // Initialize Firebase Manager
-    let firebaseManager;
-    
-    // Initialize Firebase when page loads
+    // Initialize Firebase when page loads (uses global window.firebaseManager from firebase-config.js)
     document.addEventListener('DOMContentLoaded', async function() {
       try {
-        firebaseManager = new FirebaseManager();
-        
         // Your actual Firebase configuration
         const firebaseConfig = {
           apiKey: "AIzaSyB79RNz2_bcjalb2vnPtGx5TKyxvclLM_0",
@@ -446,24 +440,31 @@
           appId: "1:539880099771:web:0753dfd9cc8f050a5d7e9e",
           measurementId: "G-GH7YLSBMPT"
         };
-        
-        await firebaseManager.initialize(firebaseConfig);
-        
-        // Check if user is already logged in
-        firebaseManager.onAuthStateChanged((user) => {
-          if (user) {
-            console.log('User already logged in:', user);
-            window.location.href = 'profile.html';
+
+        if (window.firebaseManager && typeof window.firebaseManager.initialize === 'function') {
+          await window.firebaseManager.initialize(firebaseConfig);
+
+          // Redirect if Firebase auth reports an existing session
+          try {
+            window.firebaseManager.onAuthStateChanged((user) => {
+              if (user) {
+                console.log('User already logged in (firebase):', user);
+                window.location.href = 'profile.html';
+              }
+            });
+          } catch (e) {
+            // onAuthStateChanged may not be available yet
+            console.warn('onAuthStateChanged not available:', e);
           }
-        });
-        
+        } else {
+          console.warn('window.firebaseManager not found; firebase-config.js may not have loaded.');
+        }
       } catch (error) {
         console.error('Firebase initialization error:', error);
         showError('Firebase initialization failed. Please try again.');
       }
     });
 
-  <script>
     // Check if user is already logged in
     document.addEventListener('DOMContentLoaded', function() {
       const currentUser = JSON.parse(localStorage.getItem('currentUser'));
@@ -626,36 +627,36 @@
     }
 
     // Google Sign-In for Registration
-    async function socialRegister(provider) {
+    async function socialRegister(provider, btn) {
+      // btn should be the button element that was clicked; if not provided, try to infer
+      btn = btn || (window.event && window.event.target) || null;
+
       if (provider === 'google') {
         try {
           hideMessages();
-          
-          const btn = event.target;
-          const originalText = btn.textContent;
-          btn.textContent = 'Signing up...';
-          btn.disabled = true;
-          
-          if (!firebaseManager) {
+
+          if (btn) {
+            btn.dataset.origText = btn.textContent;
+            btn.textContent = 'Signing up...';
+            btn.disabled = true;
+          }
+
+          if (!window.firebaseManager) {
             throw new Error('Firebase not initialized');
           }
-          
-          const result = await firebaseManager.signInWithGoogle();
-          
+
+          const result = await window.firebaseManager.signInWithGoogle();
+
           if (result.success) {
             localStorage.setItem('currentUser', JSON.stringify(result.user));
-            
             showSuccess('Google registration successful! Redirecting...');
-            setTimeout(() => {
-              window.location.href = 'profile.html';
-            }, 1500);
+            setTimeout(() => window.location.href = 'profile.html', 1200);
           } else {
-            showError(result.message);
+            showError(result.message || 'Google registration failed');
           }
         } catch (error) {
           console.error('Google registration error:', error);
-          
-          // Check for domain authorization error
+
           if (error.message && (error.message.includes('unauthorized-domain') || error.message.includes('auth/unauthorized-domain'))) {
             showError(`
               <strong>Domain Authorization Required</strong><br>
@@ -668,9 +669,10 @@
             showError('Google registration failed. Please try email registration instead.');
           }
         } finally {
-          const btn = event.target;
-          btn.textContent = '📧 Google';
-          btn.disabled = false;
+          if (btn) {
+            btn.textContent = btn.dataset.origText || '📧 Google';
+            btn.disabled = false;
+          }
         }
       } else {
         showError(`${provider} registration is not implemented yet. Please use email registration.`);

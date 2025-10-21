@@ -376,15 +376,9 @@
   <script src="firebase-config.js"></script>
 
   <script>
-    // Initialize Firebase Manager
-    let firebaseManager;
-    
-    // Initialize Firebase when page loads
+    // Initialize Firebase when page loads (use global window.firebaseManager)
     document.addEventListener('DOMContentLoaded', async function() {
       try {
-        firebaseManager = new FirebaseManager();
-        
-        // Your actual Firebase configuration
         const firebaseConfig = {
           apiKey: "AIzaSyB79RNz2_bcjalb2vnPtGx5TKyxvclLM_0",
           authDomain: "maa-anpurna-aahar.firebaseapp.com",
@@ -394,21 +388,25 @@
           appId: "1:539880099771:web:0753dfd9cc8f050a5d7e9e",
           measurementId: "G-GH7YLSBMPT"
         };
-        
-        await firebaseManager.initialize(firebaseConfig);
-        
-        // Check if user is already logged in
-        firebaseManager.onAuthStateChanged((user) => {
-          if (user) {
-            console.log('User already logged in:', user);
-            window.location.href = 'profile.html';
+
+        if (window.firebaseManager && typeof window.firebaseManager.initialize === 'function') {
+          await window.firebaseManager.initialize(firebaseConfig);
+          try {
+            window.firebaseManager.onAuthStateChanged((user) => {
+              if (user) {
+                console.log('User already logged in (firebase):', user);
+                window.location.href = 'profile.html';
+              }
+            });
+          } catch (e) {
+            console.warn('onAuthStateChanged not available:', e);
           }
-        });
-        
+        }
       } catch (error) {
         console.error('Firebase initialization error:', error);
         showError('Firebase initialization failed. Please try again.');
       }
+
       const currentUser = JSON.parse(localStorage.getItem('currentUser'));
       if (currentUser && currentUser.isLoggedIn) {
         window.location.href = 'profile.html';
@@ -497,11 +495,11 @@
         btn.textContent = 'Signing in...';
         btn.disabled = true;
         
-        if (!firebaseManager) {
+        if (!window.firebaseManager) {
           throw new Error('Firebase not initialized');
         }
-        
-        const result = await firebaseManager.signInWithGoogle();
+
+        const result = await window.firebaseManager.signInWithGoogle();
         
         if (result.success) {
           localStorage.setItem('currentUser', JSON.stringify(result.user));
@@ -592,14 +590,14 @@
           return;
         }
         
-        if (!firebaseManager) {
+        if (!window.firebaseManager) {
           throw new Error('Firebase not initialized');
         }
         
         hideMessages();
         showSuccess('Sending OTP...');
         
-        const result = await firebaseManager.sendOTP(phoneNumber);
+  const result = await window.firebaseManager.sendPhoneOTP(phoneNumber);
         
         if (result.success) {
           showSuccess('OTP sent successfully! Please check your phone.');
@@ -623,14 +621,14 @@
           return;
         }
         
-        if (!firebaseManager) {
+        if (!window.firebaseManager) {
           throw new Error('Firebase not initialized');
         }
-        
+
         hideMessages();
         showSuccess('Verifying OTP...');
-        
-        const result = await firebaseManager.verifyOTP(otpCode);
+
+        const result = await window.firebaseManager.verifyPhoneOTP(otpCode);
         
         if (result.success) {
           localStorage.setItem('currentUser', JSON.stringify(result.user));
